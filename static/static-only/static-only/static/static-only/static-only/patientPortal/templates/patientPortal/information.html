@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A web-based platform to allow management of patients for clinical and adminstrative applications. Also provides patients with a useful and reliable tool to gain access to medical records.">
+  <meta name="author" content="BME Senior Design Teams:  Kevin Call, Teddy Colon, Revital Schechter, Aimee Tavarez, Jesus Mendez">
+
+  <title>My Info</title>
+  <link href="../../vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="../../vendor/dist/css/sb-admin-2.css" rel="stylesheet">
+  <script src="../../vendor/jquery/jquery.min.js"></script>
+  <script src="../../vendor/bootstrap/js/bootstrap.min.js"></script>
+
+
+  <!--  Color Calls -->
+  <link href="../../css/colors/background.css" rel="stylesheet">
+  <link href="../../css/colors/text.css" rel="stylesheet">
+
+  <!-- Formatting Calls -->
+  <link href="../../css/formatting/div-paddings.css" rel="stylesheet">
+  <link href="../../css/formatting/div-designs.css" rel="stylesheet">
+  <link href="../../css/formatting/text-indenting.css" rel="stylesheet">
+
+  <!-- Font Calls -->
+  <link href="../../css/font/general-fonts.css" rel="stylesheet">
+  <link href="../../css/font/decorations.css" rel="stylesheet">
+
+  <script defer src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.5/angular.js"></script>
+  <script src="../../javascript/app.js"></script>
+  <script src="../../javascript/directives/logOutBar.js"></script>
+
+  <!-- Custom JQuery Script -->
+  <script src="../../javascript/tabs.js"></script>
+
+  <script src="http://netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+
+</head>
+
+<body ng-app="patientPortal" class="snow-background">
+  <log-out-bar></log-out-bar>
+  <div class="responsive-vertical-cushion-3x responsive-bottom-cushion">
+    <h2 class="page-header">Review Your Info</h2>
+    <div class="row no-margin">
+      <div id="personal-tab" style="border-top-left-radius: 15px; min-height:58px;" class="active tab col-xs-3 panel-button tertiary-background no-margin">
+        <h6>Personal Info</h6>
+      </div>
+      <div id="contact-tab" style="min-height:58px;" class="tab col-xs-3 panel-button tertiary-background no-margin">
+        <h6>Contact Info</h6>
+      </div>
+      <div id="emergency-tab" style="border-top-right-radius: 15px; min-height:58px;" class="tab col-xs-3 panel-button tertiary-background no-margin">
+        <h6>Emergency Contact</h6>
+      </div>
+    </div>
+
+
+    <!-- START OF FIRST SECTION -->
+    <div id="personal-form" style="border-radius: 15px; border-top-left-radius: 0" class="no-bottom-cushion tertiary-background show">
+      <div class="responsive-cushion">
+        <form class="no-margin form-horizontal" role="form">
+          <div>
+            <h2 class="text-center responsive-margin-bottom-2x pretty-underline">My Personal Information</h2>
+          </div>
+          <div class="show form-group">
+            <label for="firstName" class="col-sm-3 control-label">First Name</label>
+            <div class="col-sm-9">
+              <input type="text" id="firstName" placeholder="Last Name" class="form-control" autofocus>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="middleName" class="col-sm-3 control-label">Middle Name</label>
+            <div class="col-sm-9">
+              <input type="text" id="middleName" placeholder="Middle Name" class="form-control" autofocus>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="lastName" class="col-sm-3 control-label">Last Name</label>
+            <div class="col-sm-9">
+              <input type="text" id="lastName" placeholder="Last Name" class="form-control" autofocus>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="control-label col-sm-3">Gender</label>
+            <div class="col-sm-6">
+              <div class="row">
+                <div class="col-sm-4">
+                  <label class="radio-inline">
+              <input type="radio" id="femaleRadio" value="Female">Female
+            </label>
+                </div>
+                <div class="col-sm-4">
+                  <label class="radio-inline">
+              <input type="radio" id="maleRadio" value="Male">Male
+            </label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- /.form-group -->
+
+          <div class="form-group">
+            <label for="birthDate" class="col-sm-3 control-label">Date of Birth</label>
+            <div class="col-sm-9">
+              <input type="date" id="birthDate" class="form-control">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="country" class="col-sm-3 control-label">Country</label>
+            <div class="col-sm-9">
+              <select id="country" class="form-control">
+          <option>African American</option>
+          <option>American Indian</option>
+          <option>Asian</option>
+          <option>Hispanic</option>
+          <option>White</option>
+          <option>Other</option>
+        </select>
+            </div>
+          </div>
+      </div>
+      <div class="form-group">
+        <div class="full-width">
+          <button type="submit" class="btn btn-primary btn-block">Submit Changes</button>
+        </div>
+      </div>
+  </form method = 'POST' action = ' '> {% csrf_token %}
+  {{form.as_p}}
+    </div>
+    <!-- END OF FIRST Section -->
+
+
+    <!-- START OF SECOND SECTION -->
+    <div id="contact-form" style="border-radius: 15px; border-top-left-radius: 0" class="no-bottom-cushion tertiary-background hide">
+      <div class="responsive-cushion">
+        <form class="form-horizontal" role="form">
+          <h2 class="text-center responsive-margin-bottom-2x pretty-underline">My Contact Information</h2>
+          <div class="form-group">
+            <label for="phoneNumber" class="col-sm-3 control-label">Phone Number</label>
+            <div class="col-sm-9">
+              <input type="number" id="phoneNumber" placeholder="xxx-xxx-xxxx" class="form-control" autofocus>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="Address" class="col-sm-3 control-label">Street Address</label>
+            <div class="col-sm-9">
+              <input type="text" id="Address" placeholder="20 W Broadway Ave" class="form-control" autofocus>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="City" class="col-sm-3 control-label">City</label>
+            <div class="col-sm-9">
+              <input type="text" id="City" placeholder="Bronx" class="form-control" autofocus>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="State" class="col-sm-3 control-label">State</label>
+            <div class="col-sm-9">
+              <input type="text" id="State" placeholder="NY" class="form-control" autofocus>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="ZipCode" class="col-sm-3 control-label">Zip Code</label>
+            <div class="col-sm-9">
+              <input type="number" id="ZipCode" placeholder="10029" class="form-control" autofocus>
+            </div>
+          </div>
+
+
+      </div>
+      <div class="form-group">
+        <div class="full-width">
+          <button type="submit" class="btn btn-primary btn-block">Submit Changes</button>
+        </div>
+      </div>
+      </form>
+    </div>
+    <!-- END OF SECOND SECTION -->
+
+
+
+    <!-- START OF THIRD SECTION -->
+    <div id="emergency-form" style="border-radius: 15px; border-top-left-radius: 0" class="no-bottom-cushion tertiary-background hide">
+            <div class="responsive-cushion">
+      <form class="form-horizontal" role="form">
+        <div>
+          <h2 class="text-center responsive-margin-bottom pretty-underline">My Emergency Contact</h2></div>
+        <div class="form-group">
+          <label for="ECfirstName" class="col-sm-3 control-label">First Name</label>
+          <div class="col-sm-9">
+            <input type="text" id="ECfirstName" placeholder="First Name" class="form-control" autofocus>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="ECmiddleName" class="col-sm-3 control-label">Middle Name</label>
+          <div class="col-sm-9">
+            <input type="text" id="ECmiddleName" placeholder="Middle Name" class="form-control" autofocus>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="EClastName" class="col-sm-3 control-label">Last Name</label>
+          <div class="col-sm-9">
+            <input type="text" id="EClastName" placeholder="Last Name" class="form-control" autofocus>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="ECphoneNumber" class="col-sm-3 control-label">Phone Number</label>
+          <div class="col-sm-9">
+            <input type="number" id="ECphoneNumber" placeholder="xxx-xxx-xxxx" class="form-control" autofocus>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="ECAddress" class="col-sm-3 control-label">Street Address</label>
+          <div class="col-sm-9">
+            <input type="text" id="ECAddress" placeholder="20 W Broadway Ave" class="form-control" autofocus>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="ECCity" class="col-sm-3 control-label">City</label>
+          <div class="col-sm-9">
+            <input type="text" id="ECCity" placeholder="Bronx" class="form-control" autofocus>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="ECState" class="col-sm-3 control-label">State</label>
+          <div class="col-sm-9">
+            <input type="text" id="ECState" placeholder="NY" class="form-control" autofocus>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="ECZipCode" class="col-sm-3 control-label">Zip Code</label>
+          <div class="col-sm-9">
+            <input type="number" id="ECZipCode" placeholder="10029" class="form-control" autofocus>
+          </div>
+        </div>
+      </div>
+        <div class="form-group">
+          <div class="full-width">
+            <button type="submit" class="btn btn-primary btn-block">Save Changes</button>
+          </div>
+        </div>
+
+    </div>
+  </div>
+  <!-- END OF THIRD SECTION -->
+
+
+
+  <!-- WILL FIX THIS FORM LATER
+<div class="container">
+  <form class="form-horizontal" role="form">
+    <h2>My Medical Information</h2>
+    <div class="form-group">
+      <p>Please read the following document and confirm that the information is correct:<br></br>
+-->
+  <!-- Trigger the modal with a button -->
+  <!--        <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#Medical">Review Information</button>
+-->
+  <!-- Modal -->
+  <!--        <div class="modal fade" id="Medical" role="dialog">
+          <div class="modal-dialog">
+-->
+  <!-- Modal content-->
+  <!--          <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Medical Information</h4>
+              </div>
+              <div class="modal-body">
+                <p>Medical information goes here</p>
+              </div>
+              <div>
+                <h5>I confirm that all my medical information is correct:</h5>
+                <input type="radio" name="review" value="correct"> Yes<br>
+                <input type="radio" name="review" value="incorrect"> No<br>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
+    </div>
+-->
+</body>
+
+</html>

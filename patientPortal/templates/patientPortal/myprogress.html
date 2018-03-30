@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>My Attendance</title>
+    <!-- CSS Files -->
+    <link href="../../vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!--  Color Calls -->
+    <link href="../../css/colors/background.css" rel="stylesheet">
+    <link href="../../css/colors/text.css" rel="stylesheet">
+
+    <!-- Formatting Calls -->
+    <link href="../../css/formatting/div-paddings.css" rel="stylesheet">
+    <link href="../../css/formatting/div-designs.css" rel="stylesheet">
+    <link href="../../css/formatting/text-indenting.css" rel="stylesheet">
+
+    <!-- Font Calls -->
+    <link href="../../css/font/general-fonts.css" rel="stylesheet">
+    <style>
+      #reports {
+        width: 600px;
+        height: 600px;
+        overflow: scroll;
+      }
+      .reportButton {
+        margin-top: 10px;
+        width: 95%;
+      }
+      .reportButtonText {
+        text-align: left;
+      }
+      h4 {
+        margin-bottom: 4px;
+      }
+      h1 {
+        text-align: center;
+      }
+      #graphInfo {
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body ng-app="patientPortal">
+    <log-out-bar></log-out-bar>
+    <div class="row">
+      <div class="col col-lg-6 col-md-6">
+        <h1>Attendance</h1>
+        <canvas id="attendanceChart" width="400" height="200"></canvas>
+        <div id="graphInfo">
+          <h3 id="appointmentsAttended">Appointments attended: </h3>
+          <h3 id="appointmentsRemaining">Appointments remaining: </h3>
+        </div>
+      </div>
+      <div class="col col-lg-6 col-md-6">
+        <h1>Reports</h1>
+        <div id="reports"></div>
+      </div>
+    </div>
+
+    <!-- JavaScript files -->
+    <script src="../../vendor/jquery/jquery.min.js"></script>
+    <script src="../../vendor/bootstrap/js/bootstrap.min.js"></script>
+    <script src="../../javascript/Chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.5/angular.js"></script>
+    <script defer src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script>
+    <script src="../../javascript/app.js"></script>
+    <script src="../../javascript/directives/logOutBar.js"></script>
+
+    <script>
+      var buttonBegin = "<button type=\"button\" class=\"btn btn-primary reportButton\">",
+          img = "<img align=\"left\" src=\"..\/..\/images\/foldersImg.png\" alt=\"folders\"><div class=\"reportButtonText\"><h4>Week #",
+          endh4 = "<\/h4>",
+          buttonEnd = "</div><\/button>";
+      var attendanceChart = document.getElementById("attendanceChart"),
+          appointmentsAttendedId = document.getElementById("appointmentsAttended"),
+          appointmentsRemainingId = document.getElementById("appointmentsRemaining");
+      var myBarChart = new Chart(attendanceChart, {
+          type: 'bar',
+          data: {
+              labels: ["January", "February", "March"],
+              datasets: [{
+                  label: '# of Appointments',
+                  data: [5, 4, 3],
+                  backgroundColor: [
+                      'rgba(255, 99, 132, 0.2)',
+                      'rgba(54, 162, 235, 0.2)',
+                      'rgba(255, 206, 86, 0.2)',
+                      'rgba(75, 192, 192, 0.2)',
+                      'rgba(153, 102, 255, 0.2)',
+                      'rgba(255, 159, 64, 0.2)'
+                  ],
+                  borderColor: [
+                      'rgba(255,99,132,1)',
+                      'rgba(54, 162, 235, 1)',
+                      'rgba(255, 206, 86, 1)',
+                      'rgba(75, 192, 192, 1)',
+                      'rgba(153, 102, 255, 1)',
+                      'rgba(255, 159, 64, 1)'
+                  ],
+                  borderWidth: 1
+              }]
+          },
+          options: {
+              scales: {
+                  yAxes: [{
+                      ticks: {min: 0,
+                          stepSize: 1,
+                          beginAtZero:true
+                      }
+                  }]
+              }
+          }
+      });
+      var createReportButton = function(week, date){
+        return reportButton = buttonBegin + img + week + endh4 + date + buttonEnd;
+      }
+      // Need to make service call for reportData once we have info from Dcap
+      var reportData = ['1/1/18','1/8/18','1/15/18','1/22/18','2/2/18', '2/10/18'],
+          appointmentsAttended = 12,
+          appointmentsRemaining = 4;
+      //Set graph info
+      appointmentsAttendedId.textContent += appointmentsAttended;
+      appointmentsRemainingId.textContent += appointmentsRemaining;
+      // Create report buttons
+      for(var i = 1 ;i<=reportData.length; i++){
+        $( "#reports" ).append(createReportButton(i,reportData[i-1]));
+      }
+    </script>
+  </body>
+</html>
