@@ -4,10 +4,9 @@ from django.db import models
 # Create your models here.
 
 
-class SignUp(models.Model):
-    patient_ID = models.CharField(max_length=15, null=True, blank=True)
+class login(models.Model):
+    user_ID = models.CharField(max_length=15, null=True, blank=True)
     password = models.CharField(max_length=15, null=True, blank=True)
-
     def __unicode__(self):
         return str(self.email)
 

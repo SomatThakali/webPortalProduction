@@ -4,8 +4,8 @@ from. forms import informationForm
 # Create your views here.
 
 
-def Signup(request):
-    return render(request, 'patientPortal/Signup.html')
+def login(request):
+    return render(request, 'patientPortal/login.html')
 
 
 def information(request):
