@@ -1,0 +1,108 @@
+@import url(http://fonts.googleapis.com/css?family=Roboto:400);
+body {
+  background-color: #D6D6D6;
+  opacity: inherit;
+  -webkit-font-smoothing: antialiased;
+  font: normal 14px Roboto, arial, sans-serif;
+}
+
+.login-container {
+  padding: 25px;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  zoom: 100%;
+}
+
+.login-content {
+  padding-left: 90px;
+  padding-right: 90px;
+  padding-top: 40px;
+  padding-bottom: 40px;
+  background-color: #FFFFFF;
+  border-radius: 30px;
+  border-style: solid;
+  box-shadow: 2px 24px 51px 12px rgba(0, 0, 0, 0.58);
+  position: sticky;
+}
+
+.sprite-logo {
+  height: 140px;
+  text-align: center;
+  position: relative;
+  margin-top: -30px;
+}
+
+.welctxt {
+  margin-top: -20px;
+  color: #4a7d62;
+  font-weight: bold;
+  font-style: italic;
+  font-family: sans-serif, Georgia;
+}
+
+.form-control {
+  border-radius: 5px;
+  position: sticky;
+  height: 35px;
+  width: 90%;
+  display: block;
+  text-align: left;
+}
+
+input[type="text"], input[type="password"] {
+  width: 90%;
+  margin: 0;
+  padding: 5px 10px;
+  background: 0;
+  border: 0;
+  border-bottom: 1px solid #17100A;
+  outline: 0;
+  font-style: italic;
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 1px;
+  margin-bottom: 5px;
+  color: #000000;
+  outline: 0;
+}
+
+.btn {
+  position: static;
+  text-align: center;
+}
+
+.btn-sm {
+  padding: 5px;
+  width: 80%;
+  font-size: 12px;
+  line-height: 1.7;
+  border-radius: 4px;
+}
+
+.btn-success {
+  color: #FFFFFF;
+  font-size: 14px;
+  font-weight: bold;
+  background-color: #4a7d62;
+  border-color: #0000;
+  text-align: center;
+}
+
+.checkbox {
+  margin-top: 0;
+  padding-left: 5%;
+}
+
+.lvl1 {
+  display: inline;
+  text-align: center;
+  padding-right: -5%;
+}
+
+.adminalign {
+  text-align: center;
+  position: relative;
+  right: 20%;
+}

@@ -1,0 +1,67 @@
+{% block content %} {% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'login/css/stylesheets.css' %}" />
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Patient Portal Login</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!--<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">-->
+  <!--<link href="//netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">-->
+  <link href="../vendor/bootstrap/fonts">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+</head>
+
+<body>
+
+  <!-- The following code is for the login container-->
+  <div class="login-container">
+    <div class="row">
+      <div class="col-md-offset-5 col-md-3">
+        <div align="center" class="login-content">
+          <img src="https://www.burke.org/prod/logo-news-placeholder-2017.png" class="sprite-logo">
+          <p text-align="center" class="welctxt">Welcome to our Patient Portal</p>
+          <form method="post" action="{% url 'login' %}">
+            {% csrf_token %}
+            <div class="input-group">
+              <div>
+                <td>{{ form.username.label_tag }}</td>
+                <td required class="form-control input-sm chat-input">{{ form.username }}</td>
+              </div>
+              <div>
+                <td>{{ form.password.label_tag }}</td>
+                <td required id="userPassword" class="form-control input-sm chat-input">{{ form.password }}</td>
+              </div>
+              <input type="submit" value="Sign In" class="btn btn-success btn-sm" />
+          </form>
+
+          <br>
+          <div class="wrapper">
+            {% if form.errors %}
+            <p>Your username and password didn't match. Please try again.</p>
+            {% endif %} {% if next %} {% if user.is_authenticated %}
+            <p>Your account doesn't have access to this page. To proceed, please login with an account that has access.</p>
+            {% else %}
+            <p>Please login to see this page.</p>
+            {% endif %} {% endif %}
+            <a href="patient/patientDashboard.html" class="btn">
+            <br></br>
+            <!-- This is for the remember/forgot me portion -->
+            <div class="remember-forgot align col-md-6">
+              <div class="lvl1 col-md-6 forgot-pass-content" border-width="113px">
+                <a href="#" class="forgot-pass ">Forgot Password?</a>
+            </form>
+          </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="{% static 'login/javascript/main.js' %}"></script>
+</body>
+
+</html>
+
+{% endblock %}
