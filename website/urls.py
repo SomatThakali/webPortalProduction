@@ -1,15 +1,13 @@
 from django.contrib import admin
-from django.urls import path
+from django.urls import include, path
 from django.conf import settings
 from django.conf.urls.static import static
-from patientPortal.views import Signup
-from patientPortal.views import information
-from patientPortal.views import myprogress
+#from patientPortal.views import Signup
+#from patientPortal.views import information
+#from patientPortal.views import myprogress
 
 urlpatterns = [
-    path('Signup/', Signup),
-    path('myprogress/', myprogress),
-    path('information/', information),
+    path('portal/', include('patientPortal.urls')),
     path('admin/', admin.site.urls),
 ]
 
