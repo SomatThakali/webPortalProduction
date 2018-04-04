@@ -4,10 +4,6 @@ from. forms import informationForm
 # Create your views here.
 
 
-def login(request):
-    return render(request, 'patientPortal/login.html')
-
-
 def information(request):
     form = informationForm(request.POST or None)
     if form. is_valid():

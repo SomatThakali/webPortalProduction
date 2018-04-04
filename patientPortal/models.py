@@ -3,14 +3,6 @@ from django.db import models
 
 # Create your models here.
 
-
-class login(models.Model):
-    user_ID = models.CharField(max_length=15, null=True, blank=True)
-    password = models.CharField(max_length=15, null=True, blank=True)
-    def __unicode__(self):
-        return str(self.email)
-
-
 class information(models.Model):
     first_name = models.CharField(max_length=15)
     middle_name = models.CharField(max_length=15)
