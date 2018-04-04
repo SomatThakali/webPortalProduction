@@ -1,20 +1,21 @@
+{% block content %} {% load static %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <title>My Attendance</title>
     <!-- CSS Files -->
-    <link href="../../vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
     <!--  Color Calls -->
-    <link href="../../css/colors/background.css" rel="stylesheet">
-    <link href="../../css/colors/text.css" rel="stylesheet">
+    <link href="{% static 'css/colors/background.css' %}" rel="stylesheet">
+    <link href="{% static 'css/colors/text.css' %}"  rel="stylesheet">
 
     <!-- Formatting Calls -->
-    <link href="../../css/formatting/div-paddings.css" rel="stylesheet">
-    <link href="../../css/formatting/div-designs.css" rel="stylesheet">
-    <link href="../../css/formatting/text-indenting.css" rel="stylesheet">
+    <link href="{% static 'css/formatting/div-paddings.css' %}" rel="stylesheet">
+    <link href="{% static 'css/formatting/div-designs.css' %}" rel="stylesheet">
+    <link href="{% static 'css/formatting/text-indenting.css' %}" rel="stylesheet">
 
     <!-- Font Calls -->
-    <link href="../../css/font/general-fonts.css" rel="stylesheet">
+    <link href="{% static 'css/font/general-fonts.css' %}" rel="stylesheet">
     <style>
       #reports {
         width: 600px;
@@ -57,17 +58,17 @@
     </div>
 
     <!-- JavaScript files -->
-    <script src="../../vendor/jquery/jquery.min.js"></script>
-    <script src="../../vendor/bootstrap/js/bootstrap.min.js"></script>
-    <script src="../../javascript/Chart.min.js"></script>
+    <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'vendor/bootstrap/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'javascript/Chart.min.js' %}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.5/angular.js"></script>
     <script defer src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script>
-    <script src="../../javascript/app.js"></script>
-    <script src="../../javascript/directives/logOutBar.js"></script>
+    <script src="{% static 'javascript/app.js' %}"></script>
+    <script src="{% static 'javascript/directives/logOutBar.js' %}"></script>
 
     <script>
       var buttonBegin = "<button type=\"button\" class=\"btn btn-primary reportButton\">",
-          img = "<img align=\"left\" src=\"..\/..\/images\/foldersImg.png\" alt=\"folders\"><div class=\"reportButtonText\"><h4>Week #",
+          img = "<img align=\"left\" src=\"{% static 'images/foldersImg.png' %}\" alt=\"folders\"><div class=\"reportButtonText\"><h4>Week #",
           endh4 = "<\/h4>",
           buttonEnd = "</div><\/button>";
       var attendanceChart = document.getElementById("attendanceChart"),
@@ -127,3 +128,4 @@
     </script>
   </body>
 </html>
+{% endblock %}

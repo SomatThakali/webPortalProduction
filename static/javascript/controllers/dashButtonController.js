@@ -6,7 +6,7 @@ app.controller('dashButtonController', function($scope){
     backgroundClass: "primary-background",
     borderClass : "primary-border",
     icon : "fa-calendar-alt fa-5x",
-    link : "patientcalendar"
+    link : "patient/patientcalendar"
   };
   $scope.prog={
     ref : "prog",
@@ -15,7 +15,7 @@ app.controller('dashButtonController', function($scope){
     backgroundClass: "secondary-background",
     borderClass : "secondary-border",
     icon : "fa-thumbs-up fa-5x",
-    link : "myprogress"
+    link : "patient/myprogress"
   };
   $scope.info={
     ref : "info",
@@ -24,7 +24,7 @@ app.controller('dashButtonController', function($scope){
     backgroundClass: "tertiary-background",
     borderClass : "tertiary-border",
     icon : "fa-user fa-5x",
-    link : "information"
+    link : "patient/information"
   };
   $scope.exer={
     ref : "exer",
@@ -33,6 +33,6 @@ app.controller('dashButtonController', function($scope){
     backgroundClass: "quaternary-background",
     borderClass : "quaternary-border",
     icon : "fa-list-alt fa-5x",
-    link : "exercise"
+    link : "patient/exercise"
   };
 })
