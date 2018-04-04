@@ -4,6 +4,7 @@ from . import views
 
 urlpatterns = [
     path('',include('django.contrib.auth.urls')),
-    path('patient/information',views.information),
-    path('patient/myprogress',views.myprogress),
+    path('information',views.information),
+    path('myprogress',views.myprogress),
+    path('',views.patientDashboard),
 ]
