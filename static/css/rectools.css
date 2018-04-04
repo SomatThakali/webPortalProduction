@@ -1,0 +1,118 @@
+body {
+  font-family: 'Open Sans', sans-serif;
+}
+
+div.encap {
+  display: table;
+  width: 80vw;
+  height: 40vw;
+  margin: auto auto;
+  border: 1px solid #ccc;
+  background-color: #FFFAFA;
+}
+
+@media only screen and (max-width: 900px) {
+  .column {
+    display: block;
+    width: 100%;
+  }
+}
+
+/* ----- Panels ----- */
+
+.panel {
+  width: auto;
+}
+
+/* ------ Containers ------ */
+
+.container {
+  float: right;
+  position: sticky;
+  width: 50%;
+}
+
+.container-left {
+  width: 50%;
+  float: left;
+  padding: 8px 0 0 4px;
+}
+
+/* ------ Table ------ */
+
+.table {
+  margin-bottom: 0px;
+  width: auto;
+}
+
+.table-filter {
+  background-color: #fff;
+  border-bottom: 1px solid #eee;
+  font-size: 14px;
+}
+
+table.table, table.table-filter {
+  height: 32vw;
+}
+
+/* ------ Responsive CSS ------ */
+
+.table-filter tbody tr:hover {
+  cursor: pointer;
+  background-color: #eee;
+}
+
+.panel .btn-group .btn {
+  transition: background-color .3s ease;
+}
+
+.panel .btn-group {
+  margin: 15px 0 30px;
+  overflow: scroll;
+}
+
+/* ---- Other ---- */
+
+tr.abc:nth-child(odd) {
+  background-color: #ddd;
+}
+
+th.xyz {
+  padding-right: 0px;
+  width: 75%;
+}
+
+input[type=checkbox] {
+  margin: 4px 2px 0 0;
+}
+
+.dropdown {
+  margin: 10px 0 0 15px;
+}
+
+a#t1, a#t2 {
+  background-color: #4a7d62;
+  color: #fff;
+}
+
+a:hover {
+  opacity: 0.78;
+}
+
+div.tab-content {
+  background-color: #E1E6DF;
+  width: 35vw;
+  height: 300px;
+  border-radius: 0 4px 4px 4px;
+  box-shadow: 8px 20px 43px -17px;
+  overflow: auto;
+}
+
+.panel-body {
+  box-shadow: 8px 20px 43px -17px;
+}
+
+li a:focus {
+  color: #fff;
+  background-color: #fff;
+}

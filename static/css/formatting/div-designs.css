@@ -1,0 +1,29 @@
+.primary-border{
+    border: 1px solid #4a7d62 !important;
+}
+.secondary-border{
+    border: 1px solid #bd5939 !important;
+}
+.tertiary-border{
+    border: 1px solid #5c96a0 !important;
+}
+.quaternary-border{
+    border: 0;
+    border: 1px solid #dea200 !important;
+}
+.solid-bottom-border{
+  border-bottom: 1px solid black;
+}
+.panel-button{
+  opacity: .75;
+}
+.active{
+  opacity: 1 !important;
+}
+.panel-button:hover{
+  opacity: 1.0;
+  cursor: pointer;
+}
+.raise:hover{
+    box-shadow: 10px 10px 20px grey;
+}
