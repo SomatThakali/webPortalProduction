@@ -18,3 +18,6 @@ def information(request):
 
 def myprogress(request):
     return render_to_response('patientPortal/myprogress.html')
+
+def patientDashboard(request):
+    return render_to_response('patientPortal/patientDashboard.html')

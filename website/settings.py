@@ -52,6 +52,8 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'website.urls'
 
+LOGIN_REDIRECT_URL = '/portal'
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -122,3 +124,4 @@ USE_TZ = True
 if DEBUG:
     MEDIA_URL = 'media/'
     STATIC_URL = '/static/'
+    STATICFILES_DIRS = [os.path.join(BASE_DIR,"static"),]

@@ -1,0 +1,66 @@
+{% block content %} {% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A web-based platform to allow management of patients for clinical and adminstrative applications. Also provides patients with a useful and reliable tool to gain access to medical records.">
+  <meta name="author" content="BME Senior Design Teams:  Kevin Call, Teddy Colon, Revital Schechter, Aimee Tavarez, Jesus Mendez">
+
+  <title>Patient Portal</title>
+
+  <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+  <link href="{% static 'vendor/dist/css/sb-admin-2.css' %}" rel="stylesheet">
+
+  <!--  Color Calls -->
+  <link href="{% static 'css/colors/background.css' %}" rel="stylesheet">
+  <link href="{% static 'css/colors/text.css' %}" rel="stylesheet">
+
+  <!-- Formatting Calls -->
+  <link href="{% static 'css/formatting/div-paddings.css' %}" rel="stylesheet">
+  <link href="{% static 'css/formatting/div-designs.css' %}" rel="stylesheet">
+  <link href="{% static 'css/formatting/text-indenting.css' %}" rel="stylesheet">
+
+  <!-- Font Calls -->
+  <link href="{% static 'css/font/general-fonts.css' %}" rel="stylesheet">
+
+</head>
+
+<body ng-app="patientPortal" class="snow-background">
+  <log-out-bar></log-out-bar>
+  <div class="responsive-vertical-cushion">
+    <div class="row container-fluid">
+      <div class="col-sm-12">
+        <h1 class="page-header">Patient Dashboard</h1>
+        <h2 class="responsive-margin-left responsive-margin-bottom">Welcome Back <span class="primary">John Doe</span>!</h2>
+      </div>
+    </div>
+    <div  ng-controller="dashButtonController">
+      <div class="row container-fluid">
+
+        <div class="col-sm-12">
+          <dash-button ref="cal"></dash-button>
+          <dash-button ref="prog"></dash-button>
+        </div>
+      </div>
+      <div class="row container-fluid">
+        <div class="col-sm-12">
+          <dash-button ref="info"></dash-button>
+          <dash-button ref="exer"></dash-button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.5/angular.js"></script>
+  <script defer src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script>
+
+  <script src="{% static 'javascript/app.js' %}"></script>
+  <script src="{% static 'javascript/directives/dashButton.js' %}"></script>
+  <script src="{% static 'javascript/controllers/dashButtonController.js' %}"></script>
+  <script src="{% static 'javascript/directives/logOutBar.js' %}"></script>
+
+</body>
+
+</html>
+{% endblock %}

@@ -4,6 +4,6 @@ app.directive('dashButton',function(){
     scope: {
       ref: '=ref'
     },
-    templateUrl: '../../javascript/directives/dashButton.html'
+    templateUrl: '/static/javascript/directives/dashButton.html'
   };
 });
