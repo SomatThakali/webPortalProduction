@@ -1,9 +1,9 @@
 from django import forms
 
-from .models import information
+from .models import MyPersonalInformation
 
 
-class informationForm(forms.ModelForm):
+class MyPersonalInformationForm(forms.ModelForm):
     class Meta:
-        model = information
+        model = MyPersonalInformation
         fields = '__all__'
