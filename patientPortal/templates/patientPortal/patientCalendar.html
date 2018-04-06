@@ -1,0 +1,246 @@
+{% block content %} {% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>My Appointments</title>
+    <!-- CSS Files -->
+    <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/clndr.css' %}" type="text/css" />
+
+    <!--  Color Calls -->
+    <link href="{% static 'css/colors/background.css' %}" rel="stylesheet">
+    <link href="{% static 'css/colors/text.css' %}" rel="stylesheet">
+
+    <!-- Formatting Calls -->
+    <link href="{% static 'css/formatting/div-paddings.css' %}" rel="stylesheet">
+    <link href="{% static 'css/formatting/div-designs.css' %}" rel="stylesheet">
+    <link href="{% static 'css/formatting/text-indenting.css' %}" rel="stylesheet">
+
+    <!-- Font Calls -->
+    <link href="{% static 'css/font/general-fonts.css' %}" rel="stylesheet">
+    <style>
+      #nextAppointmentDetails{
+        text-align: center;
+      }
+
+      .modal-header{
+        text-align: center;
+      }
+
+      .modal-body{
+        text-align: center;
+      }
+    </style>
+  </head>
+
+  <body ng-app="patientPortal">
+    <log-out-bar></log-out-bar>
+    <!-- Popup window -->
+
+    <div id="appointmentModal" class="modal" tabindex="-1" role="dialog">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3 class="modal-title">Future Appointment Information</h3>
+          </div>
+          <div class="modal-body">
+            <h4 id="futureApptDate"></h4>
+            <h4 id="futureApptTime"></h4>
+            <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel Appointment</button>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary">Reschedule</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col col-lg-12 col-md-12">
+        <div id="nextAppointmentDetails">
+          <h1>Next appointment:</h1>
+          <h3 id="nextAppointmentDate"></h3>
+          <h3 id="nextAppointmentDoctor"></h3>
+        </div>
+      </div>
+
+
+      <div class="col col-lg-1 col-md-1"></div>
+      <div class="col col-lg-10 col-md-10">
+        <div class="cal1">
+          <div class="clndr">
+            <div class="clndr-controls">
+              <div class="clndr-control-button">
+                <p class="clndr-previous-button">previous</p>
+              </div>
+              <div class="month"></div>
+              <div class="clndr-control-button rightalign">
+                <p class="clndr-next-button">next</p>
+              </div>
+            </div>
+            <table class="clndr-table">
+              <thead>
+                <tr class="header-days">
+                  <td class="header-day">SUN</td>
+                  <td class="header-day">MON</td>
+                  <td class="header-day">TUE</td>
+                  <td class="header-day">WED</td>
+                  <td class="header-day">THU</td>
+                  <td class="header-day">FRI</td>
+                  <td class="header-day">SAT</td>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="day past adjacent-month last-month calendar-day-2015-04-26"><div class="day-contents">26</div></td>
+                  <td class="day past adjacent-month last-month calendar-day-2015-04-27"><div class="day-contents">27</div></td>
+                  <td class="day past adjacent-month last-month calendar-day-2015-04-28"><div class="day-contents">28</div></td>
+                  <td class="day past adjacent-month last-month calendar-day-2015-04-29"><div class="day-contents">29</div></td>
+                  <td class="day past adjacent-month last-month calendar-day-2015-04-30"><div class="day-contents">30</div></td>
+                  <td class="day past calendar-day-2015-05-01"><div class="day-contents">1</div></td>
+                  <td class="day past calendar-day-2015-05-02"><div class="day-contents">2</div></td>
+                </tr>
+                <tr>
+                  <td class="day past calendar-day-2015-05-03"><div class="day-contents">3</div></td>
+                  <td class="day past calendar-day-2015-05-04"><div class="day-contents">4</div></td>
+                  <td class="day past calendar-day-2015-05-05"><div class="day-contents">5</div></td>
+                  <td class="day past calendar-day-2015-05-06"><div class="day-contents">6</div></td>
+                  <td class="day past calendar-day-2015-05-07"><div class="day-contents">7</div></td>
+                  <td class="day past calendar-day-2015-05-08"><div class="day-contents">8</div></td>
+                  <td class="day past calendar-day-2015-05-09"><div class="day-contents">9</div></td>
+                </tr>
+                <tr>
+                  <td class="day past calendar-day-2015-05-10"><div class="day-contents">10</div></td>
+                  <td class="day past calendar-day-2015-05-11"><div class="day-contents">11</div></td>
+                  <td class="day past calendar-day-2015-05-12"><div class="day-contents">12</div></td>
+                  <td class="day past calendar-day-2015-05-13"><div class="day-contents">13</div></td>
+                  <td class="day calendar-day-2015-05-14"><div class="day-contents">14</div></td>
+                  <td class="day calendar-day-2015-05-15"><div class="day-contents">15</div></td>
+                  <td class="day calendar-day-2015-05-16"><div class="day-contents">16</div></td>
+                </tr>
+                <tr>
+                  <td class="day calendar-day-2015-05-17"><div class="day-contents">17</div></td>
+                  <td class="day calendar-day-2015-05-18"><div class="day-contents">18</div></td>
+                  <td class="day calendar-day-2015-05-19"><div class="day-contents">19</div></td>
+                  <td class="day calendar-day-2015-05-20"><div class="day-contents">20</div></td>
+                  <td class="day calendar-day-2015-05-21"><div class="day-contents">21</div></td>
+                  <td class="day calendar-day-2015-05-22"><div class="day-contents">22</div></td>
+                  <td class="day calendar-day-2015-05-23"><div class="day-contents">23</div></td>
+                </tr>
+                <tr>
+                  <td class="day calendar-day-2015-05-24"><div class="day-contents">24</div></td>
+                  <td class="day calendar-day-2015-05-25"><div class="day-contents">25</div></td>
+                  <td class="day calendar-day-2015-05-26"><div class="day-contents">26</div></td>
+                  <td class="day calendar-day-2015-05-27"><div class="day-contents">27</div></td>
+                  <td class="day calendar-day-2015-05-28"><div class="day-contents">28</div></td>
+                  <td class="day calendar-day-2015-05-29"><div class="day-contents">29</div></td>
+                  <td class="day calendar-day-2015-05-30"><div class="day-contents">30</div></td>
+                </tr>
+                <tr>
+                  <td class="day calendar-day-2015-05-31"><div class="day-contents">31</div></td>
+                  <td class="day adjacent-month next-month calendar-day-2015-06-01"><div class="day-contents">1</div></td>
+                  <td class="day adjacent-month next-month calendar-day-2015-06-02"><div class="day-contents">2</div></td>
+                  <td class="day adjacent-month next-month calendar-day-2015-06-03"><div class="day-contents">3</div></td>
+                  <td class="day adjacent-month next-month calendar-day-2015-06-04"><div class="day-contents">4</div></td>
+                  <td class="day adjacent-month next-month calendar-day-2015-06-05"><div class="day-contents">5</div></td>
+                  <td class="day adjacent-month next-month calendar-day-2015-06-06"><div class="day-contents">6</div></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="col col-lg-1 col-md-1"></div>
+    </div>
+    <!-- JavaScript files -->
+    <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'vendor/bootstrap/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'javascript/clndr.js' %}"></script>
+    <script src="{% static 'javascript/moment-2.2.1.js' %}"></script>
+    <script src="{% static 'javascript/underscore-min.js' %}"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.5/angular.js"></script>
+    <script defer src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script>
+
+    <script src="{% static 'javascript/app.js' %}"></script>
+    <script src="{% static 'javascript/directives/logOutBar.js' %}"></script>
+
+    <script>
+    var calendar = {};
+
+    $(document).ready( function() {
+      var nextAppointmentDate = document.getElementById("nextAppointmentDate"),
+          nextAppointmentDoctor = document.getElementById("nextAppointmentDoctor"),
+          futureApptDate = document.getElementById("futureApptDate"),
+          futureApptTime = document.getElementById("futureApptTime");
+
+      //Call service to get calendar data and next appointment details
+      var nextApptDate = 'Feb 20th, 2018 @ 2:00pm',
+          nextApptDoctor = 'Dr. Edwards';
+
+      //Set next appointment info
+      nextAppointmentDate.textContent += nextApptDate;
+      nextAppointmentDoctor.textContent += nextApptDoctor;
+
+      //Get data from service
+      var futureApptDates = [
+        { date: '2018-02-25', time: '2:00pm'},
+        { date: '2018-02-27', time: '3:00pm'}
+      ];
+
+      futureApptTimesObj = {};
+      futureApptDates.forEach(function(appt){
+        futureApptTimesObj[appt.date] = appt.time;
+      });
+
+      calendar = $('.cal1').clndr({
+        events: futureApptDates,
+        // constraints: {
+        //   startDate: '2013-11-01',
+        //   endDate: '2013-11-15'
+        // },
+        clickEvents: {
+          click: function(target) {
+            if($(target.element).hasClass('event')) {
+              var day = $(target.element)[0].className.split(' ')[3];
+              var time = futureApptTimesObj[day];
+              $('#appointmentModal').modal('show');
+
+              //Set future appointment info
+              futureApptDate.textContent = 'Date: ' + day;
+              futureApptTime.textContent = 'Time: ' + time;
+            }
+          }
+          // ,
+          // nextMonth: function() {
+          // },
+          // previousMonth: function() {
+          // },
+          // onMonthChange: function() {
+          // }
+        },
+        multiDayEvents: {
+          startDate: 'startDate',
+          endDate: 'endDate'
+        },
+        showAdjacentMonths: true,
+        adjacentDaysChangeMonth: false
+      });
+
+      // bind both clndrs to the left and right arrow keys
+      $(document).keydown( function(e) {
+        if(e.keyCode == 37) {
+          // left arrow
+          calendar.clndr1.back();
+        }
+        if(e.keyCode == 39) {
+          // right arrow
+          calendar.clndr1.forward();
+        }
+      });
+
+    });
+    </script>
+  </body>
+</html>
+{% endblock %}

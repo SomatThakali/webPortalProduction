@@ -1,0 +1,42 @@
+{% block content %} {% load static %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'vendor/dist/css/sb-admin-2.css' %}" rel="stylesheet">
+
+    <!--  Color Calls -->
+    <link href="{% static 'css/colors/background.css' %}" rel="stylesheet">
+    <link href="{% static 'css/colors/text.css' %}" rel="stylesheet">
+
+    <!-- Formatting Calls -->
+    <link href="{% static 'css/formatting/div-paddings.css' %} " rel="stylesheet">
+    <link href="{% static 'css/formatting/div-designs.css' %}" rel="stylesheet">
+    <link href="{% static 'css/formatting/text-indenting.css' %}" rel="stylesheet">
+
+    <!-- Font Calls -->
+    <link href="{% static 'css/font/general-fonts.css' %}" rel="stylesheet">
+  </head>
+  <body class="snow-background" ng-app="patientPortal">
+    <log-out-bar></log-out-bar>
+    <div class="responsive-vertical-cushion">
+    <h2 class="page-header">Home Exercises</h2>
+    <h3> Here are some exercises for you to try at home!</h3>
+    <div ng-controller="exerciseController">
+      <div class="container">
+        <div ng-repeat="exercise in exercises">
+          <exercise-listing info="exercise"></exercise-listing>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.5/angular.js"></script>
+  <script defer src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script>
+  <script src="{% static 'javascript/app.js' %}"></script>
+  <script src="{% static 'javascript/directives/exerciseListing.js' %}"></script>
+  <script src="{% static 'javascript/controllers/exerciseController.js' %}"></script>
+  <script src="{% static 'javascript/directives/logOutBar.js' %}"></script>
+</body>
+</html>
+{% endblock %}

@@ -4,6 +4,6 @@ app.directive('exerciseListing', function(){
     scope: {
       info: '='
     },
-    templateUrl: '../../javascript/directives/exerciseListing.html'
+    templateUrl: '/static/javascript/directives/exerciseListing.html'
   }
 })

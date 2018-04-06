@@ -18,3 +18,9 @@ def myprogress(request):
 
 def patientDashboard(request):
     return render_to_response('patientPortal/patientDashboard.html')
+
+def exercise(request):
+    return render_to_response('patientPortal/exercise.html')
+
+def patientCalendar(request):
+    return render_to_response('patientPortal/patientCalendar.html')
