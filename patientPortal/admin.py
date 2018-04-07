@@ -1,41 +1,46 @@
 from django.contrib import admin
 
 # Register your models here.
+from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
+from django.contrib.auth.models import User
 from .models import MyPersonalInformation
 from .models import MyContactInformation
 from .models import MyEmergencyContact
 from .models import appointment
 
 
-class MyPersonalInformationAdmin(admin.ModelAdmin):
-    class Meta:
-        model = MyPersonalInformation
+class MyPersonalInformationInline(admin.StackedInline):
+    model = MyPersonalInformation
+    can_delete = False
+    verbose_name_plural = 'Profile'
+# Define a new User admin
 
 
-admin.site.register(MyPersonalInformation, MyPersonalInformationAdmin)
+class UserAdmin(BaseUserAdmin):
+    inlines = (MyPersonalInformationInline,)
+
+
+# Re-register UserAdmin
+admin.site.unregister(User)
+admin.site.register(User, UserAdmin)
 
 
 class MyContactInformationAdmin(admin.ModelAdmin):
-
-    class Meta:
-
-        model = MyContactInformation
+    model = MyContactInformation
 
 
 admin.site.register(MyContactInformation, MyContactInformationAdmin)
 
 
 class MyEmergencyContactAdmin(admin.ModelAdmin):
-    class Meta:
-        model = MyEmergencyContact
+    model = MyEmergencyContact
 
 
 admin.site.register(MyEmergencyContact, MyEmergencyContactAdmin)
 
 
 class appointmentAdmin(admin.ModelAdmin):
-    class Meta:
-        model = appointment
+    model = appointment
 
 
 admin.site.register(appointment, appointmentAdmin)

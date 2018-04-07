@@ -1,10 +1,14 @@
 from __future__ import unicode_literals
 from django.db import models
 from datetime import date, datetime
+from django.contrib.auth.models import User
+from django.conf import settings
+from django.db.models.signals import post_save
 
 
 # Create your models here.
 class MyPersonalInformation(models.Model):
+    user = models.OneToOneField(User,  on_delete=models.CASCADE)
     first_name = models.CharField(max_length=15)
     middle_name = models.CharField(max_length=15, blank=True)
     last_name = models.CharField(max_length=15)
@@ -25,11 +29,18 @@ class MyPersonalInformation(models.Model):
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES)
 
     def __str__(self):
-        return self.first_name
+        return self.user.username
+
+
+def post_save_receiver(sender, instance, created, **kwargs):
+    pass
+
+
+post_save.connect(post_save_receiver, sender=settings.AUTH_USER_MODEL)
 
 
 class MyContactInformation(models.Model):
-    myPersonal = models.ForeignKey(MyPersonalInformation,
+    myPersonal = models.ForeignKey(MyPersonalInformation, null=True,
                                    on_delete=models.CASCADE,)
     phone_Number = models.CharField(max_length=20)
     street_address = models.CharField(max_length=30)
@@ -39,11 +50,11 @@ class MyContactInformation(models.Model):
 
 
 def __unicode__(self):
-    return self.myPersonal
+    return self.user.username
 
 
 class MyEmergencyContact(models.Model):
-    myPersonalInformation = models.ForeignKey(MyPersonalInformation,
+    myPersonalInformation = models.ForeignKey(MyPersonalInformation, null=True,
                                               on_delete=models.CASCADE,)
     first_name = models.CharField(max_length=15)
     middle_name = models.CharField(max_length=15, blank=True)
