@@ -9,6 +9,8 @@ from django.shortcuts import redirect
 
 
 def MyPersonalInformation(request):
+    if not request.user.is_authenticated:
+        return redirect('/portal/login')
     form = MyPersonalInformationForm(request.POST or None)
     if form. is_valid():
         save_it = form.save(commit=False)
