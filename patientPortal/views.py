@@ -46,7 +46,7 @@ def exercise(request):
     if is_patient(request.user):
         return render_to_response('patientPortal/exercise.html')
     else:
-        return redirect('portal/therapist')
+        return redirect('/portal/therapist')
 
 def patientCalendar(request):
     if not request.user.is_authenticated:
@@ -54,7 +54,7 @@ def patientCalendar(request):
     if is_patient(request.user):
         return render_to_response('patientPortal/patientCalendar.html')
     else:
-        return redirect('portal/therapist')
+        return redirect('/portal/therapist')
 
 # THERAPIST VIEWS #
 def therapistDashboard(request):
@@ -63,7 +63,7 @@ def therapistDashboard(request):
     if is_therapist(request.user):
         return render_to_response('patientPortal/therapistDashboard.html')
     else:
-        return redirect('portal/patient')
+        return redirect('/portal/patient')
 
 def therapistCalendar(request):
     if not request.user.is_authenticated:
@@ -71,7 +71,7 @@ def therapistCalendar(request):
     if is_therapist(request.user):
         return render_to_response('patientPortal/therapistCalendar.html')
     else:
-        return redirect('portal/patient')
+        return redirect('/portal/patient')
 
 def database(request):
     if not request.user.is_authenticated:
@@ -79,7 +79,7 @@ def database(request):
     if is_therapist(request.user):
         return render_to_response('patientPortal/database.html')
     else:
-        return redirect('portal/patient')
+        return redirect('/portal/patient')
 
 def recruitment(request):
     if not request.user.is_authenticated:
@@ -87,7 +87,7 @@ def recruitment(request):
     if is_therapist(request.user):
         return render_to_response('patientPortal/recruitment.html')
     else:
-        return redirect('portal/patient')
+        return redirect('/portal/patient')
 
 def forms(request):
     if not request.user.is_authenticated:
@@ -95,7 +95,7 @@ def forms(request):
     if is_therapist(request.user):
         return render_to_response('patientPortal/forms.html')
     else:
-        return redirect('portal/patient')
+        return redirect('/portal/patient')
 
 def settings(request):
     if not request.user.is_authenticated:
@@ -103,7 +103,7 @@ def settings(request):
     if is_therapist(request.user):
         return render_to_response('patientPortal/settings.html')
     else:
-        return redirect('portal/patient')
+        return redirect('/portal/patient')
 
 # FIXME must redirect to the appropriate dashboard
 def dispatch(request):
