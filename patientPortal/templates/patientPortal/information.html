@@ -47,11 +47,8 @@
       <div id="personal-tab" style="border-top-left-radius: 15px; min-height:58px;" class="active tab col-xs-3 panel-button tertiary-background no-margin">
         <h6>Personal Info</h6>
       </div>
-      <div id="contact-tab" style="min-height:58px;" class="tab col-xs-3 panel-button tertiary-background no-margin">
+      <div id="contact-tab" style="min-height:58px; border-top-right-radius: 15px" class="tab col-xs-3 panel-button tertiary-background no-margin">
         <h6>Contact Info</h6>
-      </div>
-      <div id="emergency-tab" style="border-top-right-radius: 15px; min-height:58px;" class="tab col-xs-3 panel-button tertiary-background no-margin">
-        <h6>Emergency Contact</h6>
       </div>
     </div>
 
@@ -61,7 +58,7 @@
       <div class="responsive-cushion">
         <form class="no-margin form-horizontal" role="form">
           <div>
-            <h2 class="text-center responsive-margin-bottom-2x pretty-underline">My Personal Information</h2>
+            <h2 class="text-center responsive-margin-bottom pretty-underline">My Personal Information</h2>
           </div>
           <div class="show form-group">
             <label for="firstName" class="col-sm-3 control-label">First Name</label>
@@ -82,42 +79,21 @@
             </div>
           </div>
           <div class="form-group">
-            <label class="control-label col-sm-3">Gender</label>
-            <div class="col-sm-6">
-              <div class="row">
-                <div class="col-sm-4">
-                  <label class="radio-inline">
-              <input type="radio" name = "gender">Female
-            </label>
-                </div>
-                <div class="col-sm-4">
-                  <label class="radio-inline">
-              <input type="radio" name = "gender">Male
-            </label>
-                </div>
-              </div>
+            <label for="dob" class="col-sm-3 control-label">Date of Birth</label>
+            <div class="col-sm-9">
+              <input type="date" id="dob" class="form-control">
             </div>
           </div>
-          <!-- /.form-group -->
-
           <div class="form-group">
-            <label for="birthDate" class="col-sm-3 control-label">Date of Birth</label>
+            <label for="emergencycontact" class="col-sm-3 control-label">Emergency Contact Name</label>
             <div class="col-sm-9">
-              <input type="date" id="birthDate" class="form-control">
+              <input type="text" id="emergencycontact" class="form-control">
             </div>
           </div>
-
           <div class="form-group">
-            <label for="race" class="col-sm-3 control-label">Race</label>
+            <label for="emergencycontactnum" class="col-sm-3 control-label">Emergency Contact Phone</label>
             <div class="col-sm-9">
-              <select id="race" class="form-control">
-          <option>African American</option>
-          <option>American Indian</option>
-          <option>Asian</option>
-          <option>Hispanic</option>
-          <option>White</option>
-          <option>Other</option>
-        </select>
+              <input type="tel" id="amergencycontactnum" class="form-control">
             </div>
           </div>
       </div>
@@ -138,37 +114,29 @@
         <form class="form-horizontal" role="form">
           <h2 class="text-center responsive-margin-bottom-2x pretty-underline">My Contact Information</h2>
           <div class="form-group">
-            <label for="phoneNumber" class="col-sm-3 control-label">Phone Number</label>
+            <label for="contactphone" class="col-sm-3 control-label">Phone Number</label>
             <div class="col-sm-9">
-              <input type="number" id="phoneNumber" placeholder="xxx-xxx-xxxx" class="form-control" autofocus>
+              <input type="tel" id="contactphone" class="form-control">
             </div>
           </div>
           <div class="form-group">
-            <label for="Address" class="col-sm-3 control-label">Street Address</label>
+            <label for="adline1" class="col-sm-3 control-label">Address Line 1</label>
             <div class="col-sm-9">
-              <input type="text" id="Address" placeholder="20 W Broadway Ave" class="form-control" autofocus>
+              <input type="text" id="adline1" class="form-control">
             </div>
           </div>
           <div class="form-group">
-            <label for="City" class="col-sm-3 control-label">City</label>
+            <label for="adline2" class="col-sm-3 control-label">Address Line 2</label>
             <div class="col-sm-9">
-              <input type="text" id="City" placeholder="Bronx" class="form-control" autofocus>
+              <input type="text" id="adline2" class="form-control">
             </div>
           </div>
           <div class="form-group">
-            <label for="State" class="col-sm-3 control-label">State</label>
+            <label for="email" class="col-sm-3 control-label">Email</label>
             <div class="col-sm-9">
-              <input type="text" id="State" placeholder="NY" class="form-control" autofocus>
+              <input type="email" id="email" class="form-control">
             </div>
           </div>
-          <div class="form-group">
-            <label for="ZipCode" class="col-sm-3 control-label">Zip Code</label>
-            <div class="col-sm-9">
-              <input type="number" id="ZipCode" placeholder="10029" class="form-control" autofocus>
-            </div>
-          </div>
-
-
       </div>
       <div class="form-group">
         <div class="full-width">
@@ -177,113 +145,6 @@
       </div>
       </form>
     </div>
-    <!-- END OF SECOND SECTION -->
-
-
-
-    <!-- START OF THIRD SECTION -->
-    <div id="emergency-form" style="border-radius: 15px; border-top-left-radius: 0" class="no-bottom-cushion tertiary-background hide">
-            <div class="responsive-cushion">
-      <form class="form-horizontal" role="form">
-        <div>
-          <h2 class="text-center responsive-margin-bottom pretty-underline">My Emergency Contact</h2></div>
-        <div class="form-group">
-          <label for="ECfirstName" class="col-sm-3 control-label">First Name</label>
-          <div class="col-sm-9">
-            <input type="text" id="ECfirstName" placeholder="First Name" class="form-control" autofocus>
-          </div>
-        </div>
-        <div class="form-group">
-          <label for="ECmiddleName" class="col-sm-3 control-label">Middle Name</label>
-          <div class="col-sm-9">
-            <input type="text" id="ECmiddleName" placeholder="Middle Name" class="form-control" autofocus>
-          </div>
-        </div>
-        <div class="form-group">
-          <label for="EClastName" class="col-sm-3 control-label">Last Name</label>
-          <div class="col-sm-9">
-            <input type="text" id="EClastName" placeholder="Last Name" class="form-control" autofocus>
-          </div>
-        </div>
-        <div class="form-group">
-          <label for="ECphoneNumber" class="col-sm-3 control-label">Phone Number</label>
-          <div class="col-sm-9">
-            <input type="number" id="ECphoneNumber" placeholder="xxx-xxx-xxxx" class="form-control" autofocus>
-          </div>
-        </div>
-        <div class="form-group">
-          <label for="ECAddress" class="col-sm-3 control-label">Street Address</label>
-          <div class="col-sm-9">
-            <input type="text" id="ECAddress" placeholder="20 W Broadway Ave" class="form-control" autofocus>
-          </div>
-        </div>
-        <div class="form-group">
-          <label for="ECCity" class="col-sm-3 control-label">City</label>
-          <div class="col-sm-9">
-            <input type="text" id="ECCity" placeholder="Bronx" class="form-control" autofocus>
-          </div>
-        </div>
-        <div class="form-group">
-          <label for="ECState" class="col-sm-3 control-label">State</label>
-          <div class="col-sm-9">
-            <input type="text" id="ECState" placeholder="NY" class="form-control" autofocus>
-          </div>
-        </div>
-        <div class="form-group">
-          <label for="ECZipCode" class="col-sm-3 control-label">Zip Code</label>
-          <div class="col-sm-9">
-            <input type="number" id="ECZipCode" placeholder="10029" class="form-control" autofocus>
-          </div>
-        </div>
-      </div>
-        <div class="form-group">
-          <div class="full-width">
-            <button type="submit" class="btn btn-primary btn-block">Save Changes</button>
-          </div>
-        </div>
-
-    </div>
-  </div>
-  <!-- END OF THIRD SECTION -->
-
-
-
-  <!-- WILL FIX THIS FORM LATER
-<div class="container">
-  <form class="form-horizontal" role="form">
-    <h2>My Medical Information</h2>
-    <div class="form-group">
-      <p>Please read the following document and confirm that the information is correct:<br></br>
--->
-  <!-- Trigger the modal with a button -->
-  <!--        <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#Medical">Review Information</button>
--->
-  <!-- Modal -->
-  <!--        <div class="modal fade" id="Medical" role="dialog">
-          <div class="modal-dialog">
--->
-  <!-- Modal content-->
-  <!--          <div class="modal-content">
-              <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Medical Information</h4>
-              </div>
-              <div class="modal-body">
-                <p>Medical information goes here</p>
-              </div>
-              <div>
-                <h5>I confirm that all my medical information is correct:</h5>
-                <input type="radio" name="review" value="correct"> Yes<br>
-                <input type="radio" name="review" value="incorrect"> No<br>
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-              </div>
-            </div>
-          </div>
-        </div>
-    </div>
--->
 </body>
 
 </html>
