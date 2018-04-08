@@ -32,7 +32,8 @@
                 <td>{{ form.password.label_tag }}</td>
                 <td required id="userPassword" class="form-control input-sm chat-input">{{ form.password }}</td>
               </div>
-              <input type="submit" value="Sign In" class="btn btn-success btn-sm" />
+            </div>
+            <input type="submit" value="Sign In" class="btn btn-success btn-sm" />
           </form>
 
           <br>
@@ -49,9 +50,9 @@
             <!-- This is for the remember/forgot me portion -->
             <div class="remember-forgot align col-md-6">
               <div class="lvl1 col-md-6 forgot-pass-content" border-width="113px">
-                <a href="#" class="forgot-pass ">Forgot Password?</a>
-            </form>
-          </div>
+                <a href="{% url 'password_reset' %}" class="forgot-pass ">Forgot Password?</a>
+              </div>
+            </div>
           </div>
         </div>
       </div>
