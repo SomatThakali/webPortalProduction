@@ -5,8 +5,11 @@ from django.conf import settings
 from django.shortcuts import redirect
 
 
-# Create your views here.
-
+# PATIENT VIEWS #
+def patientDashboard(request):
+    if not request.user.is_authenticated:
+        return redirect('/portal/login')
+    return render_to_response('patientPortal/patientDashboard.html')
 
 def MyPersonalInformation(request):
     if not request.user.is_authenticated:
@@ -22,11 +25,6 @@ def myprogress(request):
         return redirect('/portal/login')
     return render_to_response('patientPortal/myprogress.html')
 
-def patientDashboard(request):
-    if not request.user.is_authenticated:
-        return redirect('/portal/login')
-    return render_to_response('patientPortal/patientDashboard.html')
-
 def exercise(request):
     if not request.user.is_authenticated:
         return redirect('/portal/login')
@@ -37,6 +35,40 @@ def patientCalendar(request):
         return redirect('/portal/login')
     return render_to_response('patientPortal/patientCalendar.html')
 
+# THERAPIST VIEWS #
+def therapistDashboard(request):
+    if not request.user.is_authenticated:
+        return redirect('/portal/login')
+    return render_to_response('patientPortal/therapistDashboard.html')
+
+def therapistCalendar(request):
+    if not request.user.is_authenticated:
+        return redirect('/portal/login')
+    return render_to_response('patientPortal/therapistCalendar.html')
+
+def database(request):
+    if not request.user.is_authenticated:
+        return redirect('/portal/login')
+    return render_to_response('patientPortal/database.html')
+
+def recruitment(request):
+    if not request.user.is_authenticated:
+        return redirect('/portal/login')
+    return render_to_response('patientPortal/recruitment.html')
+
+def forms(request):
+    if not request.user.is_authenticated:
+        return redirect('/portal/login')
+    return render_to_response('patientPortal/forms.html')
+
+def settings(request):
+    if not request.user.is_authenticated:
+        return redirect('/portal/login')
+    return render_to_response('patientPortal/settings.html')
+
+
+
+# FIXME must redirect to the appropriate dashboard
 def dispatch(request):
     if not request.user.is_authenticated:
         return redirect('/portal/login')
