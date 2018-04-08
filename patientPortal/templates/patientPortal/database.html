@@ -1,0 +1,167 @@
+{% block content %} {% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Patient Databse</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+  <link href="{% static 'vendor/dist/css/sb-admin-2.css' %}" rel="stylesheet">
+
+  <!--  Color Calls -->
+  <link href="{% static 'css/colors/background.css' %}" rel="stylesheet">
+  <link href="{% static 'css/colors/text.css' %}" rel="stylesheet">
+
+  <!-- Formatting Calls -->
+  <link href="{% static 'css/formatting/div-paddings.css' %}" rel="stylesheet">
+  <link href="{% static 'css/formatting/div-designs.css' %}" rel="stylesheet">
+  <link href="{% static 'css/formatting/text-indenting.css' %}" rel="stylesheet">
+
+  <!-- Font Calls -->
+  <link href="{% static 'css/font/general-fonts.css' %}" rel="stylesheet">
+    <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+
+  <style>
+    #patients tr:nth-child(even) {
+      background-color: #bee5f4;
+    }
+
+    #patients tr:hover {
+      background-color: #ddd;
+    }
+
+    #myTable th {
+      background-color: #87CEEB
+    }
+
+    button {
+      cursor: pointer;
+    }
+  </style>
+
+</head>
+
+<body ng-app="patientPortal">
+  <ther-log-out></ther-log-out>
+  <div class="row">
+    <div class="col-sm-3" style="border-right: 0; padding: 5px 10px; padding-right: 0px; background-color: #F8F8F8;">
+      <ther-Menu></ther-Menu>
+    </div>
+    <div class="col-sm-9" style="padding-left: 10px; padding-right: 0;">
+      <div class="container">
+        <h2>Patient Database</h2>
+        <!---Search bar--->
+        <input class="form-control" id="myInput" type="text" placeholder="Search Database...">
+        <br>
+        <!---Patient table--->
+        <table id="myTable" class="table table-bordered table-striped table-responsive table-hover table-active table-condensed sortable">
+          <!--Headers--->
+          <thead>
+            <tr>
+              <th>First Name</th>
+              <th>Lastname</th>
+              <th>Stage</th>
+              <th>Next Appointment</th>
+              <th>Updates</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <!---Patient information by row--->
+          <tbody id="Patients">
+            <tr class="item">
+              <td>John</td>
+              <td>Doe</td>
+              <td>Stage 1</td>
+              <td>Tues, March 15, 2018</td>
+              <td class="update">1</td>
+              <td>
+                <a href="..\physician\profile.html" <button type="button" class="btn btn-info btn-sm">View Profile</button>
+        </a>
+              </td>
+
+            </tr>
+            <tr class="item">
+              <td>Mary</td>
+              <td>Moe</td>
+              <td>Stage 2</td>
+              <td>Fri, April 4,2018</td>
+              <td class="update">0</td>
+              <td>
+                <button type="button" class="btn btn-info btn-sm">View Profile</button>
+              </td>
+
+
+            </tr>
+            <tr>
+              <td>July</td>
+              <td>Dooley</td>
+              <td>Stage 1</td>
+              <td>Fri, April 4th,2018</td>
+              <td class="update">2</td>
+              <td>
+                <button type="button" class="btn btn-info btn-sm">View Profile</button>
+              </td>
+
+            </tr>
+            <tr>
+              <td>Anja</td>
+              <td>Ravendale</td>
+              <td>Stage 3</td>
+              <td>Thurs, April 3rd, 2018</td>
+              <td class="update">0</td>
+              <td>
+                <button type="button" class="btn btn-info btn-sm">View Profile</button>
+              </td>
+
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+
+  <!---Filter through table--->
+  <script>
+    $(document).ready(function() {
+      $("#myInput").on("keyup", function() {
+        var value = $(this).val().toLowerCase();
+        $("#Patients tr").filter(function() {
+          $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+        });
+      });
+    });
+  </script>
+
+  <!---Update value red if greater than 0-->
+  <script>
+    $(document).ready(function() {
+
+      $(".update").each(function() {
+        var el = $(this);
+        var value = parseFloat(el.text());
+        if (value > 0) {
+          el
+            .css("font-weight", "bold")
+            .css("color", "red");
+
+        } else {
+          el.css("font-weight", "normal");
+        }
+      });
+
+    });
+  </script>
+  <!---Sort table--->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.5/angular.js"></script>
+  <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
+  <script src="{% static 'javascript/app.js' %}"></script>
+  <script src="{% static 'javascript/directives/therLogOut.js' %}"></script>
+  <script src="{% static 'javascript/directives/therMenu.js' %}"></script>
+
+</body>
+
+</html>
+{% endblock %}

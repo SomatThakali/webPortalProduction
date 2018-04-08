@@ -1,0 +1,114 @@
+{% block content %} {% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A web-based platform to allow management of patients for clinical and adminstrative applications. Also provides patients with a useful and reliable tool to gain access to medical records.">
+  <meta name="author" content="BME Senior Design Teams:  Kevin Call, Teddy Colon, Revital Schechter, Aimee Tavarez, Jesus Mendez">
+  <title>Therapist Dashboard</title>
+  <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+  <link href="{% static 'vendor/dist/css/sb-admin-2.css' %}" rel="stylesheet">
+
+  <!--  Color Calls -->
+  <link href="{% static 'css/colors/background.css' %}" rel="stylesheet">
+  <link href="{% static 'css/colors/text.css' %}" rel="stylesheet">
+
+  <!-- Formatting Calls -->
+  <link href="{% static 'css/formatting/div-paddings.css' %}" rel="stylesheet">
+  <link href="{% static 'css/formatting/div-designs.css' %}" rel="stylesheet">
+  <link href="{% static 'css/formatting/text-indenting.css' %}" rel="stylesheet">
+
+  <!-- Font Calls -->
+  <link href="{% static 'css/font/general-fonts.css' %}" rel="stylesheet">
+</head>
+<style type="text/css">
+  html,
+  body {}
+</style>
+
+<style>
+  .tab {
+    display: inline-block;
+    margin: 0 -2px;
+    padding: 15px 25px;
+    background-color: rgba(231,231,231,.85);
+    border-right: 1px solid #e7e7e7;
+  }
+
+  .tab:hover {
+    background-color: rgba(220,220,220,1);
+    cursor: pointer;
+  }
+
+  .active {
+    background-color: rgba(220,220,220,1);
+  }
+
+  .display {
+    width: 100%;
+    position: absolute;
+    height: 100%;
+    top: 50px;
+    bottom: 0;
+  }
+</style>
+
+<body ng-app="patientPortal">
+  <div style="min-height:100%; height:100%;">
+    <ther-log-out></ther-log-out>
+    <div class="row">
+      <div class="col-sm-3" style="border-right: 0; padding: 5px 10px; padding-right: 0px; background-color: #F8F8F8;">
+        <ther-Menu></ther-Menu>
+      </div>
+      <div class="col-sm-9" style="padding-left: 10px; padding-right: 0;">
+        <div style="border-bottom: 1px solid #e7e7e7" class="row no-margin">
+          <div style="border-left: 1px solid #e7e7e7; border-right: 1px solid #e7e7e7; margin:0; padding: 0;" class="pull-right">
+            <div id="toDo-tab" class="active tab">
+              ToDo List
+            </div>
+            <div id="notification-tab" class="tab">
+              Notifications
+            </div>
+          </div>
+        </div>
+        <div id="toDo-form" style="padding-right: 0" class="responsive-vertical-cushion display show">
+          <h2>To-do List</h2>
+          <div ng-controller="toDoListController" style= "margin-right: 0; height:380px; width: 90%; overflow-y: auto">
+            <div>
+              <div ng-repeat="task in tasks">
+                <task info="task"></task>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="notification-form" class="responsive-vertical-cushion hide">
+          <h2>Notifications</h2>
+          <div ng-controller="notificationsController" style= "margin-right: 0; height:380px; width: 70vw; overflow-y: auto">
+            <div>
+              <div ng-repeat="notice in notices">
+                <notice info="notice"></notice>
+              </div>
+            </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.5/angular.js"></script>
+  <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
+  <script src="{% static 'javascript/app.js' %}"></script>
+  <script src="{% static 'javascript/directives/therLogOut.js' %}"></script>
+  <script src="{% static 'javascript/directives/therMenu.js' %}"></script>
+  <script src="{% static 'javascript/tabs.js' %}"></script>
+  <script src="{% static 'javascript/controllers/toDoListController.js' %}"></script>
+  <script src="{% static 'javascript/directives/task.js' %}"></script>
+  <script src="{% static 'javascript/controllers/notificationsController.js' %}"></script>
+  <script src="{% static 'javascript/directives/notice.js' %}"></script>
+
+</body>
+
+</html>
+{% endblock %}

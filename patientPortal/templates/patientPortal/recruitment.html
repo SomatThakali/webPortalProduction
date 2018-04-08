@@ -1,0 +1,370 @@
+{% block content %} {% load static %}
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head>
+  <title>Recruitment Tool</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+  <link href="{% static 'css/colors/text.css" rel="stylesheet' %}">
+  <link href="{% static 'vendor/dist/css/sb-admin-2.css' %}" rel="stylesheet">
+
+  <!-- Formatting Calls -->
+  <link href="{% static 'css/formatting/div-paddings.css' %}" rel="stylesheet">
+  <link href="{% static 'css/formatting/div-designs.css' %}" rel="stylesheet">
+  <link href="{% static 'css/formatting/text-indenting.css' %}" rel="stylesheet">
+  <!-- Font Calls -->
+  <link href="{% static 'css/font/general-fonts.css' %}" rel="stylesheet">
+  <style>
+    body {
+      background-color: #F8F8F8;
+    }
+
+    .checkAll {
+      margin: 10px 0 0 10px;
+    }
+
+
+    .panel-heading {
+      opacity: .85;
+    }
+
+    .panel-heading .accordion-toggle:after {
+      /* symbol for "opening" panels */
+      font-family: 'Glyphicons Halflings';
+      /* essential for enabling glyphicon */
+      content: "\e114";
+      /* adjust as needed, taken from bootstrap.css */
+      float: right;
+      /* adjust as needed */
+      color: black;
+      /* adjust as needed */
+    }
+
+    .panel-heading.collapsed .accordion-toggle:after {
+      /* symbol for "collapsed" panels */
+      content: "\e080";
+      /* adjust as needed, taken from bootstrap.css */
+    }
+
+    a.accordion-toggle:hover {
+      text-decoration: none;
+    }
+
+    .panel .panel-heading:hover {
+      background-color: #6DA5D4;
+      cursor: pointer;
+      opacity: .75;
+
+    }
+
+    .accord-header {
+      height: 55px;
+      background-color: #6DA5D4;
+      border-radius: 3px;
+      border: 1px solid #ddd;
+    }
+
+    .panel-group {
+      padding-top: 2px !important;
+    }
+
+    .accordion-toggle {
+      color: #fff !important;
+    }
+
+    .btn-info {
+      float: right;
+      height: 36px;
+      padding-top: 5px;
+      margin: 8px 10px;
+    }
+
+    button.modBTN {
+      float: right;
+      margin: 5px 5px;
+      padding: 8px 16px 8px 16px;
+    }
+
+    button:focus {
+      outline: 0 !important;
+    }
+
+  </style>
+
+</head>
+
+<body data-ng-app="patientPortal">
+
+  <ther-log-out></ther-log-out>
+  <div class="row">
+    <div class="col-sm-3" style="border-right: 0; padding: 5px 10px; padding-right: 0px; background-color: #F8F8F8;">
+      <ther-Menu></ther-Menu>
+    </div>
+
+    <!--Table for study panels -->
+    <div data-ng-controller="studiesController">
+      <div class="container-fluid">
+
+        <div class="col-sm-9" data-ng-controller="patientController">
+          <!--HEADER-->
+          <div class="accord-header">
+            <button type="button" onclick="Check()" name="checkAll" class="chAllRP btn" data-toggle="checkbox" style="margin: 10px 0 0 10px;">Select All</button>
+            <button type="button" name="ECAll" class="btn ExCol" data-toggle="checkbox" style="margin: 10px 0 0 0;">Expand/Collase All</button>
+            <button type="button" class="modBTN btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">Send To Patients</button>
+          </div>
+          <!--111END111-->
+
+          <div class="no-margin" style="overflow-y: auto; height:400px;">
+            <div class="panel-group" id="accordion">
+              <div data-ng-repeat="study in studies">
+                <studies-listing info="study"></studies-listing>
+              </div>
+            </div>
+          </div>
+
+          <!--Modal Encapsulation-->
+          <div>
+            <div class="modal fade" id="myModal" role="dialog">
+              <div class="modal-dialog">
+                <!-- Modal content-->
+                <div class="modal-content">
+
+
+                  <!--HEADER-->
+                  <div class="modal-header">
+
+                    <style>
+                      .dropdown.dropdown-lg .dropdown-menu {
+                        margin-top: -1px;
+                        padding: 6px 20px;
+                      }
+
+                      .filterlabel {
+                        padding: 2px 35px 2px 0px;
+                        margin-right: 0;
+                        margin-bottom: 3px;
+                      }
+
+                      .findbox {
+                        float: right;
+                        display: inline;
+                      }
+
+                      .input-group-btn .btn-group {
+                        display: flex !important;
+                      }
+
+                      .btn-group .btn {
+                        border-radius: 0;
+                        margin-left: -1px;
+                      }
+
+                      .btn-group .btn:last-child {
+                        border-top-right-radius: 4px;
+                        border-bottom-right-radius: 4px;
+                      }
+
+                      .btn-group .form-horizontal .btn[type="submit"] {
+                        border-top-left-radius: 4px;
+                        border-bottom-left-radius: 4px;
+                      }
+
+                      .form-horizontal .form-group {
+                        margin-left: 0;
+                        margin-right: 0;
+                      }
+
+                      .form-group .form-control:last-child {
+                        border-top-left-radius: 4px;
+                        border-bottom-left-radius: 4px;
+                      }
+
+                      @media screen and (min-width: 768px) {
+                        #adv-search {
+                          width: 300px;
+                          margin: 0 auto;
+                        }
+                        .dropdown.dropdown-lg {
+                          position: static !important;
+                        }
+                        .dropdown.dropdown-lg .dropdown-menu {
+                          min-width: 300px;
+                        }
+                      }
+
+                    </style>
+                    <!--Advance Search bar-->
+                    <div class="findbox">
+                      <div class="input-group" id="adv-search">
+
+
+                        <input type="text" class="form-control search" placeholder="Search for patients">
+
+
+                        <div class="input-group-btn">
+                          <div class="btn-group" role="group">
+                            <div class="dropdown dropdown-lg">
+                              <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><span class="caret"></span></button>
+                              <div class="dropdown-menu dropdown-menu-right" role="menu">
+
+                                <form class="form-horizontal">
+
+                                  <div class="form-group">
+
+                                    <label class="filterlabel" style="width:95px;">Health Conditions</label>
+                                    <select class="form-control">
+                                        <option value="0" selected>None</option>
+                                        <option value="1">Neurodegenerative Diseases</option>
+                                        <option value="2">Stoke</option>
+                                        <option value="3">Cerebral Palsy</option>
+                                        <option value="4">Traumatic Brian Injury</option>
+                                      </select>
+                                  </div>
+
+                                  <div class="form-group">
+                                    <label class="filterlabel" style="width:85px;">Author</label>
+
+                                    <div data-role="rangeslider">
+                                      <input type="range" name="price-max" id="price-max" value="800" min="0" max="1000">
+                                    </div>
+
+                                  </div>
+
+                                  <div class="form-group">
+                                    <label class="filterlabel" style="margin-left:4px;">Contains the words</label>
+                                    <input class="form-control" type="text">
+                                  </div>
+                                  <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
+                                </form>
+
+                              </div>
+                            </div>
+
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <!--End of Search Bar Section-->
+
+
+
+                    <h4 class="modal-title">Recipients</h4>
+                  </div>
+                  <!--HEADER END-->
+                  <!--<div class="full-modal-body" style="max-height: 300px; overflow-y:scroll;">-->
+
+
+                  <!--<div class="modal-body" style="border:1px solid #ddd; margin: 5px;">
+                      </div>
+                      <div class="full-modal-body" style="max-height: 300px; overflow-y:scroll;"></div>
+                    -->
+                  <div class="full-modal-body" style="max-height: 300px; overflow-y:scroll;">
+                    <table class="table table-hover" id="usrTable1">
+                      <thead>
+                        <tr>
+                          <th scope="col">Select</th>
+                          <th scope="col">ID#</th>
+                          <th scope="col">First</th>
+                          <th scope="col">Last</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr data-ng-repeat="patient in patients">
+                          <th scope="row" style="width:110px;">
+                            <form><input onclick="checkAll()" type="checkbox" style="margin-left:10px;" name={{patient.id}}></form>
+                          </th>
+                          <td>{{patient.id}}</td>
+                          <td>{{patient.firstName}}</td>
+                          <td>{{patient.lastName}}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div class="modal-footer">
+                    <button data-toggle="checked" data-target=".{{patient.firstName}}" type="button" class="btn btn-default" style="float: left;">Select All</button>
+                    <button type="button" class="btn btn-default">Send</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                  </div>
+                  <!--Close END-->
+                </div>
+                <!--333END333-->
+              </div>
+            </div>
+          </div>
+          <!--222END222-->
+
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+
+
+
+  <!--CDN for jquery and angularjs-->
+
+
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.5/angular.js"></script>
+
+  <!--Bootstrap JS-->
+  <script src="{% static 'vendor/bootstrap/js/bootstrap.min.js' %}"></script>
+  <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
+
+  <!--Modules-->
+  <script src="{% static 'javascript/app.js' %}"></script>
+  <!--controllers-->
+  <script src="{% static 'javascript/controllers/studiesController.js' %}"></script>
+  <script src="{% static 'javascript/controllers/patientController.js' %}"></script>
+  <!--Directives-->
+  <script src="{% static 'javascript/directives/therLogOut.js' %}"></script>
+  <script src="{% static 'javascript/directives/therMenu.js' %}"></script>
+  <script src="{% static 'javascript/directives/studiesListing.js' %}"></script>
+
+  <script>
+    //following code is to filter table list using the search bar in the modal body
+    $(document).ready(function() {
+      $('.search').on('keyup', function() {
+        var searchTerm = $(this).val().toLowerCase();
+        $('#usrTable1 tbody tr').each(function() {
+          var lineStr = $(this).text().toLowerCase();
+          if (lineStr.indexOf(searchTerm) === -1) {
+            $(this).hide();
+          } else {
+            $(this).show();
+          }
+        });
+      });
+    });
+    //following code is to select/unselect all studies to send to patients in the recruitment page
+    function Check() {
+      var items = document.getElementsByName('studs');
+      for (var i = 0; i < items.length; i++) {
+        if (items[i].type == 'checkbox') {
+          if (items[i].checked == false) {
+            items[i].checked = true;
+          } else {
+            items[i].checked = false;
+          }
+        }
+      }
+    }
+    //following code is to collapse/expand all of the studies
+    $(document).ready(function() {
+      $(".ExCol").click(function() {
+        $(".collapse").collapse("show");
+        $(".in").collapse("hide");
+      });
+    });
+    //following code selects all patients
+
+  </script>
+</body>
+
+</html>
+{% endblock %}
