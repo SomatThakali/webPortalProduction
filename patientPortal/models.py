@@ -7,8 +7,25 @@ from django.db.models.signals import post_save
 
 
 # Create your models here.
-class MyPersonalInformation(models.Model):
+class Users(models.Model):
     user = models.OneToOneField(User,  on_delete=models.CASCADE)
+
+
+def post_save_receiver(sender, instance, created, **kwargs):
+    pass
+
+
+post_save.connect(post_save_receiver, sender=settings.AUTH_USER_MODEL)
+
+
+def __str__(self):
+    return self.user.username
+
+
+class MyPersonalInformation(models.Model):
+
+    username = models.OneToOneField(User,
+                                    on_delete=models.CASCADE,)
     first_name = models.CharField(max_length=15)
     middle_name = models.CharField(max_length=15, blank=True)
     last_name = models.CharField(max_length=15)
@@ -29,42 +46,33 @@ class MyPersonalInformation(models.Model):
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES)
 
     def __str__(self):
-        return self.user.username
-
-
-def post_save_receiver(sender, instance, created, **kwargs):
-    pass
-
-
-post_save.connect(post_save_receiver, sender=settings.AUTH_USER_MODEL)
+        return self.username.username
 
 
 class MyContactInformation(models.Model):
-    myPersonal = models.ForeignKey(MyPersonalInformation, null=True,
-                                   on_delete=models.CASCADE,)
+    Username = models.ForeignKey(MyPersonalInformation, null=True,
+                                 on_delete=models.CASCADE,)
     phone_Number = models.CharField(max_length=20)
     street_address = models.CharField(max_length=30)
     city = models.CharField(max_length=15)
     state = models.CharField(max_length=2)
     Zip_Code = models.CharField(max_length=5)
 
-
-def __unicode__(self):
-    return self.user.username
+    def __str__(self):
+        return self.Username.username
 
 
 class MyEmergencyContact(models.Model):
-    myPersonalInformation = models.ForeignKey(MyPersonalInformation, null=True,
-                                              on_delete=models.CASCADE,)
+    Username = models.ForeignKey(MyPersonalInformation, null=True,
+                                 on_delete=models.CASCADE,)
     first_name = models.CharField(max_length=15)
     middle_name = models.CharField(max_length=15, blank=True)
     last_name = models.CharField(max_length=15)
     phone_Number = models.CharField(max_length=20)
     email = models.EmailField(max_length=50, blank=True)
 
-
-def __str__(self):
-    return self.myPersonalInformation
+    def __str__(self):
+        return self.Username.username
 
 
 class appointManager(models.Manager):
@@ -114,11 +122,14 @@ class appointManager(models.Manager):
 
 
 class appointment(models.Model):
-    user = models.ForeignKey(MyPersonalInformation, related_name="onrecord",
-                             blank=True, null=True, on_delete=models.CASCADE,)
+    Username = models.ForeignKey(MyPersonalInformation, related_name="onrecord",
+                                 blank=True, null=True, on_delete=models.CASCADE,)
     affected_limb = models.CharField(max_length=255)
     date = models.DateField(blank=True, null=True)
     time = models.TimeField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, blank=True, null=True)
     objects = appointManager()
+
+    def __str__(self):
+        return self.Username.username

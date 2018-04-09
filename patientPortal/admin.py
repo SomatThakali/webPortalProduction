@@ -7,22 +7,33 @@ from .models import MyPersonalInformation
 from .models import MyContactInformation
 from .models import MyEmergencyContact
 from .models import appointment
+from .models import Users
 
 
-class MyPersonalInformationInline(admin.StackedInline):
-    model = MyPersonalInformation
+class UsersInline(admin.StackedInline):
+    model = Users
     can_delete = False
-    verbose_name_plural = 'Profile'
-# Define a new User admin
+    verbose_name_plural = 'User'
+    # Define a new User admin
 
 
 class UserAdmin(BaseUserAdmin):
-    inlines = (MyPersonalInformationInline,)
+    inlines = (UsersInline, )
 
 
 # Re-register UserAdmin
 admin.site.unregister(User)
 admin.site.register(User, UserAdmin)
+
+
+# admin.site.register(User, UserAdmin)
+
+
+class MyPersonalInformationAdmin(admin.ModelAdmin):
+    model = MyPersonalInformation
+
+
+admin.site.register(MyPersonalInformation, MyPersonalInformationAdmin)
 
 
 class MyContactInformationAdmin(admin.ModelAdmin):
