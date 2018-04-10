@@ -4,7 +4,7 @@ from. forms import MyPersonalInformationForm
 from django.conf import settings
 from django.shortcuts import redirect
 from .accessoryScripts.checkGroup import is_patient, is_therapist
-
+from django.http import HttpResponse
 
 # PATIENT VIEWS #
 def patientDashboard(request):
@@ -103,10 +103,29 @@ def forms(request):
     if not request.user.is_authenticated:
         return redirect('/portal/login')
     if is_therapist(request.user):
-        return render_to_response('patientPortal/forms.html')
+        from patientPortal.apiScripts.exports import get_available_forms
+        method = request.method;
+        if (method == "GET"):
+            request_query_dict = request.GET;
+            request_dict = dict(request_query_dict);
+            if not bool(request_dict): # The dict is empty means request has been made to load page
+                forms = get_available_forms();
+                return render(request, 'patientPortal/forms.html',  context = {'forms' : forms})
+
+            from patientPortal.apiScripts.exports import get_form_questions
+            form = request_dict['form'];
+            event = request_dict['event'];
+            questions = get_form_questions
+            return HttpResponse(simplejson.dumps(questions));
     else:
         return redirect('/portal/patient')
 
+<<<<<<< HEAD
+=======
+    #print(bool(request_dict))
+    #forms = get_available_forms();
+    #return render(request, 'patientPortal/forms.html',  context = {'forms' : forms})
+>>>>>>> b6c6a17bfb1f6708c169744780eff573f670e7bb
 
 def settings(request):
     if not request.user.is_authenticated:
