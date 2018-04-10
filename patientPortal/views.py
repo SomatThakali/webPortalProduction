@@ -15,10 +15,11 @@ def patientDashboard(request):
         first_name = user.first_name
         last_name = user.last_name
         return render(
-            request,'patientPortal/patientDashboard.html',context={'first_name': first_name, 'last_name': last_name},
-            )
+            request, 'patientPortal/patientDashboard.html', context={'first_name': first_name, 'last_name': last_name},
+        )
     else:
         return redirect('/portal/therapist')
+
 
 def MyPersonalInformation(request):
     if not request.user.is_authenticated:
@@ -32,6 +33,7 @@ def MyPersonalInformation(request):
     else:
         return redirect('/portal/therapist')
 
+
 def myprogress(request):
     if not request.user.is_authenticated:
         return redirect('/portal/login')
@@ -40,6 +42,7 @@ def myprogress(request):
     else:
         return redirect('/portal/therapist')
 
+
 def exercise(request):
     if not request.user.is_authenticated:
         return redirect('/portal/login')
@@ -47,6 +50,7 @@ def exercise(request):
         return render_to_response('patientPortal/exercise.html')
     else:
         return redirect('/portal/therapist')
+
 
 def patientCalendar(request):
     if not request.user.is_authenticated:
@@ -57,6 +61,8 @@ def patientCalendar(request):
         return redirect('/portal/therapist')
 
 # THERAPIST VIEWS #
+
+
 def therapistDashboard(request):
     if not request.user.is_authenticated:
         return redirect('/portal/login')
@@ -64,6 +70,7 @@ def therapistDashboard(request):
         return render_to_response('patientPortal/therapistDashboard.html')
     else:
         return redirect('/portal/patient')
+
 
 def therapistCalendar(request):
     if not request.user.is_authenticated:
@@ -73,6 +80,7 @@ def therapistCalendar(request):
     else:
         return redirect('/portal/patient')
 
+
 def database(request):
     if not request.user.is_authenticated:
         return redirect('/portal/login')
@@ -81,6 +89,7 @@ def database(request):
     else:
         return redirect('/portal/patient')
 
+
 def recruitment(request):
     if not request.user.is_authenticated:
         return redirect('/portal/login')
@@ -88,6 +97,7 @@ def recruitment(request):
         return render_to_response('patientPortal/recruitment.html')
     else:
         return redirect('/portal/patient')
+
 
 def forms(request):
     if not request.user.is_authenticated:
@@ -116,6 +126,12 @@ def forms(request):
     else:
         return redirect('/portal/patient')
 
+
+    #print(bool(request_dict))
+    #forms = get_available_forms();
+    #return render(request, 'patientPortal/forms.html',  context = {'forms' : forms})
+
+
 def settings(request):
     if not request.user.is_authenticated:
         return redirect('/portal/login')
@@ -125,6 +141,8 @@ def settings(request):
         return redirect('/portal/patient')
 
 # FIXME must redirect to the appropriate dashboard
+
+
 def dispatch(request):
     if not request.user.is_authenticated:
         return redirect('/portal/login')
