@@ -4,6 +4,6 @@ app.directive('task', function(){
     scope: {
       info: '='
     },
-    templateUrl: '../../javascript/directives/task.html'
+    templateUrl: '/static/javascript/directives/task.html'
   }
 })

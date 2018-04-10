@@ -1,0 +1,37 @@
+{% block content %} {% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Patient Portal Login</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="../vendor/bootstrap/fonts">
+  <link rel="stylesheet" type="text/css" href="{% static 'login/css/stylesheets.css' %}" />
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+</head>
+
+<body>
+
+  <!-- The following code is for the login container-->
+  <div class="login-container">
+    <div class="row">
+      <div class="col-md-offset-5 col-md-3">
+        <div style="padding: 60px 50px" align="center" class="login-content">
+          <img src="https://www.burke.org/prod/logo-news-placeholder-2017.png" class="sprite-logo">
+          <p style="padding-bottom: 15px" class="welctxt">Thank you for visiting!</p>
+          <p  style="margin-bottom:50px">Our patient portal was brought to you by students at City College of New York</p>
+
+
+          <a style="padding: 15px 20px; margin-bottom: 40px; border-radius: 15px" class="btn btn-success" href="{% url 'login'%}">Click here to login again!</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="{% static 'login/javascript/main.js' %}"></script>
+</body>
+
+</html>
+
+
+ {% endblock %}

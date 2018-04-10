@@ -6,7 +6,7 @@ app.controller('dashButtonController', function($scope){
     backgroundClass: "primary-background",
     borderClass : "primary-border",
     icon : "fa-calendar-alt fa-5x",
-    link : "patient/patientcalendar"
+    link : "patient/calendar"
   };
   $scope.prog={
     ref : "prog",

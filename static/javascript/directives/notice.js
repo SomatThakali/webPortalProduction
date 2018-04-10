@@ -4,6 +4,6 @@ app.directive('notice', function(){
     scope: {
       info: '='
     },
-    templateUrl: '../../javascript/directives/notice.html'
+    templateUrl: '/static/javascript/directives/notice.html'
   }
 })

@@ -1,0 +1,208 @@
+{% block content %} {% load static %}
+<!DOCTYPE html>
+<html>
+
+<head>
+
+  <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+  <link href="{% static 'vendor/dist/css/sb-admin-2.css' %}" rel="stylesheet">
+
+  <!--  Color Calls -->
+  <link href="{% static 'css/colors/background.css' %}" rel="stylesheet">
+  <link href="{% static 'css/colors/text.css' %}" rel="stylesheet">
+
+  <!-- Formatting Calls -->
+  <link href="{% static 'css/formatting/div-paddings.css' %}" rel="stylesheet">
+  <link href="{% static 'css/formatting/div-designs.css' %}" rel="stylesheet">
+  <link href="{% static 'css/formatting/text-indenting.css' %}" rel="stylesheet">
+
+  <!-- Font Calls -->
+  <link href="{% static 'css/font/general-fonts.css' %}" rel="stylesheet">
+
+  <link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+  <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+  <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+  <!-- Include the above in your HEAD tag ---------->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      font-family: Arial;
+    }
+
+    /* Style the tab */
+
+    }
+
+    .tab {
+      overflow: hidden;
+      border: 1px solid #ccc;
+      background-color: #f1f1f1;
+    }
+
+    /* Style the buttons inside the tab */
+
+    .tab button {
+      background-color: inherit;
+      float: left;
+      border: none;
+      outline: none;
+      cursor: pointer;
+      padding: 14px 16px;
+      transition: 0.3s;
+      font-size: 17px;
+    }
+
+    /* Change background color of buttons on hover */
+
+    .tab button:hover {
+      background-color: #ddd;
+    }
+
+    /* Create an active/current tablink class */
+
+    .tab button.active {
+      background-color: #ccc;
+    }
+
+    /* Style the tab content */
+
+    .tabcontent {
+      display: none;
+      padding: 6px 12px;
+      border: 1px solid #ccc;
+      border-top: none;
+    }
+
+    h4 {
+      font-weight: bold;
+      text-decoration: underline;
+    }
+
+    #profile li {
+      border-style: double;
+    }
+
+    #Tabs {
+      background-color: #87CEEB;
+      font-weight: bolder;
+      text-shadow: 10px;
+
+    }
+
+    #Notifications li {
+      background-color: #ff944d;
+    }
+  </style>
+
+</head>
+
+<body ng-app="patientPortal">
+  <ther-log-out></ther-log-out>
+  <div class="row">
+    <div class="col-sm-3" style="border-right: 0; padding: 5px 10px; padding-right: 0px; background-color: #F8F8F8;">
+      <ther-Menu></ther-Menu>
+    </div>
+    <div class="col-sm-9" style="padding-left: 10px; padding-right: 0;">
+      <hr>
+      <div class="container bootstrap snippet">
+        <div class="row">
+          <div class="col-sm-10">
+            <h1>John Doe</h1></div>
+
+        </div>
+        <div class="row">
+          <div class="col-sm-3">
+            <!--left col-->
+
+            <ul class="list-group" id="Profile">
+              <li class="list-group-item text-muted">Profile</li>
+              <li class="list-group-item text-right"><span class="pull-left"><strong>Name</strong></span> John Doe</li>
+              <li class="list-group-item text-right"><span class="pull-left"><strong>Email</strong></span> JDoe@gmail.com</li>
+              <li class="list-group-item text-right"><span class="pull-left"><strong>Phone</strong></span>123-456-7890</li>
+              <li class="list-group-item text-right"><span class="pull-left"><strong>Address</strong></span> 543 North,NY,NY 10043</li>
+              <li class="list-group-item text-right"><span class="pull-left"><strong>Emergency Contact</strong></span> Jane Doe</li>
+              <li class="list-group-item text-right"><span class="pull-left"><strong>Phone</strong></span>347-123-4567</li>
+
+
+
+            </ul>
+            <ul id="Notifications" class="list-group">
+              <li class="list-group-item text-right"><span class="pull-left"><strong>Notifications:</strong></span> <br>
+
+
+                <!---Add Notifications--->
+
+          </div>
+          </li>
+
+
+          </ul>
+
+
+
+
+          <div class="col-sm-9">
+
+            <div class="tab" id="Tabs">
+              <button class="tablinks" onclick="openCity(event, 'Treatment')">Treatment Plan</button>
+              <button class="tablinks" onclick="openCity(event, 'Goals')">Patient Goals</button>
+              <button class="tablinks" onclick="openCity(event, 'Sessions')">Sessions History</button>
+            </div>
+
+            <div id="Treatment" class="tabcontent">
+              <br>
+              </br>
+              <h4>Current Treatment Plan:</h4>
+              <p>12 Weeks therapy to improve left leg range of motion</p>
+              <h4>Current Machines Used:</h4>
+              <p>Machine B: To facilitate flexion</p>
+            </div>
+
+            <div id="Goals" class="tabcontent">
+              <br></br>
+              <h4>Patient Goals:</h4>
+              <p>To improve range of motion of the left leg.</p>
+            </div>
+
+            <div id="Sessions" class="tabcontent">
+              <br></br>
+              <h4>Sessions Attended:</h4>
+              <p>4 Sessions Completed.</p>
+              <h4>Sessions Remaining:</h4>
+              <p>8 Sessions Remaining</p>
+              <button type="button" class="btn btn-sm">View Appointments</button>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function openCity(evt, cityName) {
+      var i, tabcontent, tablinks;
+      tabcontent = document.getElementsByClassName("tabcontent");
+      for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+      }
+      tablinks = document.getElementsByClassName("tablinks");
+      for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" active", "");
+      }
+      document.getElementById(cityName).style.display = "block";
+      evt.currentTarget.className += " active";
+    }
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.5/angular.js"></script>
+  <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+  <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
+  <script src="{% static 'javascript/app.js' %}"></script>
+  <script src="{% static 'javascript/directives/therLogOut.js' %}"></script>
+  <script src="{% static 'javascript/directives/therMenu.js' %}"></script>
+</body>
+
+</html>
+
+</hr>
+{% endblock %}
