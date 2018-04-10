@@ -1,0 +1,80 @@
+{% block content %} {% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Patient Databse</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+  <link href="{% static 'vendor/dist/css/sb-admin-2.css' %}" rel="stylesheet">
+
+  <!--  Color Calls -->
+  <link href="{% static 'css/colors/background.css' %}" rel="stylesheet">
+  <link href="{% static 'css/colors/text.css' %}" rel="stylesheet">
+
+  <!-- Formatting Calls -->
+  <link href="{% static 'css/formatting/div-paddings.css' %}" rel="stylesheet">
+  <link href="{% static 'css/formatting/div-designs.css' %}" rel="stylesheet">
+  <link href="{% static 'css/formatting/text-indenting.css' %}" rel="stylesheet">
+
+  <!-- Font Calls -->
+  <link href="{% static 'css/font/general-fonts.css' %}" rel="stylesheet">
+  <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+
+  <style>
+    .form-button:hover {
+      cursor: pointer;
+      background-color: rgba(220,220,220,1);
+    }
+    .form-button{
+      border-radius: 5px;
+      padding: 5px 10px;
+      display: inline-block;
+      background-color: rgba(231,231,231,.85);
+    }
+  </style>
+</head>
+
+<body ng-app="patientPortal">
+  <ther-log-out></ther-log-out>
+  <div class="row">
+    <div class="col-sm-3" style="border-right: 0; padding: 5px 10px; padding-right: 0px; background-color: #F8F8F8;">
+      <ther-Menu></ther-Menu>
+    </div>
+    <div class="col-sm-9" style="padding-left: 10px; padding-right: 0;">
+      <div>
+        <div id="available_forms" style="padding-right: 0" class="responsive-vertical-cushion">
+          <h1>Available Forms</h1>
+          <div style= "margin-right: 0; height:500px; width: 90%; overflow-y: auto">
+            {% for form in forms %}
+            <div style="border: 2px solid #e7e7e7; margin: 10px 0; padding: 20px 25px" class="no-margin row">
+              <div class="row no-margin">
+                <h4 class="formItem no-margin pull-left"style="padding: 10px 0 10px 15px; "> {{ form.verbose_name }} </h4>
+                <div style="padding: 8px 0" class="pull-right">
+                  <div id="create_{{form.name}}" class="form-button create-submission">
+                    <i class="fas fa-plus"></i>
+                  </div>
+                  <div id="view_{{form.name}}" class="form-button view-form">
+                    <i class="fas fa-eye"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="{% static 'javascript/ajax-requests/forms.js' %}"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.5/angular.js"></script>
+  <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
+  <script src="{% static 'javascript/app.js' %}"></script>
+  <script src="{% static 'javascript/directives/therLogOut.js' %}"></script>
+  <script src="{% static 'javascript/directives/therMenu.js' %}"></script>
+
+</body>
+
+</html>
+{% endblock %}
