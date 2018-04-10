@@ -1,6 +1,6 @@
-from apiCall import get_project
+from .apiCall import get_project
 
-def get_forms_questions(form_name):
+def get_form_questions(form_name):
     project = get_project();
     if form_name not in project.forms:
         raise ValueError("Form does not exist");
@@ -10,6 +10,27 @@ def get_forms_questions(form_name):
     #returns a list of questions within a certain form with important data for filling
     return form_questions_meta
 
+def get_available_form_names():
+    project = get_project();
+    return project.forms;
+
+# Returns a list of dictionaries with name (the name stored in redcap and)
+# a verbose_name (a more human readable format)
+def get_available_forms():
+    forms = get_available_form_names();
+    form_objects = []
+    for i in range(len(forms)):
+        form_name = forms[i];
+        #following line turns the form_names to more readable names. fugl_meyer
+        #becomes Fugl Meyer
+        form_verbose_name = (' '.join(form_name.split('_'))).title();
+        form = {
+            'name': form_name,
+            'verbose_name': form_verbose_name,
+        }
+        form_objects.append(form);
+
+    return form_objects
 
 #here event_prefix is either admin or dc
 def get_event_data(redcap_event_name):
