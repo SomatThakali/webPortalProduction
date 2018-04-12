@@ -31,6 +31,7 @@ from .models import Todo
 class MyPersonalInformationAdmin(admin.ModelAdmin):
     model = MyPersonalInformation
     verbose_name_plural = 'My_Personal_Information'
+    list_display = ('username', 'First_Name',  'Last_Name')
 
 
 admin.site.register(MyPersonalInformation, MyPersonalInformationAdmin)
@@ -61,7 +62,7 @@ admin.site.register(notification, notificationAdmin)
 class TodoAdmin(admin.ModelAdmin):
     model = Todo
     verbose_name_plural = 'Todo'
-    list_display = ('title', 'completed',  'due_date')
+    list_display = ('title', 'patient_username', 'completed',  'due_date')
     search_fields = ('title',)
 
 

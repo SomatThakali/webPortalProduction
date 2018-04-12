@@ -3,7 +3,7 @@ from django.db import models
 from datetime import date, datetime
 from django.contrib.auth.models import User
 # from django.conf import settings
-from django.contrib.auth.models import Group
+#  from django.contrib.auth.models import Group
 from django.utils import timezone
 # from django.db.models.signals import post_save
 
@@ -157,5 +157,5 @@ class Todo(models.Model):
     def save(self, **kwargs):
         # If Task is being marked complete, set the completed_date
         if self.completed:
-            self.completed_date = datetime.datetime.now()
-        super(ToDo, self).save()
+            self.completed_date = datetime.now()
+        super(Todo, self).save()
