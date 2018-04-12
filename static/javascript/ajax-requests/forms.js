@@ -10,6 +10,7 @@ $(document).ready(function(){
     e.preventDefault();
     var id = $(this).attr('id');
     var action = getRequest(id);
+
     console.log(action)
     $.ajax({
       url: '',
@@ -17,10 +18,10 @@ $(document).ready(function(){
       dataType: 'json',
       data: action,
       success: function(res){
-        alert("SUCCESS");
+        console.log(res);
       },
       error: function(res){
-        alert("Oops");
+        console.log("oops");
       }
     })
   })

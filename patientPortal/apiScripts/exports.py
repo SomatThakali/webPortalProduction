@@ -10,6 +10,41 @@ def get_form_questions(form_name):
     #returns a list of questions within a certain form with important data for filling
     return form_questions_meta
 
+def get_form_groups(form_name, action):
+    questions = get_form_questions(form_name);
+    # If viewing can display more, less space needed for other fields from user
+    if action == "view":
+        max_size = 14;
+    if action == "create":
+        max_size = 10;
+
+    form_groups = []
+    form_group = []
+    size = 0;
+    for i in range(len(questions)):
+        question = questions[i]
+        print(size)
+        if question['field_type'] == "radio":
+            q_size = 3;
+        else:
+            q_size = 2;
+
+        if q_size + size <= max_size:
+            size += q_size;
+        else:
+            size = q_size;
+            form_groups.append(form_group);
+            print("creating group")
+            form_group = [];
+
+        print("adding item")
+        form_group.append(question);
+
+        if size <= max_size and i == len(questions)-1 and len(form_group)>0:
+            form_groups.append(form_group)
+    # Returns grouping of questions to prepare for easier display on front end
+    return form_groups
+
 def get_available_form_names():
     project = get_project();
     return project.forms;

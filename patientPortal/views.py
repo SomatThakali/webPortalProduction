@@ -5,7 +5,7 @@ from django.conf import settings
 from django.shortcuts import redirect
 from .accessoryScripts.checkGroup import is_patient, is_therapist
 from django.http import HttpResponse
-
+import json
 # PATIENT VIEWS #
 def patientDashboard(request):
     if not request.user.is_authenticated:
@@ -112,20 +112,25 @@ def forms(request):
                 forms = get_available_forms();
                 return render(request, 'patientPortal/forms.html',  context = {'forms' : forms})
 
-            from patientPortal.apiScripts.exports import get_form_questions
-            form = request_dict['form'];
-            event = request_dict['event'];
-            questions = get_form_questions
-            return HttpResponse(simplejson.dumps(questions));
+            # This call only needs to be done here, keeping it local
+            from patientPortal.apiScripts.exports import get_form_groups
+
+            # on JSON creation on front end, turns these values for the keys into lists
+            # taking first element of the list fixes this issue
+            form = request_dict['form'][0];
+            event = request_dict['event'][0];
+            question_groups = get_form_groups(form,event);
+            print(len(question_groups))
+            response_body = {'guestion_groups': question_groups, 'event': event};
+            return HttpResponse(json.dumps(response_body));
     else:
         return redirect('/portal/patient')
 
-<<<<<<< HEAD
-=======
+
     #print(bool(request_dict))
     #forms = get_available_forms();
     #return render(request, 'patientPortal/forms.html',  context = {'forms' : forms})
->>>>>>> b6c6a17bfb1f6708c169744780eff573f670e7bb
+
 
 def settings(request):
     if not request.user.is_authenticated:
