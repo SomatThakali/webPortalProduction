@@ -3,6 +3,8 @@ from django.db import models
 from datetime import date, datetime
 from django.contrib.auth.models import User
 # from django.conf import settings
+from django.contrib.auth.models import Group
+from django.utils import timezone
 # from django.db.models.signals import post_save
 
 
@@ -26,24 +28,26 @@ class MyPersonalInformation(models.Model):
 
     username = models.OneToOneField(User,
                                     on_delete=models.CASCADE,)
-    first_name = models.CharField(max_length=15)
-    middle_name = models.CharField(max_length=15, blank=True)
-    last_name = models.CharField(max_length=15)
-    birthday = models.DateField()
-    RACE_CHOICES = (
-        ('1', 'African Amercan'),
-        ('2', 'Amercan Indian'),
-        ('3', 'Asian'),
-        ('4', 'Hispanic'),
-        ('5', 'White'),
-    )
-    race = models.CharField(max_length=1, choices=RACE_CHOICES)
-
-    GENDER_CHOICES = (
-        ('1', 'Male'),
-        ('2', 'Female'),
-    )
-    gender = models.CharField(max_length=1, choices=GENDER_CHOICES)
+    First_Name = models.CharField(max_length=15)
+    Middle_Name = models.CharField(max_length=15, blank=True)
+    Last_Name = models.CharField(max_length=15)
+    Date_of_Birth = models.DateField()
+    Emergency_Contact_Name = models.CharField(max_length=30)
+    Emergency_Contact_Phone = models.CharField(max_length=20)
+    # RACE_CHOICES = (
+    #     ('1', 'African Amercan'),
+    #     ('2', 'Amercan Indian'),
+    #     ('3', 'Asian'),
+    #     ('4', 'Hispanic'),
+    #     ('5', 'White'),
+    # )
+    # race = models.CharField(max_length=1, choices=RACE_CHOICES)
+    #
+    # GENDER_CHOICES = (
+    #     ('1', 'Male'),
+    #     ('2', 'Female'),
+    # )
+    # gender = models.CharField(max_length=1, choices=GENDER_CHOICES)
 
     def __str__(self):
         return self.username.username
@@ -52,27 +56,9 @@ class MyPersonalInformation(models.Model):
 class MyContactInformation(models.Model):
     username = models.OneToOneField(User,
                                     on_delete=models.CASCADE,)
-    First_name = models.ForeignKey(MyPersonalInformation, null=True,
-                                   on_delete=models.CASCADE,)
-    phone_Number = models.CharField(max_length=20)
-    street_address = models.CharField(max_length=30)
-    city = models.CharField(max_length=15)
-    state = models.CharField(max_length=2)
-    Zip_Code = models.CharField(max_length=5)
-
-    def __str__(self):
-        return self.username.username
-
-
-class MyEmergencyContact(models.Model):
-    username = models.OneToOneField(User,
-                                    on_delete=models.CASCADE,)
-    Firts_name = models.ForeignKey(MyPersonalInformation, null=True,
-                                   on_delete=models.CASCADE,)
-    first_name = models.CharField(max_length=15)
-    middle_name = models.CharField(max_length=15, blank=True)
-    last_name = models.CharField(max_length=15)
-    phone_Number = models.CharField(max_length=20)
+    Phone_Number = models.CharField(max_length=20)
+    Address_Line_1 = models.CharField(max_length=40)
+    Address_Line_2 = models.CharField(max_length=40)
     email = models.EmailField(max_length=50, blank=True)
 
     def __str__(self):
@@ -141,9 +127,35 @@ class appointment(models.Model):
         return self.username.username
 
 
-class notifications(models.Model):
+class notification(models.Model):
     patient_username = models.CharField(max_length=15, blank=True)
-    therapist_username = models.CharField(max_length=15)
+    therapist_username = models.ForeignKey(User, on_delete=models.CASCADE)
     header = models.CharField(max_length=30)
     message = models.TextField(blank=True, null=True)
     description = models.TextField(blank=True, null=True)
+
+
+class Todo(models.Model):
+    patient_username = models.CharField(max_length=15, blank=True)
+    therapist_username = models.ForeignKey(User, on_delete=models.CASCADE)
+    title = models.CharField(max_length=140)
+    created_date = models.DateField(default=timezone.now, blank=True, null=True)
+    due_date = models.DateField(blank=True, null=True, )
+    completed = models.BooleanField(default=False)
+    completed_date = models.DateField(blank=True, null=True)
+    message = models.TextField(blank=True, null=True)
+
+    def overdue_status(self):
+        "Returns whether the Tasks's due date has passed or not."
+        if self.due_date and datetime.date.today() > self.due_date:
+            return True
+
+    def __str__(self):
+        return self.title
+
+    # Auto-set the Task creation / completed date
+    def save(self, **kwargs):
+        # If Task is being marked complete, set the completed_date
+        if self.completed:
+            self.completed_date = datetime.datetime.now()
+        super(ToDo, self).save()

@@ -5,9 +5,10 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import User
 from .models import MyPersonalInformation
 from .models import MyContactInformation
-from .models import MyEmergencyContact
 from .models import appointment
-from .models import notifications
+from .models import notification
+from .models import Todo
+
 # from .models import Users
 #
 #
@@ -29,6 +30,7 @@ from .models import notifications
 
 class MyPersonalInformationAdmin(admin.ModelAdmin):
     model = MyPersonalInformation
+    verbose_name_plural = 'My_Personal_Information'
 
 
 admin.site.register(MyPersonalInformation, MyPersonalInformationAdmin)
@@ -36,16 +38,10 @@ admin.site.register(MyPersonalInformation, MyPersonalInformationAdmin)
 
 class MyContactInformationAdmin(admin.ModelAdmin):
     model = MyContactInformation
+    verbose_name_plural = 'My_Contact_Information'
 
 
 admin.site.register(MyContactInformation, MyContactInformationAdmin)
-
-
-class MyEmergencyContactAdmin(admin.ModelAdmin):
-    model = MyEmergencyContact
-
-
-admin.site.register(MyEmergencyContact, MyEmergencyContactAdmin)
 
 
 class appointmentAdmin(admin.ModelAdmin):
@@ -55,8 +51,18 @@ class appointmentAdmin(admin.ModelAdmin):
 admin.site.register(appointment, appointmentAdmin)
 
 
-class notificationsAdmin(admin.ModelAdmin):
+class notificationAdmin(admin.ModelAdmin):
     model = appointment
 
 
-admin.site.register(notifications, notificationsAdmin)
+admin.site.register(notification, notificationAdmin)
+
+
+class TodoAdmin(admin.ModelAdmin):
+    model = Todo
+    verbose_name_plural = 'Todo'
+    list_display = ('title', 'completed',  'due_date')
+    search_fields = ('title',)
+
+
+admin.site.register(Todo, TodoAdmin)
