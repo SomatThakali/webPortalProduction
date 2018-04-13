@@ -150,6 +150,7 @@
           </div>
         </div>
       </div>
+      <div>{{data}}</div>
       <div class="col col-lg-1 col-md-1"></div>
     </div>
     <!-- JavaScript files -->
@@ -167,66 +168,73 @@
 
     <script>
     var calendar = {};
+    function getNumString(numberStr){
+      var suffix;
+      if (numberStr[numberStr.length-1] == '1'){
+        suffix = 'st'
+      }else if (numberStr[numberStr.length-1] == '2'){
+        suffix = 'nd'
+      }else if (numberStr[numberStr.length-1] == '3'){
+        suffix ='rd'
+      }else{
+        suffix = 'th'
+      }
+      return (numberStr+suffix)
+    }
+    function convertToReadableFormat(appt){
+      var date = appt.date;
+      var time = appt.time;
+      var dateArray = date.split('-');
+      var lookUpMonth = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      var monthNum = parseInt(dateArray[1])-1;
+      var monthString = lookUpMonth[monthNum];
+      var dayNum = dateArray[2];
+      var dayString = getNumString(dayNum);
+      var yearString = dateArray[0]
 
+      var dateString = monthString + " " + dayString + ", " + yearString + " @ " + time;
+      return dateString
+    }
     $(document).ready( function() {
-      var nextAppointmentDate = document.getElementById("nextAppointmentDate"),
-          nextAppointmentDoctor = document.getElementById("nextAppointmentDoctor"),
-          futureApptDate = document.getElementById("futureApptDate"),
-          futureApptTime = document.getElementById("futureApptTime");
+      $.getJSON('?action=pull',function(json){
+        //Call service to get calendar data and next appointment details
+        var futureApptDates = json.appts;
+        var nextApptDate = futureApptDates[0]
 
-      //Call service to get calendar data and next appointment details
-      var nextApptDate = 'Feb 20th, 2018 @ 2:00pm',
-          nextApptDoctor = 'Dr. Edwards';
+        var nextApptDate =  convertToReadableFormat(nextApptDate)// 'Feb 20th, 2018 @ 2:00pm',
+            nextApptDoctor = json.therapist;
+        //Set next appointment info
+        nextAppointmentDate.textContent += nextApptDate;
+        nextAppointmentDoctor.textContent += nextApptDoctor;
 
-      //Set next appointment info
-      nextAppointmentDate.textContent += nextApptDate;
-      nextAppointmentDoctor.textContent += nextApptDoctor;
+        futureApptTimesObj = {};
+        futureApptDates.forEach(function(appt){
+          futureApptTimesObj[appt.date] = appt.time;
+        });
 
-      //Get data from service
-      var futureApptDates = [
-        { date: '2018-02-25', time: '2:00pm'},
-        { date: '2018-02-27', time: '3:00pm'}
-      ];
+        calendar = $('.cal1').clndr({
+          events: futureApptDates,
+          clickEvents: {
+            click: function(target) {
+              if($(target.element).hasClass('event')) {
+                var day = $(target.element)[0].className.split(' ')[3];
+                var time = futureApptTimesObj[day];
+                $('#appointmentModal').modal('show');
 
-      futureApptTimesObj = {};
-      futureApptDates.forEach(function(appt){
-        futureApptTimesObj[appt.date] = appt.time;
-      });
-
-      calendar = $('.cal1').clndr({
-        events: futureApptDates,
-        // constraints: {
-        //   startDate: '2013-11-01',
-        //   endDate: '2013-11-15'
-        // },
-        clickEvents: {
-          click: function(target) {
-            if($(target.element).hasClass('event')) {
-              var day = $(target.element)[0].className.split(' ')[3];
-              var time = futureApptTimesObj[day];
-              $('#appointmentModal').modal('show');
-
-              //Set future appointment info
-              futureApptDate.textContent = 'Date: ' + day;
-              futureApptTime.textContent = 'Time: ' + time;
+                //Set future appointment info
+                futureApptDate.textContent = 'Date: ' + day;
+                futureApptTime.textContent = 'Time: ' + time;
+              }
             }
-          }
-          // ,
-          // nextMonth: function() {
-          // },
-          // previousMonth: function() {
-          // },
-          // onMonthChange: function() {
-          // }
-        },
-        multiDayEvents: {
-          startDate: 'startDate',
-          endDate: 'endDate'
-        },
-        showAdjacentMonths: true,
-        adjacentDaysChangeMonth: false
-      });
-
+          },
+          multiDayEvents: {
+            startDate: 'startDate',
+            endDate: 'endDate'
+          },
+          showAdjacentMonths: true,
+          adjacentDaysChangeMonth: false
+        });
+      })
       // bind both clndrs to the left and right arrow keys
       $(document).keydown( function(e) {
         if(e.keyCode == 37) {
