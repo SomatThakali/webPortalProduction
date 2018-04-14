@@ -8,6 +8,7 @@ from .accessoryScripts.checkGroup import is_patient, is_therapist
 from. forms import MyPersonalInformationForm
 import json
 from .models import notification
+from .models import Todo
 # PATIENT VIEWS #
 
 

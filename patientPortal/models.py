@@ -6,22 +6,7 @@ from django.contrib.auth.models import User
 #  from django.contrib.auth.models import Group
 from django.utils import timezone
 
-
-
 # Create your models here.
-# class Users(models.Model):
-#     user = models.OneToOneField(User,  on_delete=models.CASCADE)
-#
-#
-# def post_save_receiver(sender, instance, created, **kwargs):
-#     pass
-#
-#
-# post_save.connect(post_save_receiver, sender=settings.AUTH_USER_MODEL)
-#
-#
-# def __str__(self):
-#     return self.user.username
 
 
 class MyPersonalInformation(models.Model):
