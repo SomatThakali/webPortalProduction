@@ -83,6 +83,17 @@ def therapistDashboard(request):
             n1 = notification.objects.filter(user=request.user, viewed=False)
             return HttpResponseRedirect('/portal/patient', {'notifications': n1})
 
+        def show_todos(request, todos_id):
+            n = Todo.objects.get(id=todos_id)
+            return render_to_response('patientPortal/therapistDashboard.html', {'todos': n})
+
+        def delete_todos(request, todos_id):
+            n = Todo.objects.get(id=todos_id)
+            n.completed = True
+            n.save()
+            n1 = Todo.objects.filter(user=request.user, completed=False)
+            return HttpResponseRedirect('/portal/patient', {'todos': n1})
+
         return render_to_response('patientPortal/therapistDashboard.html')
     else:
         return redirect('/portal/patient')
