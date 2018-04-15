@@ -6,6 +6,8 @@ from django.conf import settings
 from django.shortcuts import redirect
 from .accessoryScripts.checkGroup import is_patient, is_therapist
 from. forms import MyPersonalInformationForm
+from. forms import MyContactInformationForm
+from django.forms.formsets import formset_factory
 import json
 from .models import notification
 from .models import Todo
@@ -30,11 +32,24 @@ def MyPersonalInformation(request):
     if not request.user.is_authenticated:
         return redirect('/portal/login')
     if is_patient(request.user):
-        form = MyPersonalInformationForm(request.POST or None)
-        if form. is_valid():
-            save_it = form.save(commit=False)
-            save_it.save()
-        return render(request, 'patientPortal/information.html')
+        MyContactInformationFormSet = formset_factory(MyContactInformationForm,
+                                                      extra=3, min_num=2, validate_min=True)
+        if request.method == 'POST':
+            form = MyPersonalInformationForm(request.POST)
+            formset = MyContactInformationFormSet(request.POST)
+            if form.is_valid() and formset.is_valid():
+                for inline_form in formset:
+                    personal = form.save()
+                    if inline_form.cleaned_data:
+                        contact = inline_form.save(commit=False)
+                        contact.username = personal
+                        contact.save()
+                        return redirect('/patientPortal/information')
+        else:
+            form = MyPersonalInformationForm()
+            formset = MyContactInformationFormSet()
+        return render_to_response('patientPortal/information.html',
+                                  {'form': form,  'formset': formset})
     else:
         return redirect('/portal/therapist')
 
