@@ -5,23 +5,8 @@ from django.contrib.auth.models import User
 # from django.conf import settings
 #  from django.contrib.auth.models import Group
 from django.utils import timezone
-# from django.db.models.signals import post_save
-
 
 # Create your models here.
-# class Users(models.Model):
-#     user = models.OneToOneField(User,  on_delete=models.CASCADE)
-#
-#
-# def post_save_receiver(sender, instance, created, **kwargs):
-#     pass
-#
-#
-# post_save.connect(post_save_receiver, sender=settings.AUTH_USER_MODEL)
-#
-#
-# def __str__(self):
-#     return self.user.username
 
 
 class MyPersonalInformation(models.Model):
@@ -34,20 +19,6 @@ class MyPersonalInformation(models.Model):
     Date_of_Birth = models.DateField()
     Emergency_Contact_Name = models.CharField(max_length=30)
     Emergency_Contact_Phone = models.CharField(max_length=20)
-    # RACE_CHOICES = (
-    #     ('1', 'African Amercan'),
-    #     ('2', 'Amercan Indian'),
-    #     ('3', 'Asian'),
-    #     ('4', 'Hispanic'),
-    #     ('5', 'White'),
-    # )
-    # race = models.CharField(max_length=1, choices=RACE_CHOICES)
-    #
-    # GENDER_CHOICES = (
-    #     ('1', 'Male'),
-    #     ('2', 'Female'),
-    # )
-    # gender = models.CharField(max_length=1, choices=GENDER_CHOICES)
 
     def __str__(self):
         return self.username.username
@@ -130,14 +101,17 @@ class appointment(models.Model):
 class notification(models.Model):
     patient_username = models.CharField(max_length=15, blank=True)
     therapist_username = models.ForeignKey(User, on_delete=models.CASCADE)
+    Unique_ID = models.CharField(max_length=20, unique=True, blank=False)
     header = models.CharField(max_length=30)
     message = models.TextField(blank=True, null=True)
     description = models.TextField(blank=True, null=True)
+    viewed = models.BooleanField(default=False)
 
 
 class Todo(models.Model):
     patient_username = models.CharField(max_length=15, blank=True)
     therapist_username = models.ForeignKey(User, on_delete=models.CASCADE)
+    Unique_ID = models.CharField(max_length=20, unique=True, blank=False)
     title = models.CharField(max_length=140)
     created_date = models.DateField(default=timezone.now, blank=True, null=True)
     due_date = models.DateField(blank=True, null=True, )
