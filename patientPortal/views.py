@@ -1,12 +1,19 @@
 from django.shortcuts import render
 from django.shortcuts import render_to_response
-from. forms import MyPersonalInformationForm
+from django.http import HttpResponse
+from django.http import HttpResponseRedirect
 from django.conf import settings
 from django.shortcuts import redirect
 from .accessoryScripts.checkGroup import is_patient, is_therapist
-from django.http import HttpResponse
+from. forms import MyPersonalInformationForm
+from. forms import MyContactInformationForm
+from django.forms.formsets import formset_factory
 import json
+from .models import notification
+from .models import Todo
 # PATIENT VIEWS #
+
+
 def patientDashboard(request):
     if not request.user.is_authenticated:
         return redirect('/portal/login')
@@ -25,11 +32,24 @@ def MyPersonalInformation(request):
     if not request.user.is_authenticated:
         return redirect('/portal/login')
     if is_patient(request.user):
-        form = MyPersonalInformationForm(request.POST or None)
-        if form. is_valid():
-            save_it = form.save(commit=False)
-            save_it.save()
-        return render(request, 'patientPortal/information.html')
+        MyContactInformationFormSet = formset_factory(MyContactInformationForm,
+                                                      extra=3, min_num=2, validate_min=True)
+        if request.method == 'POST':
+            form = MyPersonalInformationForm(request.POST)
+            formset = MyContactInformationFormSet(request.POST)
+            if form.is_valid() and formset.is_valid():
+                for inline_form in formset:
+                    personal = form.save()
+                    if inline_form.cleaned_data:
+                        contact = inline_form.save(commit=False)
+                        contact.username = personal
+                        contact.save()
+                        return redirect('/patientPortal/information')
+        else:
+            form = MyPersonalInformationForm()
+            formset = MyContactInformationFormSet()
+        return render_to_response('patientPortal/information.html',
+                                  {'form': form,  'formset': formset})
     else:
         return redirect('/portal/therapist')
 
@@ -56,20 +76,6 @@ def patientCalendar(request):
     if not request.user.is_authenticated:
         return redirect('/portal/login')
     if is_patient(request.user):
-        import json
-        request_query_dict = request.GET;
-        request_dict = dict(request_query_dict);
-
-        # FIXME notice that this does two calls to the page on load. 1 to just load the page and 2 to transmit data
-        # Must be better way of doing this, but seemed the most reasonable solution due to strang
-        if bool(request_dict):
-
-            #Filler information to test front end response
-            therapist = "Some Guy"
-            appts = [{'date' : '2018-04-14', 'time':'2:00pm'}, {'date':'2018-04-16','time':'3:00pm'}]
-            # This part will remain the same
-            response_body = {"therapist": therapist, "appts": appts}
-            return HttpResponse(json.dumps(response_body));
         return render_to_response('patientPortal/patientCalendar.html')
     else:
         return redirect('/portal/therapist')
@@ -81,6 +87,28 @@ def therapistDashboard(request):
     if not request.user.is_authenticated:
         return redirect('/portal/login')
     if is_therapist(request.user):
+        def show_notifications(request, notifications_id):
+            n = notification.objects.get(id=notifications_id)
+            return render_to_response('patientPortal/therapistDashboard.html', {'notifications': n})
+
+        def delete_notifications(request, notifications_id):
+            n = notification.objects.get(id=notifications_id)
+            n.viewed = True
+            n.save()
+            n1 = notification.objects.filter(user=request.user, viewed=False)
+            return HttpResponseRedirect('/portal/patient', {'notifications': n1})
+
+        def show_todos(request, todos_id):
+            n = Todo.objects.get(id=todos_id)
+            return render_to_response('patientPortal/therapistDashboard.html', {'todos': n})
+
+        def delete_todos(request, todos_id):
+            n = Todo.objects.get(id=todos_id)
+            n.completed = True
+            n.save()
+            n1 = Todo.objects.filter(user=request.user, completed=False)
+            return HttpResponseRedirect('/portal/patient', {'todos': n1})
+
         return render_to_response('patientPortal/therapistDashboard.html')
     else:
         return redirect('/portal/patient')
@@ -118,19 +146,20 @@ def forms(request):
         return redirect('/portal/login')
     if is_therapist(request.user):
         from patientPortal.apiScripts.exports import get_available_forms
-        method = request.method;
+        method = request.method
         if (method == "GET"):
-            request_query_dict = request.GET;
-            request_dict = dict(request_query_dict);
-            if not bool(request_dict): # The dict is empty means request has been made to load page
-                forms = get_available_forms();
-                return render(request, 'patientPortal/forms.html',  context = {'forms' : forms})
+            request_query_dict = request.GET
+            request_dict = dict(request_query_dict)
+            if not bool(request_dict):  # The dict is empty means request has been made to load page
+                forms = get_available_forms()
+                return render(request, 'patientPortal/forms.html',  context={'forms': forms})
 
             # This call only needs to be done here, keeping it local
             from patientPortal.apiScripts.exports import get_form_groups
 
             # on JSON creation on front end, turns these values for the keys into lists
             # taking first element of the list fixes this issue
+
             form = request_dict['form'][0];
             event = request_dict['event'][0];
             question_groups = get_form_groups(form,event);
