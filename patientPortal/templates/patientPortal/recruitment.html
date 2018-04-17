@@ -16,6 +16,7 @@
   <link href="{% static 'css/formatting/text-indenting.css' %}" rel="stylesheet">
   <!-- Font Calls -->
   <link href="{% static 'css/font/general-fonts.css' %}" rel="stylesheet">
+  <link href="{% static '/Users/teddycolon/webprojects/github/webPortalProduction/static/javascript/jquery/studyPanel.js' %}">
   <style>
     body {
       background-color: #F8F8F8;
@@ -110,13 +111,27 @@
         <div class="col-sm-9" data-ng-controller="patientController">
           <!--HEADER-->
           <div class="accord-header">
-            <button type="button" onclick="Check('studs')" name="checkAll" class="chAllRP btn" data-toggle="checkbox" style="margin: 10px 0 0 10px;">Select All</button>
-            <button type="button" name="ECAll" class="btn ExCol" data-toggle="checkbox" style="margin: 10px 0 0 0;">Expand/Collase All</button>
+            <button type="button" data-toggle="modal" data-target="#pop-up-modal" name="addgroup" class="btn openModal" style="margin: 10px 0 0 10px;">Add Study</button>
+            <button type="button" onclick="Check('studs')" name="checkAll" class="chAllRP btn" data-toggle="checkbox" style="margin: 10px 0 0 5px;">Select All</button>
             <button type="button" class="modBTN btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">Send To Patients</button>
           </div>
-          <!--111END111-->
 
           <div class="no-margin" style="overflow-y: auto; height:400px;">
+            <!--<div class="modal fade" id="pop-up-modal" role="dialog">
+              <div class="modal-dialog">
+                <div class="modal-content" style="height:400px; width:75%;">
+
+                  <h4>Title of Study:</h4>
+                  <input type="text">
+                  <h4>Description:</h4>
+                  <input type="text">
+                  <h4>Name of Researcher:</h4>
+                  <input type="text">
+                  <h4>Additional Info:</h4>
+                  <input type="text">
+                </div>
+              </div>
+            </div>-->
             <div class="panel-group" id="accordion">
               <div data-ng-repeat="study in studies">
                 <studies-listing info="study"></studies-listing>
@@ -130,7 +145,6 @@
               <div class="modal-dialog">
                 <!-- Modal content-->
                 <div class="modal-content">
-
 
                   <!--HEADER-->
                   <div class="modal-header">
@@ -249,18 +263,9 @@
                     </div>
                     <!--End of Search Bar Section-->
 
-
-
                     <h4 class="modal-title">Recipients</h4>
                   </div>
-                  <!--HEADER END-->
-                  <!--<div class="full-modal-body" style="max-height: 300px; overflow-y:scroll;">-->
 
-
-                  <!--<div class="modal-body" style="border:1px solid #ddd; margin: 5px;">
-                      </div>
-                      <div class="full-modal-body" style="max-height: 300px; overflow-y:scroll;"></div>
-                    -->
                   <div class="full-modal-body" style="max-height: 300px; overflow-y:scroll;">
                     <table class="table table-hover" id="usrTable1">
                       <thead>
@@ -356,13 +361,13 @@
       }
     }
     //following code is to collapse/expand all of the studies
-    $(document).ready(function() {
+    /*$(document).ready(function() {
       $(".ExCol").click(function() {
         $(".collapse").collapse("show");
         $(".in").collapse("hide");
       });
-    });
-    //following code selects all patients
+    });*/
+    $(document).ready()
 
   </script>
 </body>
