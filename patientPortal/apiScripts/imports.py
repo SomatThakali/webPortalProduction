@@ -1,4 +1,4 @@
-from apiCall import get_project
+from .apiCall import get_project
 
 # changes is to be edited where changes is a dictionary of keys in the redcap base
 def edit_patient_data_by_id(redcap_event_name,record_id,changes):

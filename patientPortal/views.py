@@ -159,19 +159,32 @@ def forms(request):
 
             # on JSON creation on front end, turns these values for the keys into lists
             # taking first element of the list fixes this issue
-            form = request_dict['form'][0]
-            event = request_dict['event'][0]
-            question_groups = get_form_groups(form, event)
-            print(len(question_groups))
-            response_body = {'guestion_groups': question_groups, 'event': event}
-            return HttpResponse(json.dumps(response_body))
+
+            form = request_dict['form'][0];
+            event = request_dict['event'][0];
+            question_groups = get_form_groups(form,event);
+            response_body = {'question_groups': question_groups, 'event': event};
+            return HttpResponse(json.dumps(response_body));
+        if (method == "POST"):
+            request_query_dict = request.POST;
+            request_dict = dict(request_query_dict);
+            record_id = request_dict['record_id'];
+            cohort_num = request_dict['cohort_num'];
+            event_arm = request_dict['event_arm'];
+            from .accessoryScripts.resourceManager import removeDictKey, fixDict
+            for key in ['record_id','cohort_num','event_arm','csrfmiddlewaretoken','handedness','stroketype','lesionloc','affectedsidebody','weaklimb','diagnostic_testing','program_of_interest','time']:
+                request_dict = removeDictKey(request_dict,key);
+
+            request_dict = fixDict(request_dict);
+
+            from patientPortal.apiScripts.imports import edit_patient_data_by_id
+            from patientPortal.apiScripts.helper import create_redcap_event_name
+            red_cap_event = create_redcap_event_name(event_arm[0],cohort_num[0]);
+            edit_patient_data_by_id(red_cap_event,record_id[0],request_dict);
+
+            return HttpResponse(json.dumps({'status': 'successful submission'}));
     else:
         return redirect('/portal/patient')
-
-    # print(bool(request_dict))
-    # forms = get_available_forms();
-    # return render(request, 'patientPortal/forms.html',  context = {'forms' : forms})
-
 
 def settings(request):
     if not request.user.is_authenticated:

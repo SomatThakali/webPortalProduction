@@ -14,30 +14,35 @@ def get_form_groups(form_name, action):
     questions = get_form_questions(form_name);
     # If viewing can display more, less space needed for other fields from user
     if action == "view":
-        max_size = 14;
+        max_size = 8*2;
     if action == "create":
-        max_size = 10;
+        max_size = 6*2;
 
     form_groups = []
     form_group = []
-    size = 0;
-    for i in range(len(questions)):
-        question = questions[i]
-        print(size)
-        if question['field_type'] == "radio":
-            q_size = 3;
-        else:
-            q_size = 2;
 
-        if q_size + size <= max_size:
+    size = 0;
+    header_text = ''
+    for i in range(len(questions)):
+        question = questions[i];
+        newHeader = (question['section_header']!= '');
+
+        q_size = 2;
+
+        if(newHeader):
+            size += 4;
+            header_text = question['section_header'];
+
+        if q_size + size <= max_size and not newHeader:
             size += q_size;
         else:
             size = q_size;
-            form_groups.append(form_group);
-            print("creating group")
-            form_group = [];
-
-        print("adding item")
+            if len(form_group) != 0:
+                form_groups.append(form_group);
+                form_group = [];
+                if header_text != '':
+                    question['section_header'] = header_text; # so we know on a new page the header
+                    size += 4; # If header should exist we need to account for space
         form_group.append(question);
 
         if size <= max_size and i == len(questions)-1 and len(form_group)>0:
@@ -77,9 +82,9 @@ def get_event_data(redcap_event_name):
     return event_data
 
 def get_patient_data_by_id(redcap_event_name,record_id):
-    event_data = get_event_data(event_name, cohort_num);
+    event_data = get_event_data(redcap_event_name);
 
-    patient = [daum for datum in event_data if datum['record_id'] == record_id][0];
+    patient = [datum for datum in event_data if datum['record_id'] == record_id][0];
     #returns all patient data
     return patient
 
