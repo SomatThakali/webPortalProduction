@@ -1,10 +1,10 @@
 # webPortalProduction
 
-We can use the File as a manual for Burke on how they use the website once it is done. 
+We can use the file as a manual for Burke on how they use the website once it is done. 
 
-How to create a super user:
-1_ cd into the dir where the repo is installed.
-2_ open cmd and type : python manage.py createsuperuser
+How to create a super user (admin) account :
+1_ open cmd and cd into the dir where the repo is installed.
+2_ in the terminal type : python manage.py createsuperuser
 3_ chose a username and password and click enter.
 4_ go to the log-in page and enter the created credentials to log in as admin
 
