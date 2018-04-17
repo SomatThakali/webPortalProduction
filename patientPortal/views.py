@@ -32,9 +32,13 @@ def MyPersonalInformation(request):
     if not request.user.is_authenticated:
         return redirect('/portal/login')
     if is_patient(request.user):
-        MyContactInformationFormSet = formset_factory(MyContactInformationForm,
-                                                      extra=3, min_num=2, validate_min=True)
+        #MyContactInformationFormSet = formset_factory(MyContactInformationForm,
+        #                                              extra=3, min_num=2, validate_min=True)
         if request.method == 'POST':
+            request_query_dict = request.POST;
+            request_dict = dict(request_query_dict);
+            print(request_dict);
+            """
             form = MyPersonalInformationForm(request.POST)
             formset = MyContactInformationFormSet(request.POST)
             if form.is_valid() and formset.is_valid():
@@ -45,11 +49,12 @@ def MyPersonalInformation(request):
                         contact.username = personal
                         contact.save()
                         return redirect('/patientPortal/information')
-        else:
-            form = MyPersonalInformationForm()
-            formset = MyContactInformationFormSet()
-        return render_to_response('patientPortal/information.html',
-                                  {'form': form,  'formset': formset, 'name': "Kevin Call", 'contactphone': "(347) 277-0295", 'adline':"635 Riverside Drive", 'adline2': 'Apt 1B', 'dob': '02/06/1996', 'email': 'kevin.call96@gmail.com', 'emergencycontact': 'Revital Schecter', 'emergencycontactnum': '(718) 277-7317' })
+            """
+    #    else:
+    #        form = MyPersonalInformationForm()
+    #        formset = MyContactInformationFormSet()
+        return render(request, 'patientPortal/information.html',
+                                 context =  {'name': "Kevin Call", 'contactphone': "(347) 277-0295", 'adline':"635 Riverside Drive", 'adline2': 'Apt 1B', 'dob': '1996-02-06', 'email': 'kevin.call96@gmail.com', 'emergencycontact': 'Revital Schecter', 'emergencycontactnum': '(718) 277-7317' })
     else:
         return redirect('/portal/therapist')
 
@@ -76,6 +81,20 @@ def patientCalendar(request):
     if not request.user.is_authenticated:
         return redirect('/portal/login')
     if is_patient(request.user):
+        import json
+        request_query_dict = request.GET;
+        request_dict = dict(request_query_dict);
+
+        # FIXME notice that this does two calls to the page on load. 1 to just load the page and 2 to transmit data
+        # Must be better way of doing this, but seemed the most reasonable solution due to strang
+        if bool(request_dict):
+
+            #Filler information to test front end response
+            therapist = "Some Guy"
+            appts = [{'date' : '2018-04-20', 'time':'2:00pm'}, {'date':'2018-04-17','time':'5:00pm'}]
+            # This part will remain the same
+            response_body = {"therapist": therapist, "appts": appts}
+            return HttpResponse(json.dumps(response_body));
         return render_to_response('patientPortal/patientCalendar.html')
     else:
         return redirect('/portal/therapist')
