@@ -49,7 +49,7 @@ def MyPersonalInformation(request):
             form = MyPersonalInformationForm()
             formset = MyContactInformationFormSet()
         return render_to_response('patientPortal/information.html',
-                                  {'form': form,  'formset': formset})
+                                  {'form': form,  'formset': formset, 'name': "Kevin Call", 'contactphone': "(347) 277-0295", 'adline':"635 Riverside Drive", 'adline2': 'Apt 1B', 'dob': '02/06/1996', 'email': 'kevin.call96@gmail.com', 'emergencycontact': 'Revital Schecter', 'emergencycontactnum': '(718) 277-7317' })
     else:
         return redirect('/portal/therapist')
 
