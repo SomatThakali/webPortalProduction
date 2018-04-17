@@ -46,11 +46,11 @@
           <div class="modal-body">
             <h4 id="futureApptDate"></h4>
             <h4 id="futureApptTime"></h4>
-            <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel Appointment</button>
+            <button type="button" id="cancelbtn" class="btn btn-danger" onclick="cancelNote" data-dismiss="modal">Cancel Appointment</button>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary">Reschedule</button>
+            <button type="button" id="rechedulebtn"class="btn btn-primary" onclick="rescheduleNote">Reschedule</button>
           </div>
         </div>
       </div>
@@ -164,6 +164,7 @@
 
     <script src="{% static 'javascript/app.js' %}"></script>
     <script src="{% static 'javascript/directives/logOutBar.js' %}"></script>
+    <script src="{% static 'javascript/ajax-requests/calendar.js' %}"></script>
 
     <script>
     var calendar = {};
@@ -240,6 +241,8 @@
       });
 
     });
+
+
     </script>
   </body>
 </html>

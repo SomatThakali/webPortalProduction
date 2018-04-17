@@ -136,7 +136,7 @@ def recruitment(request):
     if not request.user.is_authenticated:
         return redirect('/portal/login')
     if is_therapist(request.user):
-        return render_to_response('patientPortal/recruitment.html')
+        return render(request,'patientPortal/recruitment.html',context={})
     else:
         return redirect('/portal/patient')
 
