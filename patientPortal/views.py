@@ -76,6 +76,20 @@ def patientCalendar(request):
     if not request.user.is_authenticated:
         return redirect('/portal/login')
     if is_patient(request.user):
+        import json
+        request_query_dict = request.GET;
+        request_dict = dict(request_query_dict);
+
+        # FIXME notice that this does two calls to the page on load. 1 to just load the page and 2 to transmit data
+        # Must be better way of doing this, but seemed the most reasonable solution due to strang
+        if bool(request_dict):
+
+            #Filler information to test front end response
+            therapist = "Some Guy"
+            appts = [{'date' : '2018-04-20', 'time':'2:00pm'}, {'date':'2018-04-17','time':'5:00pm'}]
+            # This part will remain the same
+            response_body = {"therapist": therapist, "appts": appts}
+            return HttpResponse(json.dumps(response_body));
         return render_to_response('patientPortal/patientCalendar.html')
     else:
         return redirect('/portal/therapist')
