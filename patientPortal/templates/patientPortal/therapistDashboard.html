@@ -85,11 +85,22 @@
         </div>
         <div id="notification-form" class="responsive-vertical-cushion hide">
           <h2>Notifications</h2>
-          <div ng-controller="notificationsController" style= "margin-right: 0; height:380px; width: 70vw; overflow-y: auto">
+          <div style= "margin-right: 0; height:380px; width: 70vw; overflow-y: auto">
             <div>
-              <div ng-repeat="notice in notices">
-                <notice info="notice"></notice>
+              {% for notification in notifications %}
+              <div style="border: 2px solid #e7e7e7; margin: 10px 0; padding: 20px 25px" class="no-margin row">
+                <div class="row no-margin">
+                  <div style="padding: 15px 15px;" class="col-sm-2">
+                    <i class= "{{notification.type}} fa-4x"></i>
+                  </div>
+                  <div class="col-sm-10">
+                    <h5 style="display: inline-block">{{notification.header}}</h5>
+                    <h5 style="padding-right: 0;font-weight: bold"> {{notification.date}}</h5>
+                  </div>
+                </div>
               </div>
+
+              {% endfor %}
             </div>
         </div>
       </div>
