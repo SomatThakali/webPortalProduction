@@ -32,9 +32,13 @@ def MyPersonalInformation(request):
     if not request.user.is_authenticated:
         return redirect('/portal/login')
     if is_patient(request.user):
-        MyContactInformationFormSet = formset_factory(MyContactInformationForm,
-                                                      extra=3, min_num=2, validate_min=True)
+        #MyContactInformationFormSet = formset_factory(MyContactInformationForm,
+        #                                              extra=3, min_num=2, validate_min=True)
         if request.method == 'POST':
+            request_query_dict = request.POST;
+            request_dict = dict(request_query_dict);
+            print(request_dict);
+            """
             form = MyPersonalInformationForm(request.POST)
             formset = MyContactInformationFormSet(request.POST)
             if form.is_valid() and formset.is_valid():
@@ -45,11 +49,12 @@ def MyPersonalInformation(request):
                         contact.username = personal
                         contact.save()
                         return redirect('/patientPortal/information')
-        else:
-            form = MyPersonalInformationForm()
-            formset = MyContactInformationFormSet()
-        return render_to_response('patientPortal/information.html',
-                                  {'form': form,  'formset': formset})
+            """
+    #    else:
+    #        form = MyPersonalInformationForm()
+    #        formset = MyContactInformationFormSet()
+        return render(request, 'patientPortal/information.html',
+                                 context =  {'name': "Kevin Call", 'contactphone': "(347) 277-0295", 'adline':"635 Riverside Drive", 'adline2': 'Apt 1B', 'dob': '1996-02-06', 'email': 'kevin.call96@gmail.com', 'emergencycontact': 'Revital Schecter', 'emergencycontactnum': '(718) 277-7317' })
     else:
         return redirect('/portal/therapist')
 
@@ -101,6 +106,7 @@ def therapistDashboard(request):
     if not request.user.is_authenticated:
         return redirect('/portal/login')
     if is_therapist(request.user):
+
         def show_notifications(request, notifications_id):
             n = notification.objects.get(id=notifications_id)
             return render_to_response('patientPortal/therapistDashboard.html', {'notifications': n})
@@ -123,7 +129,14 @@ def therapistDashboard(request):
             n1 = Todo.objects.filter(user=request.user, completed=False)
             return HttpResponseRedirect('/portal/patient', {'todos': n1})
 
-        return render_to_response('patientPortal/therapistDashboard.html')
+        notifications = [];
+        notifications.append({'patient_name': 'John Doe','Unique_ID':'5162d31', 'header' :'Reschedule - John Doe','message': 'John Doe would like to reschedule his 2:00 PM therapy session','description':'reschedule','viewed':False});
+        notifications.append({'patient_name': 'John Doe','Unique_ID':'5162d31', 'header' :'Reschedule - John Doe','message': 'John Doe would like to reschedule his 2:00 PM therapy session','description':'reschedule','viewed':False});
+        notifications.append({'patient_name': 'John Doe','Unique_ID':'5162d31', 'header' :'Reschedule - John Doe','message': 'John Doe would like to reschedule his 2:00 PM therapy session','description':'reschedule','viewed':False});
+        notifications.append({'patient_name': 'John Doe','Unique_ID':'5162d31', 'header' :'Reschedule - John Doe','message': 'John Doe would like to reschedule his 2:00 PM therapy session','description':'reschedule','viewed':False});
+        notifications.append({'patient_name': 'John Doe','Unique_ID':'5162d31', 'header' :'Reschedule - John Doe','message': 'John Doe would like to reschedule his 2:00 PM therapy session','description':'reschedule','viewed':False});
+
+        return render(request,'patientPortal/therapistDashboard.html',context={'notifications': notifications})
     else:
         return redirect('/portal/patient')
 
@@ -150,7 +163,7 @@ def recruitment(request):
     if not request.user.is_authenticated:
         return redirect('/portal/login')
     if is_therapist(request.user):
-        return render_to_response('patientPortal/recruitment.html')
+        return render(request,'patientPortal/recruitment.html',context={})
     else:
         return redirect('/portal/patient')
 

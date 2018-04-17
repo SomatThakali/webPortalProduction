@@ -110,7 +110,7 @@
         <div class="col-sm-9" data-ng-controller="patientController">
           <!--HEADER-->
           <div class="accord-header">
-            <button type="button" onclick="Check()" name="checkAll" class="chAllRP btn" data-toggle="checkbox" style="margin: 10px 0 0 10px;">Select All</button>
+            <button type="button" onclick="Check('studs')" name="checkAll" class="chAllRP btn" data-toggle="checkbox" style="margin: 10px 0 0 10px;">Select All</button>
             <button type="button" name="ECAll" class="btn ExCol" data-toggle="checkbox" style="margin: 10px 0 0 0;">Expand/Collase All</button>
             <button type="button" class="modBTN btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">Send To Patients</button>
           </div>
@@ -202,17 +202,16 @@
 
                         <input type="text" class="form-control search" placeholder="Search for patients">
 
-
                         <div class="input-group-btn">
                           <div class="btn-group" role="group">
                             <div class="dropdown dropdown-lg">
-                              <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><span class="caret"></span></button>
+                              <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                <span class="caret"></span>
+                              </button>
                               <div class="dropdown-menu dropdown-menu-right" role="menu">
 
                                 <form class="form-horizontal">
-
                                   <div class="form-group">
-
                                     <label class="filterlabel" style="width:95px;">Health Conditions</label>
                                     <select class="form-control">
                                         <option value="0" selected>None</option>
@@ -222,21 +221,23 @@
                                         <option value="4">Traumatic Brian Injury</option>
                                       </select>
                                   </div>
-
+                                  <!-- The following code is to filter through patients based on their info stored in db
                                   <div class="form-group">
                                     <label class="filterlabel" style="width:85px;">Author</label>
-
                                     <div data-role="rangeslider">
                                       <input type="range" name="price-max" id="price-max" value="800" min="0" max="1000">
                                     </div>
-
                                   </div>
 
                                   <div class="form-group">
                                     <label class="filterlabel" style="margin-left:4px;">Contains the words</label>
                                     <input class="form-control" type="text">
-                                  </div>
-                                  <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
+                                  </div>-->
+                                  <button type="submit" style="width:100%;" class="btn btn-primary">
+                                    Apply Filter
+                                    <span class="glyphicon glyphicon-search" aria-hidden="true" style="">
+                                    </span>
+                                  </button>
                                 </form>
 
                               </div>
@@ -273,7 +274,7 @@
                       <tbody>
                         <tr data-ng-repeat="patient in patients">
                           <th scope="row" style="width:110px;">
-                            <form><input onclick="checkAll()" type="checkbox" style="margin-left:10px;" name={{patient.id}}></form>
+                            <input type="checkbox" name="patts" style="margin-left:10px;">
                           </th>
                           <td>{{patient.id}}</td>
                           <td>{{patient.firstName}}</td>
@@ -283,7 +284,7 @@
                     </table>
                   </div>
                   <div class="modal-footer">
-                    <button data-toggle="checked" data-target=".{{patient.firstName}}" type="button" class="btn btn-default" style="float: left;">Select All</button>
+                    <button type="button" onclick="Check('patts')" class="btn btn-default" style="float: left;">Select All</button>
                     <button type="button" class="btn btn-default">Send</button>
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                   </div>
@@ -342,8 +343,8 @@
       });
     });
     //following code is to select/unselect all studies to send to patients in the recruitment page
-    function Check() {
-      var items = document.getElementsByName('studs');
+    function Check(name) {
+      var items = document.getElementsByName(name);
       for (var i = 0; i < items.length; i++) {
         if (items[i].type == 'checkbox') {
           if (items[i].checked == false) {
