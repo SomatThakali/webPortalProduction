@@ -5,26 +5,21 @@ from django.http import HttpResponseRedirect
 from django.template import RequestContext
 from django.conf import settings
 from django.shortcuts import redirect
+from django.views.decorators.csrf import csrf_exempt
+from django.core.exceptions import ObjectDoesNotExist
+from django.contrib.auth.models import User
+from django.forms.formsets import formset_factory
+from django.db import models
 from .accessoryScripts.checkGroup import is_patient, is_therapist
 from .DB_Extractor import get_personal_info, get_apoint_info
 from. forms import MyPersonalInformationForm
 from. forms import MyContactInformationForm
-from django.forms.formsets import formset_factory
 import json
 from .models import notification
 from .models import Todo
-from django.contrib.auth.models import User
-from django.db import models
 import datetime
-from django.views.decorators.csrf import csrf_exempt
-from django.core.exceptions import ObjectDoesNotExist
-
-
-
 
 # PATIENT VIEWS #
-
-
 def patientDashboard(request):
     if not request.user.is_authenticated:
         return redirect('/portal/login')
@@ -94,6 +89,7 @@ def patientCalendar(request):
             info=get_apoint_info(request.user)
         except ObjectDoesNotExist:
             pass
+
         # FIXME notice that this does two calls to the page on load. 1 to just load the page and 2 to transmit data
         # Must be better way of doing this, but seemed the most reasonable solution due to strang
         if bool(request_dict):

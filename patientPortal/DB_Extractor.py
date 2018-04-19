@@ -33,5 +33,5 @@ def get_apoint_info(request):
     hour = p.appointment.time.hour
     minute = p.appointment.time.minute
     time = str(hour)+':'+str(minute)
-    
+
     return  {'date': date,'time':time,'apoint': apointment}
