@@ -17,6 +17,8 @@ from django.contrib.auth.models import User
 from django.db import models
 import datetime
 from django.views.decorators.csrf import csrf_exempt
+from django.core.exceptions import ObjectDoesNotExist
+
 
 
 
@@ -88,8 +90,10 @@ def patientCalendar(request):
 
         request_query_dict2 = request.POST;
         request_dict2 = dict(request_query_dict2);
-        info=get_apoint_info(request.user)
-
+        try:
+            info=get_apoint_info(request.user)
+        except ObjectDoesNotExist:
+            pass
         # FIXME notice that this does two calls to the page on load. 1 to just load the page and 2 to transmit data
         # Must be better way of doing this, but seemed the most reasonable solution due to strang
         if bool(request_dict):
