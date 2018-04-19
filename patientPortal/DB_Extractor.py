@@ -1,6 +1,6 @@
 # TODO what if u have multiple appointments (somat should fix mod first),
 # what about pm am thing,
-# how to delete. 
+# how to delete.
 
 from django.contrib.auth.models import User
 
@@ -24,13 +24,14 @@ def get_personal_info(request):
 
 def get_apoint_info(request):
     p = User.objects.filter(username=request)[0]
-    day   = p.appointment.date.day
-    month = p.appointment.date.month
-    year  = p.appointment.date.year
+    apointment=p.appointment
+    day   = apointment.date.day
+    month = apointment.date.month
+    year  = apointment.date.year
     date = str(year)+'-'+ str(month)+'-'+str(day)
 
     hour = p.appointment.time.hour
     minute = p.appointment.time.minute
-
     time = str(hour)+':'+str(minute)
-    return  {'date': date,'time':time }
+    
+    return  {'date': date,'time':time,'apoint': apointment}

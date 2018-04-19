@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.shortcuts import render_to_response
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
+from django.template import RequestContext
 from django.conf import settings
 from django.shortcuts import redirect
 from .accessoryScripts.checkGroup import is_patient, is_therapist
@@ -15,6 +16,8 @@ from .models import Todo
 from django.contrib.auth.models import User
 from django.db import models
 import datetime
+from django.views.decorators.csrf import csrf_exempt
+
 
 
 # PATIENT VIEWS #
@@ -73,7 +76,7 @@ def exercise(request):
     else:
         return redirect('/portal/therapist')
 
-
+@csrf_exempt
 def patientCalendar(request):
 
     if not request.user.is_authenticated:
@@ -82,6 +85,9 @@ def patientCalendar(request):
         import json
         request_query_dict = request.GET;
         request_dict = dict(request_query_dict);
+
+        request_query_dict2 = request.POST;
+        request_dict2 = dict(request_query_dict2);
         info=get_apoint_info(request.user)
 
         # FIXME notice that this does two calls to the page on load. 1 to just load the page and 2 to transmit data
@@ -93,6 +99,11 @@ def patientCalendar(request):
             # This part will remain the same
             response_body = {"therapist": therapist, "appts": appts}
             return HttpResponse(json.dumps(response_body));
+
+
+        if bool(request_dict2):
+            info['apoint'].delete()
+
         return render_to_response('patientPortal/patientCalendar.html')
     else:
         return redirect('/portal/therapist')
@@ -125,6 +136,7 @@ def therapistDashboard(request):
             n.completed = True
             n.save()
             n1 = Todo.objects.filter(user=request.user, completed=False)
+            # n1.delete() could be used to delete records.
             return HttpResponseRedirect('/portal/patient', {'todos': n1})
 
         notifications = [];

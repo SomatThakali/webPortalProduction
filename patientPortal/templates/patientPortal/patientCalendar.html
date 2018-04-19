@@ -253,6 +253,7 @@
             time = currentSelection.time,
             date = currentSelection.date;
 
+
         var requestObject = {
           time: time,
           date: date,
@@ -284,7 +285,9 @@
           url: '',
           type: 'POST',
           dataType: 'json',
-          data: requestObject
+          data:{ requestObject,
+            'csrfmiddlewaretoken': '{{ csrf_token }}',
+          }
         })
       }
 
