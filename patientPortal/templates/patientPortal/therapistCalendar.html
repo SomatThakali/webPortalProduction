@@ -17,6 +17,7 @@
 <script>
   //Get patients from service to create the patient dropdown
   var patients = ['Jesus','Dr. Wang', 'Aimee','Revital','Teddy','Kevin'],
+  // NOTE: replace with p = User.objects.filter(groups__name='patient')
       i = 0,
       patientsLength = patients.length,
       htmlPatientDropdownString = '<option>Choose Patient</option>';

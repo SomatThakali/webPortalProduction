@@ -2,25 +2,33 @@ from django.shortcuts import render
 from django.shortcuts import render_to_response
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
+from django.template import RequestContext
 from django.conf import settings
 from django.shortcuts import redirect
+from django.views.decorators.csrf import csrf_exempt
+from django.core.exceptions import ObjectDoesNotExist
+from django.contrib.auth.models import User
+from django.forms.formsets import formset_factory
+from django.db import models
 from .accessoryScripts.checkGroup import is_patient, is_therapist
+from .DB_Extractor import get_personal_info, get_apoint_info
 from. forms import MyPersonalInformationForm
 from. forms import MyContactInformationForm
-from django.forms.formsets import formset_factory
 import json
 from .models import notification
 from .models import Todo
+import datetime
+
 # PATIENT VIEWS #
-
-
 def patientDashboard(request):
     if not request.user.is_authenticated:
         return redirect('/portal/login')
     if is_patient(request.user):
         user = request.user
-        first_name = user.first_name
-        last_name = user.last_name
+
+        p = User.objects.filter(username=request.user)[0] # this gets everything you want about the patient
+        first_name=p.mypersonalinformation.First_Name
+        last_name=p.mypersonalinformation.Last_Name
         return render(
             request, 'patientPortal/patientDashboard.html', context={'first_name': first_name, 'last_name': last_name},
         )
@@ -29,27 +37,21 @@ def patientDashboard(request):
 
 
 def MyPersonalInformation(request):
+
     if not request.user.is_authenticated:
         return redirect('/portal/login')
     if is_patient(request.user):
-        MyContactInformationFormSet = formset_factory(MyContactInformationForm,
-                                                      extra=3, min_num=2, validate_min=True)
-        if request.method == 'POST':
-            form = MyPersonalInformationForm(request.POST)
-            formset = MyContactInformationFormSet(request.POST)
-            if form.is_valid() and formset.is_valid():
-                for inline_form in formset:
-                    personal = form.save()
-                    if inline_form.cleaned_data:
-                        contact = inline_form.save(commit=False)
-                        contact.username = personal
-                        contact.save()
-                        return redirect('/patientPortal/information')
-        else:
-            form = MyPersonalInformationForm()
-            formset = MyContactInformationFormSet()
-        return render_to_response('patientPortal/information.html',
-                                  {'form': form,  'formset': formset, 'name': "Kevin Call", 'contactphone': "(347) 277-0295", 'adline':"635 Riverside Drive", 'adline2': 'Apt 1B', 'dob': '02/06/1996', 'email': 'kevin.call96@gmail.com', 'emergencycontact': 'Revital Schecter', 'emergencycontactnum': '(718) 277-7317' })
+            if request.method == 'POST':
+                request_query_dict = request.POST;
+                request_dict = dict(request_query_dict);
+                #print(request_dict);
+
+            info= get_personal_info(request.user)
+
+            return render(request, 'patientPortal/information.html',
+                                 context =  {'name': info['first_name'] + ' ' +info['last_name'], 'contactphone':info['phone'], 'adline':info['adline'],
+                                  'adline2': info['adline2'], 'dob': info['DOB'], 'email': info['email'],
+                                  'emergencycontact': info['emergency_first'], 'emergencycontactnum': info['emergency_phone'] })
     else:
         return redirect('/portal/therapist')
 
@@ -71,11 +73,37 @@ def exercise(request):
     else:
         return redirect('/portal/therapist')
 
-
+@csrf_exempt
 def patientCalendar(request):
+
     if not request.user.is_authenticated:
         return redirect('/portal/login')
     if is_patient(request.user):
+        import json
+        request_query_dict = request.GET;
+        request_dict = dict(request_query_dict);
+
+        request_query_dict2 = request.POST;
+        request_dict2 = dict(request_query_dict2);
+        try:
+            info=get_apoint_info(request.user)
+        except ObjectDoesNotExist:
+            pass
+
+        # FIXME notice that this does two calls to the page on load. 1 to just load the page and 2 to transmit data
+        # Must be better way of doing this, but seemed the most reasonable solution due to strang
+        if bool(request_dict):
+            #Filler information to test front end response
+            therapist = "Some Gay"
+            appts = [{'date' : info['date'], 'time':info['time']}, {'date':'2018-04-17','time':'5:00pm'}]
+            # This part will remain the same
+            response_body = {"therapist": therapist, "appts": appts}
+            return HttpResponse(json.dumps(response_body));
+
+
+        if bool(request_dict2):
+            info['apoint'].delete()
+
         return render_to_response('patientPortal/patientCalendar.html')
     else:
         return redirect('/portal/therapist')
@@ -108,6 +136,7 @@ def therapistDashboard(request):
             n.completed = True
             n.save()
             n1 = Todo.objects.filter(user=request.user, completed=False)
+            # n1.delete() could be used to delete records.
             return HttpResponseRedirect('/portal/patient', {'todos': n1})
 
         notifications = [];
