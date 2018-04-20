@@ -26,14 +26,8 @@ def patientDashboard(request):
         return redirect('/portal/login')
     if is_patient(request.user):
         user = request.user
-
-        try:
-            p = User.objects.filter(username=user)[0]
-            first_name=p.mypersonalinformation.First_Name
-            last_name=p.mypersonalinformation.Last_Name
-        except ObjectDoesNotExist:
-            first_name ='Patient'
-            last_name=' '
+        first_name = user.first_name
+        last_name = user.last_name
 
         return render(
             request, 'patientPortal/patientDashboard.html', context={'first_name': first_name, 'last_name': last_name},
@@ -47,16 +41,14 @@ def MyPersonalInformation(request):
     if not request.user.is_authenticated:
         return redirect('/portal/login')
     if is_patient(request.user):
-            if request.method == 'POST':
-                request_query_dict = request.POST;
-                request_dict = dict(request_query_dict);
-                print(request_dict)
-            info= get_personal_info(request.user)
+        if request.method == 'POST':
+            request_query_dict = request.POST;
+            request_dict = dict(request_query_dict);
+            print(request_dict)
 
-            return render(request, 'patientPortal/information.html',
-                                 context =  {'name': info['first_name'] + ' ' +info['last_name'], 'contactphone':info['phone'], 'adline':info['adline'],
-                                  'adline2': info['adline2'], 'dob': info['DOB'], 'email': info['email'],
-                                  'emergencycontact': info['emergency_first'], 'emergencycontactnum': info['emergency_phone'] })
+        return render(request, 'patientPortal/information.html',
+                                 context =  {'name': "Kevin Call", 'contactphone': "(347) 277-0295", 'adline':"635 Riverside Drive", 'adline2': 'Apt 1B', 'dob': '1996-02-06', 'email': 'kevin.call96@gmail.com', 'emergencycontact': 'Revital Schecter', 'emergencycontactnum': '(718) 277-7317' })
+
     else:
         return redirect('/portal/therapist')
 
@@ -102,8 +94,9 @@ def patientCalendar(request):
         # Must be better way of doing this, but seemed the most reasonable solution due to strang
         if bool(request_dict):
             #Filler information to test front end response
-            therapist = "Some Gay"
-            appts = [{'date' : info['date'], 'time':info['time']}, {'date':'2018-04-17','time':'5:00pm'}]
+            therapist = "Some Guy"
+            #appts = [{'date' : info['date'], 'time':info['time']}, {'date':'2018-04-17','time':'5:00pm'}]
+            appts = [{'date':'2018-04-17','time':'5:00pm'}]
             # This part will remain the same
             response_body = {"therapist": therapist, "appts": appts}
             return HttpResponse(json.dumps(response_body));
