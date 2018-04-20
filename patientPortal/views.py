@@ -102,8 +102,8 @@ def patientCalendar(request):
             return HttpResponse(json.dumps(response_body));
 
 
-        if bool(request_dict2):
-            info['apoint'].delete()
+    #    if bool(request_dict2):
+    #        info['apoint'].delete()
 
         return render_to_response('patientPortal/patientCalendar.html')
     else:
