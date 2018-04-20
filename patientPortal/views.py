@@ -180,11 +180,11 @@ def forms(request):
             cohort_num = request_dict['cohort_num'];
             event_arm = request_dict['event_arm'];
             from .accessoryScripts.resourceManager import removeDictKey, fixDict
-            for key in ['record_id','cohort_num','event_arm','csrfmiddlewaretoken','handedness','stroketype','lesionloc','affectedsidebody','weaklimb','diagnostic_testing','program_of_interest','time']:
+            for key in ['record_id','cohort_num','event_arm','csrfmiddlewaretoken']:
                 request_dict = removeDictKey(request_dict,key);
-
+            print(request_dict);
             request_dict = fixDict(request_dict);
-
+            print(request_dict);
             from patientPortal.apiScripts.imports import edit_patient_data_by_id
             from patientPortal.apiScripts.helper import create_redcap_event_name
             red_cap_event = create_redcap_event_name(event_arm[0],cohort_num[0]);
