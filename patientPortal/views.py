@@ -20,7 +20,6 @@ from .models import Todo
 import datetime
 
 # PATIENT VIEWS #
-@csrf_exempt
 def patientDashboard(request):
     if not request.user.is_authenticated:
         return redirect('/portal/login')
@@ -37,18 +36,31 @@ def patientDashboard(request):
 
 
 def MyPersonalInformation(request):
-
     if not request.user.is_authenticated:
         return redirect('/portal/login')
     if is_patient(request.user):
         if request.method == 'POST':
             request_query_dict = request.POST;
             request_dict = dict(request_query_dict);
+            # TODO i included a form_type within the return dict to say personalInfo or contact to save in appropriate database
             print(request_dict)
+            return HttpResponse({'success':"Successful submission"})
 
-        return render(request, 'patientPortal/information.html',
-                                 context =  {'name': "Kevin Call", 'contactphone': "(347) 277-0295", 'adline':"635 Riverside Drive", 'adline2': 'Apt 1B', 'dob': '1996-02-06', 'email': 'kevin.call96@gmail.com', 'emergencycontact': 'Revital Schecter', 'emergencycontactnum': '(718) 277-7317' })
+        from patientPortal.apiScripts.exports import get_specific_data_by_id
+        from patientPortal.apiScripts.helper import create_redcap_event_name
 
+        # TODO for these they need to come from the user object
+        patient_id = 'testdcap4'
+        cohort_num = '1'
+
+        #This can remain hardcoded
+        event_prefix = 'admin'
+        redcap_event = create_redcap_event_name(event_prefix,cohort_num)
+        fields_of_interest = ['name','contactphone','adline','adline2','dob','email','emergencycontact','emergencycontactnum']
+
+        patient_data = get_specific_data_by_id(redcap_event,patient_id,fields_of_interest)
+        return render(request, 'patientPortal/information.html', context = patient_data)
+        
     else:
         return redirect('/portal/therapist')
 
