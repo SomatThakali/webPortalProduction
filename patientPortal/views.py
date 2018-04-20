@@ -20,15 +20,15 @@ from .models import Todo
 import datetime
 
 # PATIENT VIEWS #
+@csrf_exempt
 def patientDashboard(request):
     if not request.user.is_authenticated:
         return redirect('/portal/login')
     if is_patient(request.user):
         user = request.user
+        first_name = user.first_name
+        last_name = user.last_name
 
-        p = User.objects.filter(username=request.user)[0] # this gets everything you want about the patient
-        first_name=p.mypersonalinformation.First_Name
-        last_name=p.mypersonalinformation.Last_Name
         return render(
             request, 'patientPortal/patientDashboard.html', context={'first_name': first_name, 'last_name': last_name},
         )
@@ -41,17 +41,14 @@ def MyPersonalInformation(request):
     if not request.user.is_authenticated:
         return redirect('/portal/login')
     if is_patient(request.user):
-            if request.method == 'POST':
-                request_query_dict = request.POST;
-                request_dict = dict(request_query_dict);
-                #print(request_dict);
+        if request.method == 'POST':
+            request_query_dict = request.POST;
+            request_dict = dict(request_query_dict);
+            print(request_dict)
 
-            info= get_personal_info(request.user)
+        return render(request, 'patientPortal/information.html',
+                                 context =  {'name': "Kevin Call", 'contactphone': "(347) 277-0295", 'adline':"635 Riverside Drive", 'adline2': 'Apt 1B', 'dob': '1996-02-06', 'email': 'kevin.call96@gmail.com', 'emergencycontact': 'Revital Schecter', 'emergencycontactnum': '(718) 277-7317' })
 
-            return render(request, 'patientPortal/information.html',
-                                 context =  {'name': info['first_name'] + ' ' +info['last_name'], 'contactphone':info['phone'], 'adline':info['adline'],
-                                  'adline2': info['adline2'], 'dob': info['DOB'], 'email': info['email'],
-                                  'emergencycontact': info['emergency_first'], 'emergencycontactnum': info['emergency_phone'] })
     else:
         return redirect('/portal/therapist')
 
@@ -85,6 +82,9 @@ def patientCalendar(request):
 
         request_query_dict2 = request.POST;
         request_dict2 = dict(request_query_dict2);
+        print(request_query_dict2)
+        print(request_dict2)
+
         try:
             info=get_apoint_info(request.user)
         except ObjectDoesNotExist:
@@ -94,15 +94,16 @@ def patientCalendar(request):
         # Must be better way of doing this, but seemed the most reasonable solution due to strang
         if bool(request_dict):
             #Filler information to test front end response
-            therapist = "Some Gay"
-            appts = [{'date' : info['date'], 'time':info['time']}, {'date':'2018-04-17','time':'5:00pm'}]
+            therapist = "Some Guy"
+            #appts = [{'date' : info['date'], 'time':info['time']}, {'date':'2018-04-17','time':'5:00pm'}]
+            appts = [{'date':'2018-04-17','time':'5:00pm'}]
             # This part will remain the same
             response_body = {"therapist": therapist, "appts": appts}
             return HttpResponse(json.dumps(response_body));
 
 
-        if bool(request_dict2):
-            info['apoint'].delete()
+    #    if bool(request_dict2):
+    #        info['apoint'].delete()
 
         return render_to_response('patientPortal/patientCalendar.html')
     else:
