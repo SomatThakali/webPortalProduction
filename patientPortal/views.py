@@ -107,15 +107,19 @@ def patientCalendar(request):
         if bool(request_dict):
             #Filler information to test front end response
             therapist = "Some Guy"
-            #appts = [{'date' : info['date'], 'time':info['time']}, {'date':'2018-04-17','time':'5:00pm'}]
-            appts = [{'date':'2018-04-17','time':'5:00pm'}]
-            # This part will remain the same
+            try:
+                appts = [{'date' : info['date'], 'time':info['time']}]
+
+            except UnboundLocalError: # if it is empty:
+                appts = [{'date':'0000-00-00','time':'0:00pm'}]     
+
             response_body = {"therapist": therapist, "appts": appts}
             return HttpResponse(json.dumps(response_body));
 
 
-    #    if bool(request_dict2):
-    #        info['apoint'].delete()
+
+        if bool(request_dict2):
+            info['apoint'].delete()
 
         return render_to_response('patientPortal/patientCalendar.html')
     else:
