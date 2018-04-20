@@ -10,6 +10,12 @@ def get_form_questions(form_name):
     #returns a list of questions within a certain form with important data for filling
     return form_questions_meta
 
+def get_all_questions():
+    project = get_project();
+    meta_data = project.metadata;
+
+    return meta_data
+
 def get_form_groups(form_name, action):
     questions = get_form_questions(form_name);
     # If viewing can display more, less space needed for other fields from user
@@ -26,7 +32,6 @@ def get_form_groups(form_name, action):
     for i in range(len(questions)):
         question = questions[i];
         newHeader = (question['section_header']!= '');
-
         q_size = 2;
 
         if(newHeader):
@@ -83,10 +88,15 @@ def get_event_data(redcap_event_name):
 
 def get_patient_data_by_id(redcap_event_name,record_id):
     event_data = get_event_data(redcap_event_name);
-
     patient = [datum for datum in event_data if datum['record_id'] == record_id][0];
+
     #returns all patient data
     return patient
+
+def get_specific_data_by_id(redcap_event_name,record_id,fields):
+    patient_data = get_patient_data_by_id(redcap_event_name,record_id)
+    specific_data = {key:value for (key,value) in patient_data.items() if key in fields}
+    return specific_data;
 
 """
 try:
