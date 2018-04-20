@@ -50,15 +50,7 @@ def MyPersonalInformation(request):
             if request.method == 'POST':
                 request_query_dict = request.POST;
                 request_dict = dict(request_query_dict);
-            #    print ((email))
-            #    print ((content))
-                print ((request_query_dict))
-            #    therapist=User.objects.filter(username='somat2')[0]
-                p= notification (therapist_username = 'therapist',patient_username=request.user,
-                header='change information',message=request.user+'want to change his info')
-
-                # create notification here for the therapist.
-
+                print(request_dict)
             info= get_personal_info(request.user)
 
             return render(request, 'patientPortal/information.html',
