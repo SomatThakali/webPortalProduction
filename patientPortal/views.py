@@ -20,15 +20,21 @@ from .models import Todo
 import datetime
 
 # PATIENT VIEWS #
+@csrf_exempt
 def patientDashboard(request):
     if not request.user.is_authenticated:
         return redirect('/portal/login')
     if is_patient(request.user):
         user = request.user
 
-        p = User.objects.filter(username=request.user)[0] # this gets everything you want about the patient
-        first_name=p.mypersonalinformation.First_Name
-        last_name=p.mypersonalinformation.Last_Name
+        try:
+            p = User.objects.filter(username=user)[0]
+            first_name=p.mypersonalinformation.First_Name
+            last_name=p.mypersonalinformation.Last_Name
+        except ObjectDoesNotExist:
+            first_name ='Patient'
+            last_name=' '
+
         return render(
             request, 'patientPortal/patientDashboard.html', context={'first_name': first_name, 'last_name': last_name},
         )
@@ -44,7 +50,14 @@ def MyPersonalInformation(request):
             if request.method == 'POST':
                 request_query_dict = request.POST;
                 request_dict = dict(request_query_dict);
-                #print(request_dict);
+            #    print ((email))
+            #    print ((content))
+                print ((request_query_dict))
+            #    therapist=User.objects.filter(username='somat2')[0]
+                p= notification (therapist_username = 'therapist',patient_username=request.user,
+                header='change information',message=request.user+'want to change his info')
+
+                # create notification here for the therapist.
 
             info= get_personal_info(request.user)
 
@@ -85,6 +98,9 @@ def patientCalendar(request):
 
         request_query_dict2 = request.POST;
         request_dict2 = dict(request_query_dict2);
+        print(request_query_dict2)
+        print(request_dict2)
+
         try:
             info=get_apoint_info(request.user)
         except ObjectDoesNotExist:
