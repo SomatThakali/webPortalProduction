@@ -1,4 +1,4 @@
-{% load static  %}
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -57,128 +57,129 @@
     <!-- START OF FIRST SECTION -->
     <div id="personal-form" style="border-radius: 15px; border-top-left-radius: 0" class="no-bottom-cushion tertiary-background show">
       <div class="responsive-cushion">
-        <form id="personal-form-2" class="no-margin form-horizontal" role="form">
-          <div>
-            <h2 class="text-center responsive-margin-bottom pretty-underline">My Personal Information</h2>
-
-
-          </div>
+        <div>
+          <h2 class="text-center responsive-margin-bottom pretty-underline">My Personal Information</h2>
+        </div>
+        <form id="personal-form-2" class="no-margin form-horizontal">
           <div class="show form-group">
             <label for="firstName" class="col-sm-3 control-label">Patient Full Name</label>
             <div class="col-sm-9">
-              <input type="text" id="name" placeholder="{{ name }}" class="form-control" autofocus>
+              <input type="text" name="name" placeholder="{{ name }}" class="form-control" autofocus>
             </div>
           </div>
 
           <div class="form-group">
             <label for="dob" class="col-sm-3 control-label">Date of Birth</label>
             <div class="col-sm-9">
-              <input type="date" id="dob" value="{{ dob }}" class="form-control">
+              <input type="date" name="dob" value="{{ dob }}" class="form-control">
             </div>
           </div>
           <div class="form-group">
             <label for="emergencycontact" class="col-sm-3 control-label">Emergency Contact Full Name</label>
             <div class="col-sm-9">
-              <input type="text" id="emergencycontact" placeholder="{{ emergencycontact }}" class="form-control">
+              <input type="text" name="emergencycontact" placeholder="{{ emergencycontact }}" class="form-control">
             </div>
           </div>
           <div class="form-group">
             <label for="emergencycontactnum" class="col-sm-3 control-label">Emergency Contact Phone</label>
             <div class="col-sm-9">
-              <input type="tel" id="emergencycontactnum" placeholder="{{ emergencycontactnum }}"class="form-control">
+              <input type="tel" name="emergencycontactnum" placeholder="{{ emergencycontactnum }}" class="form-control">
             </div>
           </div>
+          <div class="form-group">
+            <div class="full-width">
+              <button type="submit" class="btn btn-primary btn-block" id="PersonalInfo">Submit Changes</button>
+            </div>
+          </div>
+        </form>{% csrf_token %}
       </div>
-      <div class="form-group">
-        <div class="full-width">
-          <button type="submit" class="btn btn-primary btn-block" id="PersonalInfo">Submit Changes</button>
-        </div>
-      </div>
-  </form method = 'POST' action = ' '>{% csrf_token %}
     </div>
     <!-- END OF FIRST Section -->
 
 
     <!-- START OF SECOND SECTION -->
-    <div  id="contact-form" style="border-radius: 15px; border-top-left-radius: 0" class="no-bottom-cushion tertiary-background hide">
-      <div  class="responsive-cushion">
-        <form id="contact-form-2" class="form-horizontal" role="form">
-          <h2 class="text-center responsive-margin-bottom-2x pretty-underline">My Contact Information</h2>
+    <div id="contact-form" style="border-radius: 15px; border-top-left-radius: 0" class="no-bottom-cushion tertiary-background hide">
+      <div class="responsive-cushion">
+        <h2 class="text-center responsive-margin-bottom-2x pretty-underline">My Contact Information</h2>
+        <form id="contact-form-2" class="form-horizontal">
           <div class="form-group">
             <label for="contactphone" class="col-sm-3 control-label">Phone Number</label>
             <div class="col-sm-9">
-              <input type="tel" id="contactphone" placeholder="{{ contactphone }}"class="form-control">
+              <input type="tel" name="contactphone" placeholder="{{ contactphone }}" class="form-control">
             </div>
           </div>
           <div class="form-group">
             <label for="adline1" class="col-sm-3 control-label">Address Line 1</label>
             <div class="col-sm-9">
-              <input type="text" id="adline" placeholder="{{ adline }}"class="form-control">
+              <input type="text" name="adline" placeholder="{{ adline }}" class="form-control">
             </div>
           </div>
           <div class="form-group">
             <label for="adline2" class="col-sm-3 control-label">Address Line 2</label>
             <div class="col-sm-9">
-              <input type="text" id="adline2" placeholder="{{ adline2 }}"class="form-control">
+              <input type="text" name="adline2" placeholder="{{ adline2 }}" class="form-control">
             </div>
           </div>
           <div class="form-group">
             <label for="email" class="col-sm-3 control-label">Email</label>
             <div class="col-sm-9">
-              <input type="email" id="email" placeholder="{{ email }}"class="form-control">
+              <input type="email" name="email" placeholder="{{ email }}" class="form-control">
             </div>
           </div>
-      </div>
-      <div class="form-group">
-        <div class="full-width">
-          <button type="submit" class="btn btn-primary btn-block" id="ContactInfo">Submit Changes</button>
-        </div>
-      </div>
 
-      </form>
+          <div class="form-group">
+            <div class="full-width">
+              <button type="submit" class="btn btn-primary btn-block" id="ContactInfo">Submit Changes</button>
+            </div>
+          </div>
+        </form>
+      </div>
     </div>
 </body>
 <script>
-$(document).on('click','#PersonalInfo',function(){
-    var csrf_token=$('meta[name="csrf-token"]').attr('content');
-    alert(csrf_token);
+  $(document).on('click', '#PersonalInfo', function() {
+    var csrf_token = $('meta[name="csrf-token"]').attr('content');
     var $form = $('#personal-form-2');
     var data = $form.serialize();
-    data += ('&csrfmiddlewaretoken='+csrf_token);
+    console.log(data);
+    data += ('&csrfmiddlewaretoken=' + csrf_token);
+    data += ('&form_type=personalInfo')
     $.ajax({
-      url :'',
-      type : 'post',
+      url: '',
+      type: 'post',
       dataType: 'json',
-      data : data,
-      success:function(res){
-        alert("success")
-  },
-        error: function(res){
+      data: data,
+      success: function(res) {
+        //alert("success")
+      },
+      error: function(res) {
         console.log("oops");
-        alert("oops")
+        //alert("oops")
 
-  }
+      }
+    })
   })
-})
-$(document).on('click','#ContactInfo',function(){
-  var csrf_token=$('meta[name="csrf-token"]').attr('content');
-  alert(csrf_token);
-  var $form = $('#contact-form-2');
-  var data = $form.serialize();
-  data += ('&csrfmiddlewaretoken='+csrf_token);
-  $.ajax({
-    url :'',
-    type : 'post',
-    dataType: 'json',
-    data : data,
-    success:function(res){
+  $(document).on('click', '#ContactInfo', function() {
+    var csrf_token = $('meta[name="csrf-token"]').attr('content');
+    //alert(csrf_token);
+    var $form = $('#contact-form-2');
+    var data = $form.serialize();
+    data += ('&csrfmiddlewaretoken=' + csrf_token);
+    data += ('&form_type=contact')
+    $.ajax({
+      url: '',
+      type: 'post',
+      dataType: 'json',
+      data: data,
+      success: function(res) {
 
-  },
-      error: function(res){
-      console.log("oops");
+      },
+      error: function(res) {
+        console.log("oops");
 
-    }
+      }
+    })
   })
-})
 </script>
+
 </html>
