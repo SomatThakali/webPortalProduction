@@ -42,8 +42,13 @@ def MyPersonalInformation(request):
         if request.method == 'POST':
             request_query_dict = request.POST;
             request_dict = dict(request_query_dict);
+            form_type = ''.join(request_dict.get('form_type'))
             # TODO i included a form_type within the return dict to say personalInfo or contact to save in appropriate database
-            print(request_dict)
+            therapist=User.objects.filter(username='somat2')[0]
+            p= notification (therapist_username = therapist,patient_username=request.user,header=' change information '
+            ,message='the patient requested to change '+ form_type ,description='you can contact the patient at ',Unique_ID='11')
+            p.save()
+            #get_personal_info(request_dict)
             return HttpResponse({'success':"Successful submission"})
 
         from patientPortal.apiScripts.exports import get_specific_data_by_id
@@ -98,7 +103,7 @@ def patientCalendar(request):
 
         try:
             info=get_apoint_info(request.user)
-        except ObjectDoesNotExist:
+        except ObjectDoesNotExist: # so it does not crash if patient has no appointments
             pass
 
         # FIXME notice that this does two calls to the page on load. 1 to just load the page and 2 to transmit data
@@ -115,15 +120,11 @@ def patientCalendar(request):
             response_body = {"therapist": therapist, "appts": appts}
             return HttpResponse(json.dumps(response_body));
 
-
-
         if bool(request_delete):
-            date = request_delete.get('requestObject[date]')
-            date = ''.join(date)
-            print(date)
+            date = ''.join(request_delete.get('requestObject[date]'))
             therapist=User.objects.filter(username='somat2')[0]
-            p= notification (therapist_username = therapist,patient_username=request.user,header='cancel appointment'
-            ,message='the user wants to cancel his appointment at '+date,description='des',Unique_ID='20')
+            p= notification (therapist_username = therapist,patient_username=request.user,header='Cancel Appointment'
+            ,message='the patient wants to cancel his appointment at '+date,description='you can contact the patient at',Unique_ID='8')
             p.save()
 
         return render_to_response('patientPortal/patientCalendar.html')
