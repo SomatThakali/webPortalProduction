@@ -133,3 +133,15 @@ class Todo(models.Model):
         if self.completed:
             self.completed_date = datetime.now()
         super(Todo, self).save()
+
+
+class Study (models.Model):
+    therapist_username = models.ForeignKey(User, on_delete=models.CASCADE)
+    title = models.CharField(max_length=15, blank=True)
+    description = models.TextField(blank=True, null=True)
+    researcher_name = models.CharField(max_length=15, blank=True)
+    researcher_phone_number = models.CharField(max_length=15, blank=True)
+    researcher_email = models.EmailField(max_length=50, blank=True)
+
+    def __str__(self):
+        return self.title

@@ -8,6 +8,7 @@ from .models import MyContactInformation
 from .models import appointment
 from .models import notification
 from .models import Todo
+from .models import Study
 
 # from .models import Users
 #
@@ -67,3 +68,13 @@ class TodoAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Todo, TodoAdmin)
+
+
+class StudyAdmin(admin.ModelAdmin):
+    model = Study
+    verbose_name_plural = 'Study'
+    list_display = ('title', 'therapist_username', 'researcher_name')
+    search_fields = ('title', 'therapist_username')
+
+
+admin.site.register(Study, StudyAdmin)
