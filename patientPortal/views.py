@@ -60,7 +60,7 @@ def MyPersonalInformation(request):
 
         patient_data = get_specific_data_by_id(redcap_event,patient_id,fields_of_interest)
         return render(request, 'patientPortal/information.html', context = patient_data)
-        
+
     else:
         return redirect('/portal/therapist')
 
@@ -93,9 +93,8 @@ def patientCalendar(request):
         request_dict = dict(request_query_dict);
 
         request_query_dict2 = request.POST;
-        request_dict2 = dict(request_query_dict2);
-        print(request_query_dict2)
-        print(request_dict2)
+        request_delete = dict(request_query_dict2);
+
 
         try:
             info=get_apoint_info(request.user)
@@ -111,15 +110,21 @@ def patientCalendar(request):
                 appts = [{'date' : info['date'], 'time':info['time']}]
 
             except UnboundLocalError: # if it is empty:
-                appts = [{'date':'0000-00-00','time':'0:00pm'}]     
+                appts = [{'date':'0000-00-00','time':'0:00pm'}]
 
             response_body = {"therapist": therapist, "appts": appts}
             return HttpResponse(json.dumps(response_body));
 
 
 
-        if bool(request_dict2):
-            info['apoint'].delete()
+        if bool(request_delete):
+            date = request_delete.get('requestObject[date]')
+            date = ''.join(date)
+            print(date)
+            therapist=User.objects.filter(username='somat2')[0]
+            p= notification (therapist_username = therapist,patient_username=request.user,header='cancel appointment'
+            ,message='the user wants to cancel his appointment at '+date,description='des',Unique_ID='20')
+            p.save()
 
         return render_to_response('patientPortal/patientCalendar.html')
     else:
