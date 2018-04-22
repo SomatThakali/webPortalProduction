@@ -2,19 +2,30 @@ from django.shortcuts import render
 from django.shortcuts import render_to_response
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
+from django.template import RequestContext
 from django.conf import settings
 from django.shortcuts import redirect
+from django.views.decorators.csrf import csrf_exempt
+from django.core.exceptions import ObjectDoesNotExist
+from django.contrib.auth.models import User
+from django.forms.formsets import formset_factory
+from django.db import models
 from .accessoryScripts.checkGroup import is_patient, is_therapist
+from .DB_Extractor import get_personal_info, get_apoint_info
 from. forms import MyPersonalInformationForm
 from. forms import MyContactInformationForm
-from django.forms.formsets import formset_factory
 import json
 from .models import notification
 from .models import Todo
+<<<<<<< HEAD
 from django.core.mail import send_mass_mail
 # PATIENT VIEWS #
 
+=======
+import datetime
+>>>>>>> dfb3a11a4fcc8060198e69a1b5943d329fb1f61d
 
+# PATIENT VIEWS #
 def patientDashboard(request):
     if not request.user.is_authenticated:
         return redirect('/portal/login')
@@ -22,6 +33,7 @@ def patientDashboard(request):
         user = request.user
         first_name = user.first_name
         last_name = user.last_name
+
         return render(
             request, 'patientPortal/patientDashboard.html', context={'first_name': first_name, 'last_name': last_name},
         )
@@ -33,24 +45,33 @@ def MyPersonalInformation(request):
     if not request.user.is_authenticated:
         return redirect('/portal/login')
     if is_patient(request.user):
-        MyContactInformationFormSet = formset_factory(MyContactInformationForm,
-                                                      extra=3, min_num=2, validate_min=True)
         if request.method == 'POST':
-            form = MyPersonalInformationForm(request.POST)
-            formset = MyContactInformationFormSet(request.POST)
-            if form.is_valid() and formset.is_valid():
-                for inline_form in formset:
-                    personal = form.save()
-                    if inline_form.cleaned_data:
-                        contact = inline_form.save(commit=False)
-                        contact.username = personal
-                        contact.save()
-                        return redirect('/patientPortal/information')
-        else:
-            form = MyPersonalInformationForm()
-            formset = MyContactInformationFormSet()
-        return render_to_response('patientPortal/information.html',
-                                  {'form': form,  'formset': formset})
+            request_query_dict = request.POST;
+            request_dict = dict(request_query_dict);
+            form_type = ''.join(request_dict.get('form_type'))
+            # TODO i included a form_type within the return dict to say personalInfo or contact to save in appropriate database
+            therapist=User.objects.filter(username='somat2')[0]
+            p= notification (therapist_username = therapist,patient_username=request.user,header=' change information '
+            ,message='the patient requested to change '+ form_type ,description='you can contact the patient at ',Unique_ID='11')
+            p.save()
+            #get_personal_info(request_dict)
+            return HttpResponse({'success':"Successful submission"})
+
+        from patientPortal.apiScripts.exports import get_specific_data_by_id
+        from patientPortal.apiScripts.helper import create_redcap_event_name
+
+        # TODO for these they need to come from the user object
+        patient_id = 'testdcap4'
+        cohort_num = '1'
+
+        #This can remain hardcoded
+        event_prefix = 'admin'
+        redcap_event = create_redcap_event_name(event_prefix,cohort_num)
+        fields_of_interest = ['name','contactphone','adline','adline2','dob','email','emergencycontact','emergencycontactnum']
+
+        patient_data = get_specific_data_by_id(redcap_event,patient_id,fields_of_interest)
+        return render(request, 'patientPortal/information.html', context = patient_data)
+
     else:
         return redirect('/portal/therapist')
 
@@ -72,11 +93,46 @@ def exercise(request):
     else:
         return redirect('/portal/therapist')
 
-
+@csrf_exempt
 def patientCalendar(request):
+
     if not request.user.is_authenticated:
         return redirect('/portal/login')
     if is_patient(request.user):
+        import json
+        request_query_dict = request.GET;
+        request_dict = dict(request_query_dict);
+
+        request_query_dict2 = request.POST;
+        request_delete = dict(request_query_dict2);
+
+
+        try:
+            info=get_apoint_info(request.user)
+        except ObjectDoesNotExist: # so it does not crash if patient has no appointments
+            pass
+
+        # FIXME notice that this does two calls to the page on load. 1 to just load the page and 2 to transmit data
+        # Must be better way of doing this, but seemed the most reasonable solution due to strang
+        if bool(request_dict):
+            #Filler information to test front end response
+            therapist = "Some Guy"
+            try:
+                appts = [{'date' : info['date'], 'time':info['time']}]
+
+            except UnboundLocalError: # if it is empty:
+                appts = [{'date':'0000-00-00','time':'0:00pm'}]
+
+            response_body = {"therapist": therapist, "appts": appts}
+            return HttpResponse(json.dumps(response_body));
+
+        if bool(request_delete):
+            date = ''.join(request_delete.get('requestObject[date]'))
+            therapist=User.objects.filter(username='somat2')[0]
+            p= notification (therapist_username = therapist,patient_username=request.user,header='Cancel Appointment'
+            ,message='the patient wants to cancel his appointment at '+date,description='you can contact the patient at',Unique_ID='8')
+            p.save()
+
         return render_to_response('patientPortal/patientCalendar.html')
     else:
         return redirect('/portal/therapist')
@@ -88,6 +144,7 @@ def therapistDashboard(request):
     if not request.user.is_authenticated:
         return redirect('/portal/login')
     if is_therapist(request.user):
+
         def show_notifications(request, notifications_id):
             n = notification.objects.get(id=notifications_id)
             return render_to_response('patientPortal/therapistDashboard.html', {'notifications': n})
@@ -108,9 +165,17 @@ def therapistDashboard(request):
             n.completed = True
             n.save()
             n1 = Todo.objects.filter(user=request.user, completed=False)
+            # n1.delete() could be used to delete records.
             return HttpResponseRedirect('/portal/patient', {'todos': n1})
 
-        return render_to_response('patientPortal/therapistDashboard.html')
+        notifications = [];
+        notifications.append({'patient_name': 'John Doe','Unique_ID':'5162d31', 'header' :'Reschedule - John Doe','message': 'John Doe would like to reschedule his 2:00 PM therapy session','description':'reschedule','viewed':False});
+        notifications.append({'patient_name': 'John Doe','Unique_ID':'5162d31', 'header' :'Reschedule - John Doe','message': 'John Doe would like to reschedule his 2:00 PM therapy session','description':'reschedule','viewed':False});
+        notifications.append({'patient_name': 'John Doe','Unique_ID':'5162d31', 'header' :'Reschedule - John Doe','message': 'John Doe would like to reschedule his 2:00 PM therapy session','description':'reschedule','viewed':False});
+        notifications.append({'patient_name': 'John Doe','Unique_ID':'5162d31', 'header' :'Reschedule - John Doe','message': 'John Doe would like to reschedule his 2:00 PM therapy session','description':'reschedule','viewed':False});
+        notifications.append({'patient_name': 'John Doe','Unique_ID':'5162d31', 'header' :'Reschedule - John Doe','message': 'John Doe would like to reschedule his 2:00 PM therapy session','description':'reschedule','viewed':False});
+
+        return render(request,'patientPortal/therapistDashboard.html',context={'notifications': notifications})
     else:
         return redirect('/portal/patient')
 
@@ -185,11 +250,11 @@ def forms(request):
             cohort_num = request_dict['cohort_num'];
             event_arm = request_dict['event_arm'];
             from .accessoryScripts.resourceManager import removeDictKey, fixDict
-            for key in ['record_id','cohort_num','event_arm','csrfmiddlewaretoken','handedness','stroketype','lesionloc','affectedsidebody','weaklimb','diagnostic_testing','program_of_interest','time']:
+            for key in ['record_id','cohort_num','event_arm','csrfmiddlewaretoken']:
                 request_dict = removeDictKey(request_dict,key);
-
+            print(request_dict);
             request_dict = fixDict(request_dict);
-
+            print(request_dict);
             from patientPortal.apiScripts.imports import edit_patient_data_by_id
             from patientPortal.apiScripts.helper import create_redcap_event_name
             red_cap_event = create_redcap_event_name(event_arm[0],cohort_num[0]);
