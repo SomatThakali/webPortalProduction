@@ -17,13 +17,11 @@ from. forms import MyContactInformationForm
 import json
 from .models import notification
 from .models import Todo
-<<<<<<< HEAD
-from django.core.mail import send_mass_mail
-# PATIENT VIEWS #
 
-=======
+
+# PATIENT VIEWS #
 import datetime
->>>>>>> dfb3a11a4fcc8060198e69a1b5943d329fb1f61d
+
 
 # PATIENT VIEWS #
 def patientDashboard(request):
@@ -202,6 +200,7 @@ def recruitment(request):
     if not request.user.is_authenticated:
         return redirect('/portal/login')
     if is_therapist(request.user):
+        from django.core.mail import send_mass_mail
         """from patientPortal.apiScripts.exports import get_form_questions_from_params
         params = ['dob','stroke','onsetdate','heart_attack']
         data = get_form_questions_from_params(params)
