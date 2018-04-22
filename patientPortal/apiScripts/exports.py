@@ -10,7 +10,6 @@ def get_form_questions(form_name):
     #returns a list of questions within a certain form with important data for filling
     return form_questions_meta
 
-<<<<<<< HEAD
 def get_form_questions_from_params(params):
     project = get_project();
     meta_data = project.metadata;
@@ -19,13 +18,6 @@ def get_form_questions_from_params(params):
     #{key:value for (key,value) in meta_data.items() if key in meta_data}
     return form_questions
 
-=======
-def get_all_questions():
-    project = get_project();
-    meta_data = project.metadata;
-
-    return meta_data
->>>>>>> dfb3a11a4fcc8060198e69a1b5943d329fb1f61d
 
 def get_form_groups(form_name, action):
     questions = get_form_questions(form_name);
@@ -104,13 +96,11 @@ def get_patient_data_by_id(redcap_event_name,record_id):
     #returns all patient data
     return patient
 
-<<<<<<< HEAD
-=======
+
 def get_specific_data_by_id(redcap_event_name,record_id,fields):
     patient_data = get_patient_data_by_id(redcap_event_name,record_id)
     specific_data = {key:value for (key,value) in patient_data.items() if key in fields}
     return specific_data;
->>>>>>> dfb3a11a4fcc8060198e69a1b5943d329fb1f61d
 
 """
 try:
