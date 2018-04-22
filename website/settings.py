@@ -14,10 +14,10 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = 'burkerobotics@gmail.com'
-#Must generate specific password for your app in [gmail settings][1]
-EMAIL_HOST_PASSWORD = 'syslzfypxbpiadkn' 
+# Must generate specific password for your app in [gmail settings][1]
+EMAIL_HOST_PASSWORD = 'syslzfypxbpiadkn'
 EMAIL_PORT = 587
-#This did the trick
+# This did the trick
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 
@@ -40,9 +40,8 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 
-
 ADMINS = (
-  ('your name', 'burkerobotics@gmail.com'),
+    ('your name', 'burkerobotics@gmail.com'),
 )
 
 # Application definition
@@ -72,8 +71,6 @@ ROOT_URLCONF = 'website.urls'
 LOGIN_REDIRECT_URL = '/portal'
 
 
-
-
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -96,7 +93,7 @@ WSGI_APPLICATION = 'website.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
 
-DATABASES = {       
+DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
@@ -128,7 +125,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'US/Eastern'
 
 USE_I18N = True
 
@@ -144,4 +141,4 @@ USE_TZ = True
 if DEBUG:
     MEDIA_URL = 'media/'
     STATIC_URL = '/static/'
-    STATICFILES_DIRS = [os.path.join(BASE_DIR,"static"),]
+    STATICFILES_DIRS = [os.path.join(BASE_DIR, "static"), ]
