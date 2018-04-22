@@ -18,6 +18,11 @@ def get_form_questions_from_params(params):
     #{key:value for (key,value) in meta_data.items() if key in meta_data}
     return form_questions
 
+def get_all_questions():
+    project = get_project();
+    meta_data = project.metadata;
+
+    return meta_data
 
 def get_form_groups(form_name, action):
     questions = get_form_questions(form_name);
