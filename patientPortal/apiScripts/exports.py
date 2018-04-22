@@ -10,6 +10,15 @@ def get_form_questions(form_name):
     #returns a list of questions within a certain form with important data for filling
     return form_questions_meta
 
+def get_form_questions_from_params(params):
+    project = get_project();
+    meta_data = project.metadata;
+
+    form_questions = [datum for datum in meta_data if datum['field_name'] in params]
+    #{key:value for (key,value) in meta_data.items() if key in meta_data}
+    return form_questions
+
+
 def get_form_groups(form_name, action):
     questions = get_form_questions(form_name);
     # If viewing can display more, less space needed for other fields from user
@@ -87,6 +96,7 @@ def get_patient_data_by_id(redcap_event_name,record_id):
     patient = [datum for datum in event_data if datum['record_id'] == record_id][0];
     #returns all patient data
     return patient
+
 
 """
 try:

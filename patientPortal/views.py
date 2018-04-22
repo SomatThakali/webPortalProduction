@@ -11,6 +11,7 @@ from django.forms.formsets import formset_factory
 import json
 from .models import notification
 from .models import Todo
+from django.core.mail import send_mass_mail
 # PATIENT VIEWS #
 
 
@@ -136,6 +137,18 @@ def recruitment(request):
     if not request.user.is_authenticated:
         return redirect('/portal/login')
     if is_therapist(request.user):
+        """from patientPortal.apiScripts.exports import get_form_questions_from_params
+        params = ['dob','stroke','onsetdate','heart_attack']
+        data = get_form_questions_from_params(params)
+
+        for datum in data:
+            for key in datum:
+                print(key, datum[key])
+            print('\n')
+
+        #data = script_to_get_question_info
+        #data.stringy
+        for inside context--> 'data': data"""
         return render(request,'patientPortal/recruitment.html',context={})
     else:
         return redirect('/portal/patient')
