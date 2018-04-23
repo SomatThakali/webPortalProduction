@@ -16,16 +16,8 @@ from .CompareForms import compare_info
 from. forms import MyPersonalInformationForm
 from. forms import MyContactInformationForm
 import json
-<<<<<<< HEAD
 from .models import notification, Todo
 from .accessoryScripts.resourceManager import fixDict, removeDictKey
-=======
-from .models import notification
-from .models import Todo
-
-
-# PATIENT VIEWS #
->>>>>>> bfcdfd3518b58d558010f2e4ece9cedfb5a75594
 import datetime
 
 
@@ -48,7 +40,6 @@ def MyPersonalInformation(request):
     if not request.user.is_authenticated:
         return redirect('/portal/login')
     if is_patient(request.user):
-<<<<<<< HEAD
         if request.method == 'POST':
             request_query_dict = request.POST;
             request_dict = dict(request_query_dict);
@@ -56,8 +47,6 @@ def MyPersonalInformation(request):
             # MUST LINK TO A LOCAL DB
             return HttpResponse({'success':"Successful submission"})
 
-=======
->>>>>>> bfcdfd3518b58d558010f2e4ece9cedfb5a75594
         from patientPortal.apiScripts.exports import get_specific_data_by_id
         from patientPortal.apiScripts.helper import create_redcap_event_name
 
@@ -144,12 +133,8 @@ def patientCalendar(request):
             return HttpResponse(json.dumps(response_body));
 
         if bool(request_delete):
-<<<<<<< HEAD
             date = request_delete.get('requestObject[date]')
             date = ''.join(date)
-=======
-            date = ''.join(request_delete.get('requestObject[date]'))
->>>>>>> bfcdfd3518b58d558010f2e4ece9cedfb5a75594
             therapist=User.objects.filter(username='somat2')[0]
             p= notification (therapist_username = therapist,patient_username=request.user,header='Cancel Appointment'
             ,message='the patient wants to cancel his appointment at '+date,description='you can contact the patient at',Unique_ID='8')
