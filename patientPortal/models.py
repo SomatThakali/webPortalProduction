@@ -21,7 +21,7 @@ class CohortData(models.Model):
 class UserProfile(models.Model):
     user = models.OneToOneField("auth.User", limit_choices_to={'groups__name': 'patient'}, on_delete=models.CASCADE,)
     therapist_user = models.OneToOneField(
-        "auth.User", limit_choices_to={'groups__name': 'therapist'}, on_delete=models.CASCADE, related_name='username_of_therapist')
+        "auth.User", limit_choices_to={'groups__name': 'therapist'}, on_delete=models.CASCADE, related_name='therapist_user')
 
 class MyPersonalInformation(models.Model):
 
