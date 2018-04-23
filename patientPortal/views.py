@@ -12,7 +12,6 @@ from django.forms.formsets import formset_factory
 from django.db import models
 from .accessoryScripts.checkGroup import is_patient, is_therapist
 from .DB_Extractor import get_personal_info, get_apoint_info
-from .CompareForms import compare_info
 from. forms import MyPersonalInformationForm
 from. forms import MyContactInformationForm
 import json
@@ -37,35 +36,51 @@ def patientDashboard(request):
 
 
 def MyPersonalInformation(request):
+
     if not request.user.is_authenticated:
         return redirect('/portal/login')
     if is_patient(request.user):
-        if request.method == 'POST':
-            request_query_dict = request.POST;
-            request_dict = dict(request_query_dict);
-            # TODO i included a form_type within the return dict to say personalInfo or contact to save in appropriate database
-            # MUST LINK TO A LOCAL DB
-            return HttpResponse({'success':"Successful submission"})
-
         from patientPortal.apiScripts.exports import get_specific_data_by_id
         from patientPortal.apiScripts.helper import create_redcap_event_name
+        from .modelHandlers.users import get_newest_cohort_data
+        from .models import CohortData, UserProfile
 
-        # TODO for these they need to come from the user object
-        patient_id = 'testdcap4'
-        cohort_num = '1'
+        userProfile = UserProfile.objects.get(user=request.user) #fetches the user UserProfile for user
+        therapist = (userProfile.therapist_user)                 #gets the therapist user from user
 
-        #This can remain hardcoded
+        cohort_data = get_newest_cohort_data(request.user)           #Returns all the cohort data for user
+        patient_id = cohort_data['record_id']                     #Gets the values from the newest input
+        cohort_num = cohort_data['cohort_num']
+
+        #This can remain hardcoded as only the admin portion contains patient demographics
         event_prefix = 'admin'
         redcap_event = create_redcap_event_name(event_prefix,cohort_num)
-        fields_of_interest = ['name','contactphone','adline','adline2','dob','email','emergencycontact','emergencycontactnum']
 
+        #fields patient will be able to edit
+        fields_of_interest = ['name','contactphone','adline','adline2','dob','email','emergencycontact','emergencycontactnum']
         patient_data = get_specific_data_by_id(redcap_event,patient_id,fields_of_interest)
 
         if request.method == 'POST':
+            from .accessoryScripts.CompareForms import compare_info
+            from .modelHandlers.notifications import create_info_notification
             request_query_dict = request.POST;
             request_dict = dict(request_query_dict);
-            print(patient_data)
+            request_dict = fixDict(request_dict);
+            request_dict = removeDictKey(request_dict, 'csrfmiddlewaretoken')
+            request_dict = removeDictKey(request_dict, 'form_type')  #TODO remove this from the front end request
 
+            changes = compare_info(patient_data, request_dict) # we dont need fields_of_interest as a param here
+            create_info_notification(therapist, request.user, changes)
+            #print(request.user.username_of_therapist());
+            #print(patient_data)
+            return HttpResponse({'success':"Successful submission"})
+
+        # This is on the get request
+        return render(request, 'patientPortal/information.html', context = patient_data)
+
+    else:
+        return redirect('/portal/therapist')
+'''
             # TODO i included a form_type within the return dict to say personalInfo or contact to save in appropriate database
             therapist=User.objects.filter(username='somat2')[0]
             # do something to comapare.
@@ -74,12 +89,11 @@ def MyPersonalInformation(request):
             ,message='the patient requested to change '+ body ,description='you can contact the patient at ',Unique_ID='22')
             p.save()
             #get_personal_info(request_dict)
-            return HttpResponse({'success':"Successful submission"})
+'''
 
-        return render(request, 'patientPortal/information.html', context = patient_data)
 
-    else:
-        return redirect('/portal/therapist')
+
+
 
 
 def myprogress(request):
