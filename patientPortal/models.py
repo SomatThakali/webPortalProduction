@@ -3,10 +3,16 @@ from django.db import models
 from datetime import date, datetime
 from django.contrib.auth.models import User
 # from django.conf import settings
-#  from django.contrib.auth.models import Group
+# from django.contrib.auth.models import Group
 from django.utils import timezone
 
 # Create your models here.
+
+
+class Users(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE,)
+    therapist_username = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='username_of_therapist')
 
 
 class MyPersonalInformation(models.Model):

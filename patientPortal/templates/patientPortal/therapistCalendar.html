@@ -13,6 +13,9 @@
 #choosePatientButton{
   width: 100%;
 }
+#schedulerEventRecorderForm .popover-title .scheduler-event-recorder-content{
+  display: none;
+}
 </style>
 <script>
   //Get patients from service to create the patient dropdown
@@ -31,15 +34,27 @@
   YUI().use(
     'aui-scheduler',
     function(Y) {
+      //Pull calendar events
+       // $(document).ready( function() {
+       //   $.getJSON('?action=pull',function(json){
+           // Call service to get calendar data and next appointment details
+           // content:
+           // endDate:
+           // startDate:
+           // color: "#8d8",
+           // meeting: true,
+           // reminder: true,
+
       var events = [
         {
-          color: "#8d8",
-          content: 'Earth Day Lunch',
-          disabled: true,
-          endDate: new Date(2018, 3, 17, 13),
-          meeting: true,
-          reminder: true,
-          startDate: new Date(2018, 3, 17, 12)
+          // Sample event from AlloyUI bootstrap
+          // color: "#8d8",
+          // content: $(patientDropdown).children("option").filter(":selected").text(),
+          // disabled: true,
+          // endDate: new Date(2018, 4, 17, 13),
+          // meeting: true,
+          // reminder: true,
+          // startDate: new Date(2018, 4, 17, 12)
         }
       ];
 
@@ -47,8 +62,48 @@
       var dayView = new Y.SchedulerDayView();
       var weekView = new Y.SchedulerWeekView();
       var monthView = new Y.SchedulerMonthView();
-
-      var eventRecorder = new Y.SchedulerEventRecorder();
+      var eventRecorder = new Y.SchedulerEventRecorder({
+        on: {
+          save: function(event) {
+            //   var dataType = 'json',
+            //       data =
+            //       time =
+            //       date =
+            //
+            //   var requestObject = {
+            //     time: time,
+            //     date: date,
+            //     patient:
+            //   };
+            //
+            //   serviceCall(requestObject);
+            //
+            //   refresh();
+          },
+          delete: function(event) {
+            //var dataType = 'json',
+            //       data =
+            //       time =
+            //       date =
+            //
+            //   var requestObject = {
+            //     time: time,
+            //     date: date,
+            //     patient:
+            //   };
+            //
+            //   serviceCall(requestObject);
+            //
+            //   refresh();
+          },
+          edit: function(event){
+            debugger
+          },
+          change: function(event){
+            debugger
+          }
+        }
+      });
 
       new Y.Scheduler(
         {
@@ -58,7 +113,7 @@
           eventRecorder: eventRecorder,
           items: events,
           render: true,
-          views: [dayView, weekView, monthView, agendaView]
+          views: [dayView, weekView, monthView, agendaView],
         }
       );
 
@@ -66,28 +121,54 @@
         var formFieldToDelete = Y.one('#schedulerEventRecorderForm .popover-title .scheduler-event-recorder-content'),
             formFieldToAppend = Y.one('#schedulerEventRecorderForm .popover-title');
         formFieldToAppend.appendChild(patientDropdown);
-        formFieldToDelete.remove();
 
         //Disable save button unless selected
         var saveButton = $(".popover-footer button:first");
         saveButton.attr("disabled", "disabled");
 
         $('#choosePatientButton').change(function(data){
-          if(patients[data.target.selectedIndex-1] === 'Choose Patient'){
+          var chosenPatient = patients[data.target.selectedIndex-1];
+          if(chosenPatient === 'Choose Patient'){
             saveButton.attr("disabled", "disabled");
           } else {
-            saveButton.attr("disabled", "false");
+            formFieldToDelete._stateProxy.value =  chosenPatient;
+            saveButton.removeAttr("disabled");
           }
         });
       }, eventRecorder, 'showPopover');
 
+      Y.Do.after(function() {
+        debugger }, eventRecorder, 'getUpdatedSchedulerEvent');
+
+
       //TODO: Make a service call after user clicked save/delete.
-      //TODO: Disable button unless the user selected an option
       //TODO: Make a service call after resizing
-      //TODO: Make a service call after dragging the Date
-      //TODO: Show default patient when clicking on event
+      //TODO: Make a service call after dragging the time
     }
   );
+
+  // // Delete an appointment
+  // $(document).on('click', '#yui_patched_v3_18_1_1_1524323206273_6697', function(evt){
+  //
+  // });
+  //
+  // // Save an appointment
+  // $(document).on('click', '#yui_patched_v3_18_1_1_1524348279902_4898', function(evt){
+
+  // });
+  //
+  //   $(document).ready( function() {
+  //     function serviceCall(requestObject){
+  //       // Make a service call after saving a new appointment
+  //       $.ajax({
+  //         url: '',
+  //         type: 'POST',
+  //         dataType: 'json',
+  //         data: requestObject
+  //       })
+  //     }
+  //
+
 </script>
 
 </html>

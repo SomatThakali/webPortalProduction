@@ -12,12 +12,22 @@ from django.forms.formsets import formset_factory
 from django.db import models
 from .accessoryScripts.checkGroup import is_patient, is_therapist
 from .DB_Extractor import get_personal_info, get_apoint_info
+from .CompareForms import compare_info
 from. forms import MyPersonalInformationForm
 from. forms import MyContactInformationForm
 import json
+<<<<<<< HEAD
 from .models import notification, Todo
 from .accessoryScripts.resourceManager import fixDict, removeDictKey
+=======
+from .models import notification
+from .models import Todo
+
+
+# PATIENT VIEWS #
+>>>>>>> bfcdfd3518b58d558010f2e4ece9cedfb5a75594
 import datetime
+
 
 # PATIENT VIEWS #
 def patientDashboard(request):
@@ -38,6 +48,7 @@ def MyPersonalInformation(request):
     if not request.user.is_authenticated:
         return redirect('/portal/login')
     if is_patient(request.user):
+<<<<<<< HEAD
         if request.method == 'POST':
             request_query_dict = request.POST;
             request_dict = dict(request_query_dict);
@@ -45,6 +56,8 @@ def MyPersonalInformation(request):
             # MUST LINK TO A LOCAL DB
             return HttpResponse({'success':"Successful submission"})
 
+=======
+>>>>>>> bfcdfd3518b58d558010f2e4ece9cedfb5a75594
         from patientPortal.apiScripts.exports import get_specific_data_by_id
         from patientPortal.apiScripts.helper import create_redcap_event_name
 
@@ -58,6 +71,22 @@ def MyPersonalInformation(request):
         fields_of_interest = ['name','contactphone','adline','adline2','dob','email','emergencycontact','emergencycontactnum']
 
         patient_data = get_specific_data_by_id(redcap_event,patient_id,fields_of_interest)
+
+        if request.method == 'POST':
+            request_query_dict = request.POST;
+            request_dict = dict(request_query_dict);
+            print(patient_data)
+
+            # TODO i included a form_type within the return dict to say personalInfo or contact to save in appropriate database
+            therapist=User.objects.filter(username='somat2')[0]
+            # do something to comapare.
+            body=compare_info(patient_data,request_dict,fields_of_interest)
+            p= notification (therapist_username = therapist,patient_username=request.user,header=' change information '
+            ,message='the patient requested to change '+ body ,description='you can contact the patient at ',Unique_ID='22')
+            p.save()
+            #get_personal_info(request_dict)
+            return HttpResponse({'success':"Successful submission"})
+
         return render(request, 'patientPortal/information.html', context = patient_data)
 
     else:
@@ -97,7 +126,7 @@ def patientCalendar(request):
 
         try:
             info=get_apoint_info(request.user)
-        except ObjectDoesNotExist:
+        except ObjectDoesNotExist: # so it does not crash if patient has no appointments
             pass
 
         # FIXME notice that this does two calls to the page on load. 1 to just load the page and 2 to transmit data
@@ -114,14 +143,16 @@ def patientCalendar(request):
             response_body = {"therapist": therapist, "appts": appts}
             return HttpResponse(json.dumps(response_body));
 
-
-
         if bool(request_delete):
+<<<<<<< HEAD
             date = request_delete.get('requestObject[date]')
             date = ''.join(date)
+=======
+            date = ''.join(request_delete.get('requestObject[date]'))
+>>>>>>> bfcdfd3518b58d558010f2e4ece9cedfb5a75594
             therapist=User.objects.filter(username='somat2')[0]
-            p= notification (therapist_username = therapist,patient_username=request.user,header='cancel appointment'
-            ,message='the user wants to cancel his appointment at '+date,description='des',Unique_ID='20')
+            p= notification (therapist_username = therapist,patient_username=request.user,header='Cancel Appointment'
+            ,message='the patient wants to cancel his appointment at '+date,description='you can contact the patient at',Unique_ID='8')
             p.save()
 
         return render_to_response('patientPortal/patientCalendar.html')
@@ -211,6 +242,19 @@ def recruitment(request):
     if not request.user.is_authenticated:
         return redirect('/portal/login')
     if is_therapist(request.user):
+        from django.core.mail import send_mass_mail
+        """from patientPortal.apiScripts.exports import get_form_questions_from_params
+        params = ['dob','stroke','onsetdate','heart_attack']
+        data = get_form_questions_from_params(params)
+
+        for datum in data:
+            for key in datum:
+                print(key, datum[key])
+            print('\n')
+
+        #data = script_to_get_question_info
+        #data.stringy
+        for inside context--> 'data': data"""
         return render(request,'patientPortal/recruitment.html',context={})
     else:
         return redirect('/portal/patient')
