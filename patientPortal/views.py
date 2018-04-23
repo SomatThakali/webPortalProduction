@@ -15,8 +15,8 @@ from .DB_Extractor import get_personal_info, get_apoint_info
 from. forms import MyPersonalInformationForm
 from. forms import MyContactInformationForm
 import json
-from .models import notification
-from .models import Todo
+from .models import notification, Todo
+from .accessoryScripts.resourceManager import fixDict, removeDictKey
 import datetime
 
 # PATIENT VIEWS #
@@ -27,7 +27,6 @@ def patientDashboard(request):
         user = request.user
         first_name = user.first_name
         last_name = user.last_name
-
         return render(
             request, 'patientPortal/patientDashboard.html', context={'first_name': first_name, 'last_name': last_name},
         )
@@ -43,7 +42,7 @@ def MyPersonalInformation(request):
             request_query_dict = request.POST;
             request_dict = dict(request_query_dict);
             # TODO i included a form_type within the return dict to say personalInfo or contact to save in appropriate database
-            print(request_dict)
+            # MUST LINK TO A LOCAL DB
             return HttpResponse({'success':"Successful submission"})
 
         from patientPortal.apiScripts.exports import get_specific_data_by_id
@@ -120,7 +119,6 @@ def patientCalendar(request):
         if bool(request_delete):
             date = request_delete.get('requestObject[date]')
             date = ''.join(date)
-            print(date)
             therapist=User.objects.filter(username='somat2')[0]
             p= notification (therapist_username = therapist,patient_username=request.user,header='cancel appointment'
             ,message='the user wants to cancel his appointment at '+date,description='des',Unique_ID='20')
@@ -137,37 +135,55 @@ def therapistDashboard(request):
     if not request.user.is_authenticated:
         return redirect('/portal/login')
     if is_therapist(request.user):
+        # the post request will contain Unique_ID, type (form/todo), action
+        # status action: update status (read -- > unread)
+        # delete action: delete the notification
+        # confirm action: push the contents of the notification then delete// mark todo as complete and delete
+        if request.method == "POST":
+            from patientPortal.accessoryScripts.resourceManager import fixDict
+            request_query_dict = request.POST;
+            request_dict = dict(request_query_dict);
+            request_dict = fixDict(request_dict)
+            type = request_dict['type']
+            action = request_dict['action']
+            Unique_ID = request_dict['Unique_ID']
+            if type == "notification":
+                if action == "delete":
+                    from patientPortal.modelHandlers.notifications import delete_notification
+                    delete_notification(Unique_ID)
 
-        def show_notifications(request, notifications_id):
-            n = notification.objects.get(id=notifications_id)
-            return render_to_response('patientPortal/therapistDashboard.html', {'notifications': n})
+                elif action == "confirm":
+                    from patientPortal.modelHandlers.notifications import perform_notification
+                    perform_notification(Unique_ID)
 
-        def delete_notifications(request, notifications_id):
-            n = notification.objects.get(id=notifications_id)
-            n.viewed = True
-            n.save()
-            n1 = notification.objects.filter(user=request.user, viewed=False)
-            return HttpResponseRedirect('/portal/patient', {'notifications': n1})
+                elif action == "status":
+                    from patientPortal.modelHandlers.notifications import update_status
+                    Unique_IDs = request_dict['Unique_ID']
+                    update_statuses(Unique_IDs)
 
-        def show_todos(request, todos_id):
-            n = Todo.objects.get(id=todos_id)
-            return render_to_response('patientPortal/therapistDashboard.html', {'todos': n})
+                else:
+                    return HttpResponse(status=400) #Bad request
 
-        def delete_todos(request, todos_id):
-            n = Todo.objects.get(id=todos_id)
-            n.completed = True
-            n.save()
-            n1 = Todo.objects.filter(user=request.user, completed=False)
-            # n1.delete() could be used to delete records.
-            return HttpResponseRedirect('/portal/patient', {'todos': n1})
+            elif type == "todo":
+                if action == "delete":
+                    from patientPortal.modelHandlers.todo import delete_todo
+                    delete_todo(Unique_ID)
+                else:
+                    return HttpResponse(status=400)
 
-        notifications = [];
-        notifications.append({'patient_name': 'John Doe','Unique_ID':'5162d31', 'header' :'Reschedule - John Doe','message': 'John Doe would like to reschedule his 2:00 PM therapy session','description':'reschedule','viewed':False});
-        notifications.append({'patient_name': 'John Doe','Unique_ID':'5162d31', 'header' :'Reschedule - John Doe','message': 'John Doe would like to reschedule his 2:00 PM therapy session','description':'reschedule','viewed':False});
-        notifications.append({'patient_name': 'John Doe','Unique_ID':'5162d31', 'header' :'Reschedule - John Doe','message': 'John Doe would like to reschedule his 2:00 PM therapy session','description':'reschedule','viewed':False});
-        notifications.append({'patient_name': 'John Doe','Unique_ID':'5162d31', 'header' :'Reschedule - John Doe','message': 'John Doe would like to reschedule his 2:00 PM therapy session','description':'reschedule','viewed':False});
-        notifications.append({'patient_name': 'John Doe','Unique_ID':'5162d31', 'header' :'Reschedule - John Doe','message': 'John Doe would like to reschedule his 2:00 PM therapy session','description':'reschedule','viewed':False});
+            else:
+                return HttpResponse(status=400) #Bad request
 
+            return HttpResponse(json.dumps({'status': 'successful submission'}));
+
+        # At this point all requests being made on this page are get requests
+        from patientPortal.modelHandlers.todo import fetch_todos
+        from patientPortal.modelHandlers.notifications import fetch_notifications
+        notifications = fetch_notifications(request.user);
+
+        # recall notification has patient_username, therapist_username,
+        # unique_ID, header, message, description
+        todos = fetch_todos(request.user);
         return render(request,'patientPortal/therapistDashboard.html',context={'notifications': notifications})
     else:
         return redirect('/portal/patient')
@@ -225,21 +241,21 @@ def forms(request):
             response_body = {'question_groups': question_groups, 'event': event};
             return HttpResponse(json.dumps(response_body));
         if (method == "POST"):
+            from patientPortal.apiScripts.imports import edit_patient_data_by_id
+            from patientPortal.apiScripts.helper import create_redcap_event_name
             request_query_dict = request.POST;
             request_dict = dict(request_query_dict);
+            request_dict = fixDict(request_dict);
+
             record_id = request_dict['record_id'];
             cohort_num = request_dict['cohort_num'];
             event_arm = request_dict['event_arm'];
-            from .accessoryScripts.resourceManager import removeDictKey, fixDict
+
             for key in ['record_id','cohort_num','event_arm','csrfmiddlewaretoken']:
-                request_dict = removeDictKey(request_dict,key);
-            print(request_dict);
-            request_dict = fixDict(request_dict);
-            print(request_dict);
-            from patientPortal.apiScripts.imports import edit_patient_data_by_id
-            from patientPortal.apiScripts.helper import create_redcap_event_name
-            red_cap_event = create_redcap_event_name(event_arm[0],cohort_num[0]);
-            edit_patient_data_by_id(red_cap_event,record_id[0],request_dict);
+                request_dict = removeDictKey(request_dict,key); # must remove the keys before passing to redcap api
+
+            red_cap_event = create_redcap_event_name(event_arm,cohort_num);
+            edit_patient_data_by_id(red_cap_event,record_id,request_dict);
 
             return HttpResponse(json.dumps({'status': 'successful submission'}));
     else:
