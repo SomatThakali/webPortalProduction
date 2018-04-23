@@ -83,6 +83,7 @@ class appointManager(models.Manager):
 
 
 class appointment(models.Model):
+    import uuid
     username = models.OneToOneField(User,
                                     on_delete=models.CASCADE,)
     First_name = models.ForeignKey(MyPersonalInformation, related_name="onrecord",
@@ -90,6 +91,7 @@ class appointment(models.Model):
     affected_limb = models.CharField(max_length=255)
     date = models.DateField(blank=True, null=True)
     time = models.TimeField(blank=True, null=True)
+    Unique_ID = models.CharField(max_length=100, blank=True, unique=True, default=uuid.uuid4)
     created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, blank=True, null=True)
     objects = appointManager()
@@ -99,9 +101,10 @@ class appointment(models.Model):
 
 
 class notification(models.Model):
+    import uuid
     patient_username = models.CharField(max_length=15, blank=True)
     therapist_username = models.ForeignKey(User, on_delete=models.CASCADE)
-    Unique_ID = models.CharField(max_length=20, unique=True, blank=False)
+    Unique_ID = models.CharField(max_length=100, blank=True, unique=True, default=uuid.uuid4)
     header = models.CharField(max_length=30)
     message = models.TextField(blank=True, null=True)
     description = models.TextField(blank=True, null=True)
@@ -109,9 +112,10 @@ class notification(models.Model):
 
 
 class Todo(models.Model):
+    import uuid
     patient_username = models.CharField(max_length=15, blank=True)
     therapist_username = models.ForeignKey(User, on_delete=models.CASCADE)
-    Unique_ID = models.CharField(max_length=20, unique=True, blank=False)
+    Unique_ID = models.CharField(max_length=100, blank=True, unique=True, default=uuid.uuid4)
     title = models.CharField(max_length=140)
     created_date = models.DateField(default=timezone.now, blank=True, null=True)
     due_date = models.DateField(blank=True, null=True, )
