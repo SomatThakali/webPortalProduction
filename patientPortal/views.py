@@ -12,6 +12,7 @@ from django.forms.formsets import formset_factory
 from django.db import models
 from .accessoryScripts.checkGroup import is_patient, is_therapist
 from .DB_Extractor import get_personal_info, get_apoint_info
+from .CompareForms import compare_info
 from. forms import MyPersonalInformationForm
 from. forms import MyContactInformationForm
 import json
@@ -39,18 +40,6 @@ def MyPersonalInformation(request):
     if not request.user.is_authenticated:
         return redirect('/portal/login')
     if is_patient(request.user):
-        if request.method == 'POST':
-            request_query_dict = request.POST;
-            request_dict = dict(request_query_dict);
-            form_type = ''.join(request_dict.get('form_type'))
-            # TODO i included a form_type within the return dict to say personalInfo or contact to save in appropriate database
-            therapist=User.objects.filter(username='somat2')[0]
-            p= notification (therapist_username = therapist,patient_username=request.user,header=' change information '
-            ,message='the patient requested to change '+ form_type ,description='you can contact the patient at ',Unique_ID='11')
-            p.save()
-            #get_personal_info(request_dict)
-            return HttpResponse({'success':"Successful submission"})
-
         from patientPortal.apiScripts.exports import get_specific_data_by_id
         from patientPortal.apiScripts.helper import create_redcap_event_name
 
@@ -64,6 +53,22 @@ def MyPersonalInformation(request):
         fields_of_interest = ['name','contactphone','adline','adline2','dob','email','emergencycontact','emergencycontactnum']
 
         patient_data = get_specific_data_by_id(redcap_event,patient_id,fields_of_interest)
+
+        if request.method == 'POST':
+            request_query_dict = request.POST;
+            request_dict = dict(request_query_dict);
+            print(patient_data)
+
+            # TODO i included a form_type within the return dict to say personalInfo or contact to save in appropriate database
+            therapist=User.objects.filter(username='somat2')[0]
+            # do something to comapare.
+            body=compare_info(patient_data,request_dict,fields_of_interest)
+            p= notification (therapist_username = therapist,patient_username=request.user,header=' change information '
+            ,message='the patient requested to change '+ body ,description='you can contact the patient at ',Unique_ID='22')
+            p.save()
+            #get_personal_info(request_dict)
+            return HttpResponse({'success':"Successful submission"})
+
         return render(request, 'patientPortal/information.html', context = patient_data)
 
     else:
