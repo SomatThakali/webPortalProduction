@@ -10,6 +10,14 @@ def get_form_questions(form_name):
     #returns a list of questions within a certain form with important data for filling
     return form_questions_meta
 
+def get_form_questions_from_params(params):
+    project = get_project();
+    meta_data = project.metadata;
+
+    form_questions = [datum for datum in meta_data if datum['field_name'] in params]
+    #{key:value for (key,value) in meta_data.items() if key in meta_data}
+    return form_questions
+
 def get_all_questions():
     project = get_project();
     meta_data = project.metadata;
@@ -92,6 +100,7 @@ def get_patient_data_by_id(redcap_event_name,record_id):
 
     #returns all patient data
     return patient
+
 
 def get_specific_data_by_id(redcap_event_name,record_id,fields):
     patient_data = get_patient_data_by_id(redcap_event_name,record_id)

@@ -9,24 +9,25 @@ from .models import appointment
 from .models import notification
 from .models import Todo
 from .models import Study
+from .models import Users
 
-# from .models import Users
-#
-#
-# class UsersInline(admin.StackedInline):
-#     model = Users
-#     can_delete = False
-#     verbose_name_plural = 'User'
-#     # Define a new User admin
-#
-#
-# class UserAdmin(BaseUserAdmin):
-#     inlines = (UsersInline, )
-#
-#
-# # Re-register UserAdmin
-# admin.site.unregister(User)
-# admin.site.register(User, UserAdmin)
+
+class UsersInline(admin.StackedInline):
+    model = Users
+    can_delete = False
+    verbose_name_plural = 'User'
+    extra = 0
+    fk_name = 'user'
+    # Define a new User admin
+
+
+class UserAdmin(BaseUserAdmin):
+    inlines = (UsersInline, )
+
+
+# Re-register UserAdmin
+admin.site.unregister(User)
+admin.site.register(User, UserAdmin)
 
 
 class MyPersonalInformationAdmin(admin.ModelAdmin):
