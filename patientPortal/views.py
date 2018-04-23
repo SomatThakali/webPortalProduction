@@ -80,20 +80,6 @@ def MyPersonalInformation(request):
 
     else:
         return redirect('/portal/therapist')
-'''
-            # TODO i included a form_type within the return dict to say personalInfo or contact to save in appropriate database
-            therapist=User.objects.filter(username='somat2')[0]
-            # do something to comapare.
-            body=compare_info(patient_data,request_dict,fields_of_interest)
-            p= notification (therapist_username = therapist,patient_username=request.user,header=' change information '
-            ,message='the patient requested to change '+ body ,description='you can contact the patient at ',Unique_ID='22')
-            p.save()
-            #get_personal_info(request_dict)
-'''
-
-
-
-
 
 
 def myprogress(request):
@@ -115,7 +101,11 @@ def exercise(request):
 
 @csrf_exempt
 def patientCalendar(request):
-
+    from .models import CohortData, UserProfile
+    from django.contrib.auth.models import User
+    p = User.objects.filter(username=request.user)[0]
+    #userProfile = UserProfile.objects.get(user=request.user) #fetches the user UserProfile for user
+    therapist = p.userprofile.therapist_user                 #gets the therapist user from user
     if not request.user.is_authenticated:
         return redirect('/portal/login')
     if is_patient(request.user):
@@ -136,20 +126,19 @@ def patientCalendar(request):
         # Must be better way of doing this, but seemed the most reasonable solution due to strang
         if bool(request_dict):
             #Filler information to test front end response
-            therapist = "Some Guy"
+
             try:
-                appts = [{'date' : info['date'], 'time':info['time']}]
+                   appts = [{'date' : info['date'], 'time':info['time']}]
 
             except UnboundLocalError: # if it is empty:
                 appts = [{'date':'0000-00-00','time':'0:00pm'}]
 
-            response_body = {"therapist": therapist, "appts": appts}
+            response_body = {"therapist": therapist.username, "appts": appts}
             return HttpResponse(json.dumps(response_body));
 
         if bool(request_delete):
             date = request_delete.get('requestObject[date]')
             date = ''.join(date)
-            therapist=User.objects.filter(username='somat2')[0]
             p= notification (therapist_username = therapist,patient_username=request.user,header='Cancel Appointment'
             ,message='the patient wants to cancel his appointment at '+date,description='you can contact the patient at',Unique_ID='8')
             p.save()
