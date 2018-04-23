@@ -1,33 +1,33 @@
 from django.contrib import admin
-
 # Register your models here.
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import User
-from .models import MyPersonalInformation
-from .models import MyContactInformation
-from .models import appointment
-from .models import notification
-from .models import Todo
-from .models import Study
-from .models import Users
+from .models import MyPersonalInformation, MyContactInformation, appointment, notification, Todo, Study, UserProfile, CohortData
 
-
-class UsersInline(admin.StackedInline):
-    model = Users
-    can_delete = False
-    verbose_name_plural = 'User'
+class UserAdmin(admin.StackedInline):
+    model = UserProfile
+    can_delete = True
+    fk_name='user'
+    verbose_name_plural = 'User Profile'
     extra = 0
-    fk_name = 'user'
+
     # Define a new User admin
 
+class CohortDataAdmin(admin.StackedInline):
+    model = CohortData;
+    extra = 0;
+    can_delete = True
+    verbose_name_plural = 'Cohort Data';
 
-class UserAdmin(BaseUserAdmin):
-    inlines = (UsersInline, )
-
+class UserProfileAdmin(BaseUserAdmin):
+    inlines = [UserAdmin,CohortDataAdmin]
 
 # Re-register UserAdmin
 admin.site.unregister(User)
-admin.site.register(User, UserAdmin)
+admin.site.register(User, UserProfileAdmin)
+
+
+
 
 
 class MyPersonalInformationAdmin(admin.ModelAdmin):

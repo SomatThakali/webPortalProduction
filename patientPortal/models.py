@@ -7,13 +7,21 @@ from django.contrib.auth.models import User
 from django.utils import timezone
 
 # Create your models here.
+'''
+class UserProfile(model.Model):
+    Therapist = models.OneToOneField("auth.User", limit_choices_to={'groups__name': 'therapist'}, on_delete=models.CASCADE);
+'''
 
+class CohortData(models.Model):
+    cohort_num = models.CharField(max_length=1);
+    record_id = models.CharField(max_length=15);
+    user = models.ForeignKey("auth.User",limit_choices_to={'groups__name': 'patient'}, on_delete=models.CASCADE)
+    # patient can have multiple of these records
 
-class Users(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE,)
-    therapist_username = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name='username_of_therapist')
-
+class UserProfile(models.Model):
+    user = models.OneToOneField("auth.User", limit_choices_to={'groups__name': 'patient'}, on_delete=models.CASCADE,)
+    therapist_user = models.OneToOneField(
+        "auth.User", limit_choices_to={'groups__name': 'therapist'}, on_delete=models.CASCADE, related_name='username_of_therapist')
 
 class MyPersonalInformation(models.Model):
 
