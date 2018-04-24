@@ -11,7 +11,7 @@ from django.contrib.auth.models import User
 from django.forms.formsets import formset_factory
 from django.db import models
 from .accessoryScripts.checkGroup import is_patient, is_therapist
-from .DB_Extractor import get_personal_info, get_apoint_info
+from .DB_Extractor import get_personal_info, get_apoint_info,get_patient_info
 from. forms import MyPersonalInformationForm
 from. forms import MyContactInformationForm
 import json
@@ -126,7 +126,6 @@ def patientCalendar(request):
         # Must be better way of doing this, but seemed the most reasonable solution due to strang
         if bool(request_dict):
             #Filler information to test front end response
-
             try:
                    appts = [{'date' : info['date'], 'time':info['time']}]
 
@@ -221,6 +220,8 @@ def database(request):
     if not request.user.is_authenticated:
         return redirect('/portal/login')
     if is_therapist(request.user):
+        info = get_patient_info(request)
+        print(info['first_name']) # put post/get request in here. 
         return render_to_response('patientPortal/database.html')
     else:
         return redirect('/portal/patient')

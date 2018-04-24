@@ -41,17 +41,15 @@ def get_study_info (request):
     p = User.objects.filter(username=request)[0]
     s = Study.objects.get(therapist_username=p)
      #s.title
-'''
+
 def get_patient_info(request):
     from django.contrib.auth.models import User
     from patientPortal.models import CohortData, UserProfile
-    therapist = User.objects.filter(username=request)[0]
+    therapist = User.objects.filter(username=request.user)[0]
     p = UserProfile
     result = p.objects.filter(therapist_user=therapist)
     info = result[0].user
-    first_name = info.user.first_name
-    last_name = info.user.last_name
+    first_name = info.first_name
+    last_name = info.last_name
 
     return {'first_name': first_name, 'last_name': last_name}
-    '''
-    
