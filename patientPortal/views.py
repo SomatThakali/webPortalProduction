@@ -129,7 +129,7 @@ def patientCalendar(request):
             try:
                    appts = [{'date' : info['date'], 'time':info['time']}]
 
-            except UnboundLocalError: # if it is empty:
+            except UnboundLocalError: # dummy data if it is empty:
                 appts = [{'date':'0000-00-00','time':'0:00pm'}]
 
             response_body = {"therapist": therapist.username, "appts": appts}
@@ -211,6 +211,10 @@ def therapistCalendar(request):
     if not request.user.is_authenticated:
         return redirect('/portal/login')
     if is_therapist(request.user):
+        patient_info = get_patient_info(request) # NOTE: kevin, this return patient info needed to populate therapist calendar
+        print(patient_info[0]['first_name'])
+        print(patient_info[0]['date'])
+        print(patient_info[0]['time'])
         return render_to_response('patientPortal/therapistCalendar.html')
     else:
         return redirect('/portal/patient')
@@ -220,8 +224,13 @@ def database(request):
     if not request.user.is_authenticated:
         return redirect('/portal/login')
     if is_therapist(request.user):
-        info = get_patient_info(request)
-        print(info['first_name']) # put post/get request in here. 
+        patient_info = get_patient_info(request) # NOTE: kevin, this returns a dict that contain all the info
+        # needed to populate the database, just need to pass it to front end.
+        print(patient_info[0]['first_name']) #
+        print(patient_info[0]['last_name'])
+        print(patient_info[0]['date'])
+        print(patient_info[0]['time'])
+
         return render_to_response('patientPortal/database.html')
     else:
         return redirect('/portal/patient')
@@ -273,6 +282,7 @@ def forms(request):
             question_groups = get_form_groups(form,event);
             response_body = {'question_groups': question_groups, 'event': event};
             return HttpResponse(json.dumps(response_body));
+
         if (method == "POST"):
             from patientPortal.apiScripts.imports import edit_patient_data_by_id
             from patientPortal.apiScripts.helper import create_redcap_event_name

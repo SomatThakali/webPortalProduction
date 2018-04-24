@@ -43,13 +43,18 @@ def get_study_info (request):
      #s.title
 
 def get_patient_info(request):
+    patient_info = {}
     from django.contrib.auth.models import User
     from patientPortal.models import CohortData, UserProfile
     therapist = User.objects.filter(username=request.user)[0]
-    p = UserProfile
-    result = p.objects.filter(therapist_user=therapist)
-    info = result[0].user
-    first_name = info.first_name
-    last_name = info.last_name
+    result = UserProfile.objects.filter(therapist_user=therapist) # NOTE: return the patients of the therapist
+    for patient in range( len(result)):
+        info = result[patient].user # get info of the patient
+        username=info.username
+        appointment = get_apoint_info(username)
+        first_name = info.first_name
+        last_name = info.last_name
+        patient_info [patient] = {'first_name':first_name,'last_name':last_name,
+        'date':appointment['date'],'time':appointment['time']}
 
-    return {'first_name': first_name, 'last_name': last_name}
+    return patient_info
