@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 
 def get_personal_info(request):
         p = User.objects.filter(username=request)[0] # this gets everything you want about the patient
-        first_name = p.mypersonalinformation.First_Name 
+        first_name = p.mypersonalinformation.First_Name
         last_name=p.mypersonalinformation.Last_Name
         email = p.mycontactinformation.email
         phone = p.mycontactinformation.Phone_Number
@@ -41,3 +41,17 @@ def get_study_info (request):
     p = User.objects.filter(username=request)[0]
     s = Study.objects.get(therapist_username=p)
      #s.title
+'''
+def get_patient_info(request):
+    from django.contrib.auth.models import User
+    from patientPortal.models import CohortData, UserProfile
+    therapist = User.objects.filter(username=request)[0]
+    p = UserProfile
+    result = p.objects.filter(therapist_user=therapist)
+    info = result[0].user
+    first_name = info.user.first_name
+    last_name = info.user.last_name
+
+    return {'first_name': first_name, 'last_name': last_name}
+    '''
+    
