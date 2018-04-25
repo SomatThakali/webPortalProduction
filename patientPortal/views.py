@@ -11,7 +11,7 @@ from django.contrib.auth.models import User
 from django.forms.formsets import formset_factory
 from django.db import models
 from .accessoryScripts.checkGroup import is_patient, is_therapist
-from .DB_Extractor import get_personal_info, get_apoint_info
+from .DB_Extractor import get_personal_info, get_apoint_info,get_patient_info
 from. forms import MyPersonalInformationForm
 from. forms import MyContactInformationForm
 import json
@@ -80,20 +80,6 @@ def MyPersonalInformation(request):
 
     else:
         return redirect('/portal/therapist')
-'''
-            # TODO i included a form_type within the return dict to say personalInfo or contact to save in appropriate database
-            therapist=User.objects.filter(username='somat2')[0]
-            # do something to comapare.
-            body=compare_info(patient_data,request_dict,fields_of_interest)
-            p= notification (therapist_username = therapist,patient_username=request.user,header=' change information '
-            ,message='the patient requested to change '+ body ,description='you can contact the patient at ',Unique_ID='22')
-            p.save()
-            #get_personal_info(request_dict)
-'''
-
-
-
-
 
 
 def myprogress(request):
@@ -115,7 +101,11 @@ def exercise(request):
 
 @csrf_exempt
 def patientCalendar(request):
-
+    from .models import CohortData, UserProfile
+    from django.contrib.auth.models import User
+    p = User.objects.filter(username=request.user)[0]
+    #userProfile = UserProfile.objects.get(user=request.user) #fetches the user UserProfile for user
+    therapist = p.userprofile.therapist_user                 #gets the therapist user from user
     if not request.user.is_authenticated:
         return redirect('/portal/login')
     if is_patient(request.user):
@@ -136,20 +126,18 @@ def patientCalendar(request):
         # Must be better way of doing this, but seemed the most reasonable solution due to strang
         if bool(request_dict):
             #Filler information to test front end response
-            therapist = "Some Guy"
             try:
-                appts = [{'date' : info['date'], 'time':info['time']}]
+                   appts = [{'date' : info['date'], 'time':info['time']}]
 
-            except UnboundLocalError: # if it is empty:
+            except UnboundLocalError: # dummy data if it is empty:
                 appts = [{'date':'0000-00-00','time':'0:00pm'}]
 
-            response_body = {"therapist": therapist, "appts": appts}
+            response_body = {"therapist": therapist.username, "appts": appts}
             return HttpResponse(json.dumps(response_body));
 
         if bool(request_delete):
             date = request_delete.get('requestObject[date]')
             date = ''.join(date)
-            therapist=User.objects.filter(username='somat2')[0]
             p= notification (therapist_username = therapist,patient_username=request.user,header='Cancel Appointment'
             ,message='the patient wants to cancel his appointment at '+date,description='you can contact the patient at',Unique_ID='8')
             p.save()
@@ -225,6 +213,10 @@ def therapistCalendar(request):
     if not request.user.is_authenticated:
         return redirect('/portal/login')
     if is_therapist(request.user):
+        patient_info = get_patient_info(request) # NOTE: kevin, this return patient info needed to populate therapist calendar
+        print(patient_info[0]['first_name'])
+        print(patient_info[0]['date'])
+        print(patient_info[0]['time'])
         return render_to_response('patientPortal/therapistCalendar.html')
     else:
         return redirect('/portal/patient')
@@ -234,6 +226,13 @@ def database(request):
     if not request.user.is_authenticated:
         return redirect('/portal/login')
     if is_therapist(request.user):
+        patient_info = get_patient_info(request) # NOTE: kevin, this returns a dict that contain all the info
+        # needed to populate the database, just need to pass it to front end.
+        print(patient_info[0]['first_name']) #
+        print(patient_info[0]['last_name'])
+        print(patient_info[0]['date'])
+        print(patient_info[0]['time'])
+
         return render_to_response('patientPortal/database.html')
     else:
         return redirect('/portal/patient')
@@ -285,6 +284,7 @@ def forms(request):
             question_groups = get_form_groups(form,event);
             response_body = {'question_groups': question_groups, 'event': event};
             return HttpResponse(json.dumps(response_body));
+
         if (method == "POST"):
             from patientPortal.apiScripts.imports import edit_patient_data_by_id
             from patientPortal.apiScripts.helper import create_redcap_event_name

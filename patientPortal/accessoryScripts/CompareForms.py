@@ -1,5 +1,4 @@
- # TODO: once u get full redcap access, replace the word 'email' with the word field
-# and you should be good to go.
+
 def compare_info(patient_data,request_dict):
     changes = {}
     test_data = {'name':'Somebody','contactphone':'2313226252', 'adline': '24 Somewhere Lane', 'adline2': 'Apt 4e', 'dob':'2008-12-02','emergencycontact':'Someone Else','emergencycontactnum':'2425213232'}
