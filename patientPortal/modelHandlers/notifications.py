@@ -66,22 +66,20 @@ def create_info_notification(therapist, patient, data_changes):
 def handle_appointment_notification(action):
     return
 
-def handle_info_notification(action):
-    return
-
-def perform_notification(Unique_ID):
-    import json
+def handle_info_notification(Unique_ID):
+    from json import loads
+    from patientPortal.apiScripts.helper import create_redcap_event_name
+    from patientPortal.apiScripts.imports import edit_patient_data_by_id
     n = notification.objects.get(Unique_ID=Unique_ID);
-    description = n.description; # we want description to be a string of a dictionary
-    description = json.loads(description); # turns the description string into a python dictionary
+    description = n.description
+    action = loads(description);
+    patient_id = action['patient_id']
+    cohort_num = action['cohort_num']
+    changes = action['changes']
 
-    type = description['type']  # type will be either notification or todo
-    action = description['action'] # action will be list of things that will need to occur
-    if type == "notification":
-        handle_info_notification(action)
-    if type == "todo":
-        handle_appointment_notification(action);
-
-    print("WORKING")
-    #delete_notification(unique_ID);
+    # OK to hard code as the initial patient form data
+    event_prefix = 'admin'
+    redcap_event_name = create_redcap_event_name(event_prefix,cohort_num)
+    edit_patient_data_by_id(redcap_event_name,patient_id,changes)
+    delete_notification(Unique_ID)
     return

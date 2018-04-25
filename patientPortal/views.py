@@ -57,7 +57,7 @@ def MyPersonalInformation(request):
         redcap_event = create_redcap_event_name(event_prefix,cohort_num)
 
         #fields patient will be able to edit
-        fields_of_interest = ['name','contactphone','adline','adline2','dob','email','emergencycontact','emergencycontactnum']
+        fields_of_interest = ['name','contactphone','adline1','adline2','dob','email','emergencycontact','emergencycontactnum']
         patient_data = get_specific_data_by_id(redcap_event,patient_id,fields_of_interest)
 
         if request.method == 'POST':
@@ -183,8 +183,8 @@ def therapistDashboard(request):
                     delete_notification(Unique_ID)
 
                 elif action == "confirm":
-                    from patientPortal.modelHandlers.notifications import perform_notification
-                    perform_notification(Unique_ID)
+                    from patientPortal.modelHandlers.notifications import handle_info_notification
+                    handle_info_notification(Unique_ID)
 
                 elif action == "status":
                     from patientPortal.modelHandlers.notifications import update_status
@@ -198,13 +198,15 @@ def therapistDashboard(request):
                 if action == "delete":
                     from patientPortal.modelHandlers.todo import delete_todo
                     delete_todo(Unique_ID)
+                if action =="create":
+                    from patientPortal.modelHandlers.todo import create_todo
                 else:
                     return HttpResponse(status=400)
 
             else:
                 return HttpResponse(status=400) #Bad request
 
-            return HttpResponse(json.dumps({'status': 'successful submission'}));
+            return HttpResponse(status=200);
 
         # At this point all requests being made on this page are get requests
         from patientPortal.modelHandlers.todo import fetch_todos
@@ -300,7 +302,7 @@ def forms(request):
             red_cap_event = create_redcap_event_name(event_arm,cohort_num);
             edit_patient_data_by_id(red_cap_event,record_id,request_dict);
 
-            return HttpResponse(json.dumps({'status': 'successful submission'}));
+            return HttpResponse(status=200);
     else:
         return redirect('/portal/patient')
 

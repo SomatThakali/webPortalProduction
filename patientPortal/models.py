@@ -6,12 +6,7 @@ from django.contrib.auth.models import User
 # from django.contrib.auth.models import Group
 from django.utils import timezone
 
-# Create your models here.
-'''
-class UserProfile(model.Model):
-    Therapist = models.OneToOneField("auth.User", limit_choices_to={'groups__name': 'therapist'}, on_delete=models.CASCADE);
-'''
-
+# Class to store a users cohort and redcap identifying information (cohort number and record_id)
 class CohortData(models.Model):
     cohort_num = models.CharField(max_length=1);
     record_id = models.CharField(max_length=15);
@@ -20,41 +15,12 @@ class CohortData(models.Model):
 
 class UserProfile(models.Model):
     user = models.OneToOneField("auth.User", limit_choices_to={'groups__name': 'patient'}, on_delete=models.CASCADE,)
-    therapist_user = models.OneToOneField(
+    therapist_user = models.ForeignKey(
         "auth.User", limit_choices_to={'groups__name': 'therapist'}, on_delete=models.CASCADE, related_name='therapist_user')
-
-class MyPersonalInformation(models.Model):
-
-    username = models.OneToOneField(User,
-                                    on_delete=models.CASCADE,)
-    First_Name = models.CharField(max_length=15)
-    Middle_Name = models.CharField(max_length=15, blank=True)
-    Last_Name = models.CharField(max_length=15)
-    Date_of_Birth = models.DateField()
-    Emergency_Contact_Name = models.CharField(max_length=30)
-    Emergency_Contact_Phone = models.CharField(max_length=20)
-
-    def __str__(self):
-        return self.username.username
-
-
-class MyContactInformation(models.Model):
-    username = models.OneToOneField(User,
-                                    on_delete=models.CASCADE,)
-    Phone_Number = models.CharField(max_length=20)
-    Address_Line_1 = models.CharField(max_length=40)
-    Address_Line_2 = models.CharField(max_length=40)
-    email = models.EmailField(max_length=50, blank=True)
-
-    def __str__(self):
-        return self.username.username
-
 
 class appointManager(models.Manager):
     def appointval(self, postData, id):
         errors = []
-        # print str(datetime.today()).split()[1]->
-        #  to see just the time in datetime
         print(postData["time"])
         print(datetime.now().strftime("%H:%M"))
         if postData['date']:
@@ -95,13 +61,11 @@ class appointManager(models.Manager):
         else:
             return (False, errors)
 
-
+# Class to store appointment information
 class appointment(models.Model):
     import uuid
-    username = models.OneToOneField(User,
-                                    on_delete=models.CASCADE,)
-    First_name = models.ForeignKey(MyPersonalInformation, related_name="onrecord",
-                                   blank=True, null=True, on_delete=models.CASCADE,)
+    patient = models.ForeignKey("auth.User", limit_choices_to={'groups__name': 'patient'}, on_delete=models.CASCADE,related_name='patient')
+    therapist = models.ForeignKey("auth.User", limit_choices_to={'groups__name': 'therapist'}, on_delete=models.CASCADE,related_name='therapist')
     affected_limb = models.CharField(max_length=255)
     date = models.DateField(blank=True, null=True)
     time = models.TimeField(blank=True, null=True)
@@ -113,7 +77,7 @@ class appointment(models.Model):
     def __str__(self):
         return self.username.username
 
-
+# Class to store notifications for therapists
 class notification(models.Model):
     import uuid
     patient_username = models.CharField(max_length=15, blank=True)
@@ -124,7 +88,7 @@ class notification(models.Model):
     description = models.TextField(blank=True, null=True)
     viewed = models.BooleanField(default=False)
 
-
+# Class to store todos for therapists
 class Todo(models.Model):
     import uuid
     patient_username = models.CharField(max_length=15, blank=True)
@@ -152,7 +116,7 @@ class Todo(models.Model):
             self.completed_date = datetime.now()
         super(Todo, self).save()
 
-
+# Classto store study information
 class Study (models.Model):
     therapist_username = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=15, blank=True)

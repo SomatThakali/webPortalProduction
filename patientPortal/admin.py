@@ -2,7 +2,7 @@ from django.contrib import admin
 # Register your models here.
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import User
-from .models import MyPersonalInformation, MyContactInformation, appointment, notification, Todo, Study, UserProfile, CohortData
+from .models import appointment, notification, Todo, Study, UserProfile, CohortData
 
 class UserAdmin(admin.StackedInline):
     model = UserProfile
@@ -10,8 +10,6 @@ class UserAdmin(admin.StackedInline):
     fk_name='user'
     verbose_name_plural = 'User Profile'
     extra = 0
-
-    # Define a new User admin
 
 class CohortDataAdmin(admin.StackedInline):
     model = CohortData;
@@ -26,37 +24,12 @@ class UserProfileAdmin(BaseUserAdmin):
 admin.site.unregister(User)
 admin.site.register(User, UserProfileAdmin)
 
-
-
-
-
-class MyPersonalInformationAdmin(admin.ModelAdmin):
-    model = MyPersonalInformation
-    verbose_name_plural = 'My_Personal_Information'
-    list_display = ('username', 'First_Name',  'Last_Name')
-    search_fields = ('username', 'First_Name',  'Last_Name')
-
-
-admin.site.register(MyPersonalInformation, MyPersonalInformationAdmin)
-
-
-class MyContactInformationAdmin(admin.ModelAdmin):
-    model = MyContactInformation
-    verbose_name_plural = 'My_Contact_Information'
-    list_display = ('username', 'email',  'Phone_Number')
-
-
-admin.site.register(MyContactInformation, MyContactInformationAdmin)
-
-
 class appointmentAdmin(admin.ModelAdmin):
     model = appointment
-    list_display = ('First_name', 'date')
-    search_fields = ('username', 'date', 'First_Name')
-
+    #list_display = ('First_name', 'date')
+    #search_fields = ('username', 'date', 'First_Name')
 
 admin.site.register(appointment, appointmentAdmin)
-
 
 class notificationAdmin(admin.ModelAdmin):
     model = appointment
@@ -73,15 +46,12 @@ class TodoAdmin(admin.ModelAdmin):
     list_display = ('title', 'patient_username', 'completed',  'due_date')
     search_fields = ('title', 'Unique_ID', 'therapist_username', 'patient_username')
 
-
 admin.site.register(Todo, TodoAdmin)
-
 
 class StudyAdmin(admin.ModelAdmin):
     model = Study
     verbose_name_plural = 'Study'
     list_display = ('title', 'therapist_username', 'researcher_name')
     search_fields = ('title', 'therapist_username')
-
 
 admin.site.register(Study, StudyAdmin)
