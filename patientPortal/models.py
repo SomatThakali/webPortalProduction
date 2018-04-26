@@ -64,8 +64,8 @@ class appointManager(models.Manager):
 # Class to store appointment information
 class appointment(models.Model):
     import uuid
-    patient = models.ForeignKey("auth.User", limit_choices_to={'groups__name': 'patient'}, on_delete=models.CASCADE,related_name='patient')
-    therapist = models.ForeignKey("auth.User", limit_choices_to={'groups__name': 'therapist'}, on_delete=models.CASCADE,related_name='therapist')
+    patient = models.ForeignKey("auth.User", limit_choices_to={'groups__name': 'patient'}, on_delete=models.CASCADE,related_name='patient_appointments')
+    therapist = models.ForeignKey("auth.User", limit_choices_to={'groups__name': 'therapist'}, on_delete=models.CASCADE,related_name='therapist_appointments')
     affected_limb = models.CharField(max_length=255)
     date = models.DateField(blank=True, null=True)
     time = models.TimeField(blank=True, null=True)
@@ -75,7 +75,7 @@ class appointment(models.Model):
     objects = appointManager()
 
     def __str__(self):
-        return self.username.username
+        return self.patient.username
 
 # Class to store notifications for therapists
 class notification(models.Model):

@@ -21,21 +21,6 @@ def get_personal_info(request):
         'DOB':DOB, 'emergency_first':emergency_first , 'emergency_phone':emergency_phone,
         'first_name':first_name,'last_name':last_name}
 
-
-def get_apoint_info(request):
-    p = User.objects.filter(username=request)[0]
-    apointment=p.appointment
-    day   = apointment.date.day
-    month = apointment.date.month
-    year  = apointment.date.year
-    date = str(year)+'-'+ str(month)+'-'+str(day)
-
-    hour = p.appointment.time.hour
-    minute = p.appointment.time.minute
-    time = str(hour)+':'+str(minute)
-
-    return  {'date': date,'time':time,'apoint': apointment}
-
 def get_study_info (request):
     from patientPortal.models import Study
     p = User.objects.filter(username=request)[0]

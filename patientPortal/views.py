@@ -11,7 +11,7 @@ from django.contrib.auth.models import User
 from django.forms.formsets import formset_factory
 from django.db import models
 from .accessoryScripts.checkGroup import is_patient, is_therapist
-from .DB_Extractor import get_personal_info, get_apoint_info,get_patient_info
+from .DB_Extractor import get_personal_info ,get_patient_info
 from. forms import MyPersonalInformationForm
 from. forms import MyContactInformationForm
 import json
@@ -101,39 +101,23 @@ def exercise(request):
 
 @csrf_exempt
 def patientCalendar(request):
-    from .models import CohortData, UserProfile
-    from django.contrib.auth.models import User
-    p = User.objects.filter(username=request.user)[0]
-    #userProfile = UserProfile.objects.get(user=request.user) #fetches the user UserProfile for user
-    therapist = p.userprofile.therapist_user                 #gets the therapist user from user
     if not request.user.is_authenticated:
         return redirect('/portal/login')
     if is_patient(request.user):
         import json
-        request_query_dict = request.GET;
-        request_dict = dict(request_query_dict);
+        if request.method == "GET":
+            request_query_dict = request.GET;
+            request_dict = dict(request_query_dict);
+            if not bool(request_dict):
+                return render_to_response('patientPortal/patientCalendar.html')
+            else:
+                from patientPortal.modelHandlers.appointments import get_appointments
+                appointments = get_appointments(request.user,'patient')
+                return HttpResponse(json.dumps({'appts':appointments}))
 
-        request_query_dict2 = request.POST;
-        request_delete = dict(request_query_dict2);
-
-
-        try:
-            info=get_apoint_info(request.user)
-        except ObjectDoesNotExist: # so it does not crash if patient has no appointments
-            pass
-
-        # FIXME notice that this does two calls to the page on load. 1 to just load the page and 2 to transmit data
-        # Must be better way of doing this, but seemed the most reasonable solution due to strang
-        if bool(request_dict):
-            #Filler information to test front end response
-            try:
-                   appts = [{'date' : info['date'], 'time':info['time']}]
-
-            except UnboundLocalError: # dummy data if it is empty:
-                appts = [{'date':'0000-00-00','time':'0:00pm'}]
-
-            response_body = {"therapist": therapist.username, "appts": appts}
-            return HttpResponse(json.dumps(response_body));
+        #Only post requests will make it here
+        request_query_dict = request.POST;
+        request_delete = dict(request_query_dict);
 
         if bool(request_delete):
             date = request_delete.get('requestObject[date]')
@@ -142,7 +126,7 @@ def patientCalendar(request):
             ,message='the patient wants to cancel his appointment at '+date,description='you can contact the patient at',Unique_ID='8')
             p.save()
 
-        return render_to_response('patientPortal/patientCalendar.html')
+
     else:
         return redirect('/portal/therapist')
 

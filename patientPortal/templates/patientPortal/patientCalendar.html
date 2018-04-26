@@ -180,9 +180,27 @@
       }
       return (numberStr+suffix)
     }
+    function resolveTime(time){
+      var time = time.split(':');
+      var hour = parseInt(time[0])
+      if (hour <12){
+        description = "A.M."
+      } else{
+        description = "P.M."
+      }
+      if (hour > 12){
+        hour -= 12;
+      }
+      if (hour == 0){
+        hour = 12;
+      }
+      time[0] = hour.toString()
+      return time.join(':')+" "+description
+    }
     function convertToReadableFormat(appt){
       var date = appt.date;
       var time = appt.time;
+      time = resolveTime(time)
       var dateArray = date.split('-');
       var lookUpMonth = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
       var monthNum = parseInt(dateArray[1])-1;
@@ -199,13 +217,14 @@
         var futureApptDates = json.appts;
         var nextApptDate = convertToReadableFormat(futureApptDates[0]); // 'Feb 20th, 2018 @ 2:00pm',
         var nextApptDoctor = json.therapist;
-
         //Set next appointment info
         nextAppointmentDate.textContent += nextApptDate;
         nextAppointmentDoctor.textContent += nextApptDoctor;
         futureApptTimesObj = {};
         futureApptDates.forEach(function(appt){
-          futureApptTimesObj[appt.date] = appt.time;
+          time = resolveTime(appt.time)
+          futureApptTimesObj[appt.date] = time;
+          console.log(futureApptTimesObj)
         });
         calendar = $('.cal1').clndr({
           events: futureApptDates,
@@ -218,7 +237,6 @@
                 //Future appt info
                 futureApptDate.textContent = 'Date: ' + day;
                 futureApptTime.textContent = 'Time: ' + time;
-
                 currentSelection = {
                   date: day,
                   time: time
@@ -245,52 +263,39 @@
           calendar.clndr1.forward();
         }
       });
-
       //Cancellation of appt
       $(document).on('click', '#cancelbtn', function(evt){
         var dataType = 'json',
             data = currentSelection,
             time = currentSelection.time,
             date = currentSelection.date;
-
-
         var requestObject = {
           time: time,
           date: date,
           therapist: nextAppointmentDoctor.textContent
         };
-
         makeServiceCall(requestObject);
-
         alert('You have cancelled your appointment at ' + time + ' on ' + date);
-
         refresh();
       });
-
       //Rescheduling of appt
       $(document).on('click', '#reschedulebtn', function(evt){
         var dataType = 'json',
             data = currentSelection;
-
         makeServiceCall(requestObject);
-
         alert('You have rescheduled your previous appointment for '
               + currentSelection.time + ' on ' +currentSelection.date +
               '. Your physician will contact you with more information.');
         refresh();
       });
-
       function makeServiceCall(requestObject){
         $.ajax({
           url: '',
           type: 'POST',
           dataType: 'json',
-          data:{ requestObject,
-            'csrfmiddlewaretoken': '{{ csrf_token }}',
-          }
+          data: requestObject
         })
       }
-
       function refresh(){
         $('#appointmentModal').modal('hide');
         location.reload();
