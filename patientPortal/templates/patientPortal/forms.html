@@ -26,14 +26,16 @@
   <style>
     .form-button:hover {
       cursor: pointer;
-      background-color: rgba(220,220,220,1);
+      background-color: rgba(220, 220, 220, 1);
     }
-    .form-button{
+
+    .form-button {
       border-radius: 5px;
       padding: 5px 10px;
       display: inline-block;
-      background-color: rgba(231,231,231,.85);
+      background-color: rgba(231, 231, 231, .85);
     }
+
   </style>
 </head>
 
@@ -47,11 +49,11 @@
       <div>
         <div id="available_forms" style="padding-right: 0" class="responsive-vertical-cushion">
           <h1>Available Forms</h1>
-          <div style= "margin-right: 0; height:500px; width: 90%; overflow-y: auto">
+          <div style="margin-right: 0; height:500px; width: 90%; overflow-y: auto">
             {% for form in forms %}
             <div style="border: 2px solid #e7e7e7; margin: 10px 0; padding: 20px 25px" class="no-margin row">
               <div class="row no-margin">
-                <h4 class="formItem no-margin pull-left"style="padding: 10px 0 10px 15px; "> {{ form.verbose_name }} </h4>
+                <h4 class="formItem no-margin pull-left" style="padding: 10px 0 10px 15px; "> {{ form.verbose_name }} </h4>
                 <div style="padding: 8px 0" class="pull-right">
                   <div id="create_{{form.name}}" class="form-button create-submission">
                     <i class="fas fa-plus"></i>
@@ -74,6 +76,7 @@
   <script src="{% static 'javascript/app.js' %}"></script>
   <script src="{% static 'javascript/directives/therLogOut.js' %}"></script>
   <script src="{% static 'javascript/directives/therMenu.js' %}"></script>
+  <script src="{% static 'javascript/stringy/createDivs.js' %}"></script>
 
 </body>
 

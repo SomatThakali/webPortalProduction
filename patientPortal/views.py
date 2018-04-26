@@ -201,19 +201,18 @@ def recruitment(request):
         return redirect('/portal/login')
     if is_therapist(request.user):
         from django.core.mail import send_mass_mail
-        """from patientPortal.apiScripts.exports import get_form_questions_from_params
-        params = ['dob','stroke','onsetdate','heart_attack']
-        data = get_form_questions_from_params(params)
+        from patientPortal.apiScripts.exports import get_form_questions_from_params as data
 
-        for datum in data:
-            for key in datum:
-                print(key, datum[key])
-            print('\n')
-
+        params = ['stroke','parkinson_s_disease','congestive_heart_failure','heart_attack']
+        testdatum = data(params)
+        testdatum = json.dumps(testdatum)
+        #for i in testdatum:
+        #    print(i)
+        #print(testdatum);
         #data = script_to_get_question_info
         #data.stringy
-        for inside context--> 'data': data"""
-        return render(request,'patientPortal/recruitment.html',context={})
+        #for inside context--> 'data': data
+        return render(request,'patientPortal/recruitment.html',context={'testdatum': testdatum})
     else:
         return redirect('/portal/patient')
 

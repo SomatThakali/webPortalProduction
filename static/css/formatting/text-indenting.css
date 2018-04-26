@@ -1,24 +1,31 @@
-.no-margin{
+.no-margin {
   margin: 0
 }
-.responsive-margin{
+
+.responsive-margin {
   margin: 3vw;
 }
-.responsive-margin-left{
+
+.responsive-margin-left {
   margin-left: 3vw;
 }
-.responsive-margin-bottom{
+
+.responsive-margin-bottom {
   margin-bottom: 3vw;
 }
-.responsive-margin-bottom-2x{
+
+.responsive-margin-bottom-2x {
   margin-bottom: 6vw;
 }
-.responsive-vertical-margin{
+
+.responsive-vertical-margin {
   margin: 0 3vw;
 }
-.responsive-horizontal-margin{
+
+.responsive-horizontal-margin {
   margin: 3vw 0;
 }
-.center-text{
+
+.center-text {
   text-align: center;
 }
