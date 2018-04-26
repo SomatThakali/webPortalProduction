@@ -7,16 +7,22 @@ from django.contrib.auth.models import User
 from django.utils import timezone
 
 # Class to store a users cohort and redcap identifying information (cohort number and record_id)
+
+
 class CohortData(models.Model):
-    cohort_num = models.CharField(max_length=1);
-    record_id = models.CharField(max_length=15);
-    user = models.ForeignKey("auth.User",limit_choices_to={'groups__name': 'patient'}, on_delete=models.CASCADE)
+    cohort_num = models.CharField(max_length=1)
+    record_id = models.CharField(max_length=15)
+    user = models.ForeignKey("auth.User", limit_choices_to={
+                             'groups__name': 'patient'}, on_delete=models.CASCADE)
     # patient can have multiple of these records
 
+
 class UserProfile(models.Model):
-    user = models.OneToOneField("auth.User", limit_choices_to={'groups__name': 'patient'}, on_delete=models.CASCADE,)
+    user = models.OneToOneField("auth.User", limit_choices_to={
+                                'groups__name': 'patient'}, on_delete=models.CASCADE,)
     therapist_user = models.ForeignKey(
         "auth.User", limit_choices_to={'groups__name': 'therapist'}, on_delete=models.CASCADE, related_name='therapist_user')
+
 
 class appointManager(models.Manager):
     def appointval(self, postData, id):
@@ -62,6 +68,8 @@ class appointManager(models.Manager):
             return (False, errors)
 
 # Class to store appointment information
+
+
 class appointment(models.Model):
     import uuid
     patient = models.ForeignKey("auth.User", limit_choices_to={'groups__name': 'patient'}, on_delete=models.CASCADE,related_name='patient_appointments')
@@ -78,6 +86,8 @@ class appointment(models.Model):
         return self.patient.username
 
 # Class to store notifications for therapists
+
+
 class notification(models.Model):
     import uuid
     patient_username = models.CharField(max_length=15, blank=True)
@@ -89,6 +99,8 @@ class notification(models.Model):
     viewed = models.BooleanField(default=False)
 
 # Class to store todos for therapists
+
+
 class Todo(models.Model):
     import uuid
     patient_username = models.CharField(max_length=15, blank=True)
@@ -117,6 +129,8 @@ class Todo(models.Model):
         super(Todo, self).save()
 
 # Classto store study information
+
+
 class Study (models.Model):
     therapist_username = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=15, blank=True)
