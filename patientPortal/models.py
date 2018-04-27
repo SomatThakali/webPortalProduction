@@ -3,44 +3,30 @@ from django.db import models
 from datetime import date, datetime
 from django.contrib.auth.models import User
 # from django.conf import settings
-#  from django.contrib.auth.models import Group
+# from django.contrib.auth.models import Group
 from django.utils import timezone
 
-# Create your models here.
+# Class to store a users cohort and redcap identifying information (cohort number and record_id)
 
 
-class MyPersonalInformation(models.Model):
-
-    username = models.OneToOneField(User,
-                                    on_delete=models.CASCADE,)
-    First_Name = models.CharField(max_length=15)
-    Middle_Name = models.CharField(max_length=15, blank=True)
-    Last_Name = models.CharField(max_length=15)
-    Date_of_Birth = models.DateField()
-    Emergency_Contact_Name = models.CharField(max_length=30)
-    Emergency_Contact_Phone = models.CharField(max_length=20)
-
-    def __str__(self):
-        return self.username.username
+class CohortData(models.Model):
+    cohort_num = models.CharField(max_length=1)
+    record_id = models.CharField(max_length=15)
+    user = models.ForeignKey("auth.User", limit_choices_to={
+                             'groups__name': 'patient'}, on_delete=models.CASCADE)
+    # patient can have multiple of these records
 
 
-class MyContactInformation(models.Model):
-    username = models.OneToOneField(User,
-                                    on_delete=models.CASCADE,)
-    Phone_Number = models.CharField(max_length=20)
-    Address_Line_1 = models.CharField(max_length=40)
-    Address_Line_2 = models.CharField(max_length=40)
-    email = models.EmailField(max_length=50, blank=True)
-
-    def __str__(self):
-        return self.username.username
+class UserProfile(models.Model):
+    user = models.OneToOneField("auth.User", limit_choices_to={
+                                'groups__name': 'patient'}, on_delete=models.CASCADE,)
+    therapist_user = models.ForeignKey(
+        "auth.User", limit_choices_to={'groups__name': 'therapist'}, on_delete=models.CASCADE, related_name='therapist_user')
 
 
 class appointManager(models.Manager):
     def appointval(self, postData, id):
         errors = []
-        # print str(datetime.today()).split()[1]->
-        #  to see just the time in datetime
         print(postData["time"])
         print(datetime.now().strftime("%H:%M"))
         if postData['date']:
@@ -81,37 +67,45 @@ class appointManager(models.Manager):
         else:
             return (False, errors)
 
+# Class to store appointment information
+
 
 class appointment(models.Model):
-    username = models.OneToOneField(User,
-                                    on_delete=models.CASCADE,)
-    First_name = models.ForeignKey(MyPersonalInformation, related_name="onrecord",
-                                   blank=True, null=True, on_delete=models.CASCADE,)
+    import uuid
+    patient = models.ForeignKey("auth.User", limit_choices_to={'groups__name': 'patient'}, on_delete=models.CASCADE,related_name='patient_appointments')
+    therapist = models.ForeignKey("auth.User", limit_choices_to={'groups__name': 'therapist'}, on_delete=models.CASCADE,related_name='therapist_appointments')
     affected_limb = models.CharField(max_length=255)
     date = models.DateField(blank=True, null=True)
     time = models.TimeField(blank=True, null=True)
+    Unique_ID = models.CharField(max_length=100, blank=True, unique=True, default=uuid.uuid4)
     created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, blank=True, null=True)
     objects = appointManager()
 
     def __str__(self):
-        return self.username.username
+        return self.patient.username
+
+# Class to store notifications for therapists
 
 
 class notification(models.Model):
+    import uuid
     patient_username = models.CharField(max_length=15, blank=True)
     therapist_username = models.ForeignKey(User, on_delete=models.CASCADE)
-    Unique_ID = models.CharField(max_length=20, unique=True, blank=False)
+    Unique_ID = models.CharField(max_length=100, blank=True, unique=True, default=uuid.uuid4)
     header = models.CharField(max_length=30)
     message = models.TextField(blank=True, null=True)
     description = models.TextField(blank=True, null=True)
     viewed = models.BooleanField(default=False)
 
+# Class to store todos for therapists
+
 
 class Todo(models.Model):
+    import uuid
     patient_username = models.CharField(max_length=15, blank=True)
     therapist_username = models.ForeignKey(User, on_delete=models.CASCADE)
-    Unique_ID = models.CharField(max_length=20, unique=True, blank=False)
+    Unique_ID = models.CharField(max_length=100, blank=True, unique=True, default=uuid.uuid4)
     title = models.CharField(max_length=140)
     created_date = models.DateField(default=timezone.now, blank=True, null=True)
     due_date = models.DateField(blank=True, null=True, )
@@ -133,6 +127,8 @@ class Todo(models.Model):
         if self.completed:
             self.completed_date = datetime.now()
         super(Todo, self).save()
+
+# Classto store study information
 
 
 class Study (models.Model):

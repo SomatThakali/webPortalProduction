@@ -3,8 +3,10 @@
 <html lang="en">
 
 <head>
+
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="csrf-token" content="{{ csrf_token }}">
   <meta name="description" content="A web-based platform to allow management of patients for clinical and adminstrative applications. Also provides patients with a useful and reliable tool to gain access to medical records.">
   <meta name="author" content="BME Senior Design Teams:  Kevin Call, Teddy Colon, Revital Schechter, Aimee Tavarez, Jesus Mendez">
   <title>Therapist Dashboard</title>
@@ -33,17 +35,17 @@
     display: inline-block;
     margin: 0 -2px;
     padding: 15px 25px;
-    background-color: rgba(231,231,231,.85);
+    background-color: rgba(231, 231, 231, .85);
     border-right: 1px solid #e7e7e7;
   }
 
   .tab:hover {
-    background-color: rgba(220,220,220,1);
+    background-color: rgba(220, 220, 220, 1);
     cursor: pointer;
   }
 
   .active {
-    background-color: rgba(220,220,220,1);
+    background-color: rgba(220, 220, 220, 1);
   }
 
   .display {
@@ -75,7 +77,7 @@
         </div>
         <div id="toDo-form" style="padding-right: 0" class="responsive-vertical-cushion display show">
           <h2>To-do List</h2>
-          <div ng-controller="toDoListController" style= "margin-right: 0; height:380px; width: 90%; overflow-y: auto">
+          <div ng-controller="toDoListController" style="margin-right: 0; height:380px; width: 90%; overflow-y: auto">
             <div>
               <div ng-repeat="task in tasks">
                 <task info="task"></task>
@@ -83,41 +85,54 @@
             </div>
           </div>
         </div>
-        <div id="notification-form" class="responsive-vertical-cushion hide">
+        <form id="notification-form" class="responsive-vertical-cushion hide">
           <h2>Notifications</h2>
-          <div style= "margin-right: 0; height:380px; width: 70vw; overflow-y: auto">
-            <div>
+          <div style="padding-bottom: 50px">
+            <button class="pull-right btn btn-warning" id="notifications-status-change" type="submit">Mark as read</button>
+            <button class="pull-left btn btn-primary" id="show-read" type="button">Show read</button>
+          </div>
+          <div style="margin-right: 0; height:380px; width: 70vw; overflow-y: auto">
+            <div id="accordion">
               {% for notification in notifications %}
-              <div style="border: 2px solid #e7e7e7; margin: 10px 0; padding: 20px 25px" class="no-margin row">
-                <div class="row no-margin">
-                  <div style="padding: 15px 15px;" class="col-sm-2">
-                    <i class= "{{notification.type}} fa-4x"></i>
+              <div id="{{notification.Unique_ID}}" class="panel panel-default">
+                <div class="panel-heading">
+                  <div class="row">
+                    <div class="col-sm-1">
+                      <input type="checkbox"></input>
+                    </div>
+                    <a data-toggle="collapse" data-parent="#accordian" href="#collapse_{{notification.Unique_ID}}">
+                    <h2 class="panel-title">{{notification.header}}</h4>
+                    </a>
                   </div>
-                  <div class="col-sm-10">
-                    <h5 style="display: inline-block">{{notification.header}}</h5>
-                    <h5 style="padding-right: 0;font-weight: bold"> {{notification.date}}</h5>
+                </div>
+                <div id="collapse_{{notification.Unique_ID}}" class="panel-collapse collapse">
+                  <div class="panel-body">
+                    <p>{{notification.message}}</p>
+                    <button id="confirm_{{notification.Unique_ID}}" class="confirm-notification btn btn-primary pull-left" type="button">Confirm Changes</button>
+                    <button id="delete_{{notification.Unique_ID}}" class="delete-notification btn btn-danger pull-right" type="button">Delete Notification</button>
                   </div>
                 </div>
               </div>
-
               {% endfor %}
             </div>
-        </div>
+          </div>
+        </form>
       </div>
-    </div>
 
-  </div>
-  <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.5/angular.js"></script>
-  <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
-  <script src="{% static 'javascript/app.js' %}"></script>
-  <script src="{% static 'javascript/directives/therLogOut.js' %}"></script>
-  <script src="{% static 'javascript/directives/therMenu.js' %}"></script>
-  <script src="{% static 'javascript/tabs.js' %}"></script>
-  <script src="{% static 'javascript/controllers/toDoListController.js' %}"></script>
-  <script src="{% static 'javascript/directives/task.js' %}"></script>
-  <script src="{% static 'javascript/controllers/notificationsController.js' %}"></script>
-  <script src="{% static 'javascript/directives/notice.js' %}"></script>
+    </div>
+    <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'vendor/bootstrap/js/bootstrap.min.js' %}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.5/angular.js"></script>
+    <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
+    <script src="{% static 'javascript/ajax-requests/dashboard.js' %}"></script>
+    <script src="{% static 'javascript/app.js' %}"></script>
+    <script src="{% static 'javascript/directives/therLogOut.js' %}"></script>
+    <script src="{% static 'javascript/directives/therMenu.js' %}"></script>
+    <script src="{% static 'javascript/tabs.js' %}"></script>
+    <script src="{% static 'javascript/controllers/toDoListController.js' %}"></script>
+    <script src="{% static 'javascript/directives/task.js' %}"></script>
+    <script src="{% static 'javascript/controllers/notificationsController.js' %}"></script>
+    <script src="{% static 'javascript/directives/notice.js' %}"></script>
 
 </body>
 
