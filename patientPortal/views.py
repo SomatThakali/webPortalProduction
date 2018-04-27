@@ -71,8 +71,6 @@ def MyPersonalInformation(request):
 
             changes = compare_info(patient_data, request_dict) # we dont need fields_of_interest as a param here
             create_info_notification(therapist, request.user, changes)
-            #print(request.user.username_of_therapist());
-            #print(patient_data)
             return HttpResponse({'success':"Successful submission"})
 
         # This is on the get request
@@ -86,7 +84,33 @@ def myprogress(request):
     if not request.user.is_authenticated:
         return redirect('/portal/login')
     if is_patient(request.user):
-        return render_to_response('patientPortal/myprogress.html')
+        if request.method == "GET":
+            request_query_dict = request.GET;
+            request_dict = dict(request_query_dict);
+            if not bool(request_dict): # empty get request
+                return render_to_response('patientPortal/myprogress.html')
+            # If get request is not empty this will execute
+            from patientPortal.modelHandlers.appointments import get_appointments
+            import calendar
+            appts = get_appointments(request.user,'patient')
+            months = {}
+            appts_attended = 0;
+            total_appts = 0;
+            for appt in appts:
+                month = int(appt['date'].split('-')[1])
+                month = calendar.month_name[month]
+                if appt['attended']:
+                    appts_attended += 1;
+                    if month not in months:
+                        months[month] = 1
+                    else:
+                        months[month] += 1
+                total_appts += 1;
+            appts_left = total_appts - appts_attended
+            return HttpResponse(json.dumps({'months':months,'appts_left':appts_left,'appts_attended':appts_attended}))
+
+
+
     else:
         return redirect('/portal/therapist')
 
@@ -108,7 +132,7 @@ def patientCalendar(request):
         if request.method == "GET":
             request_query_dict = request.GET;
             request_dict = dict(request_query_dict);
-            if not bool(request_dict):
+            if not bool(request_dict):  # Empty get request
                 return render_to_response('patientPortal/patientCalendar.html')
             else:
                 from patientPortal.modelHandlers.appointments import get_appointments
@@ -198,9 +222,6 @@ def therapistCalendar(request):
         return redirect('/portal/login')
     if is_therapist(request.user):
         patient_info = get_patient_info(request) # NOTE: kevin, this return patient info needed to populate therapist calendar
-        print(patient_info[0]['first_name'])
-        print(patient_info[0]['date'])
-        print(patient_info[0]['time'])
         return render_to_response('patientPortal/therapistCalendar.html')
     else:
         return redirect('/portal/patient')
@@ -212,10 +233,6 @@ def database(request):
     if is_therapist(request.user):
         patient_info = get_patient_info(request) # NOTE: kevin, this returns a dict that contain all the info
         # needed to populate the database, just need to pass it to front end.
-        print(patient_info[0]['first_name']) #
-        print(patient_info[0]['last_name'])
-        print(patient_info[0]['date'])
-        print(patient_info[0]['time'])
 
         return render_to_response('patientPortal/database.html')
     else:
@@ -227,18 +244,6 @@ def recruitment(request):
         return redirect('/portal/login')
     if is_therapist(request.user):
         from django.core.mail import send_mass_mail
-        """from patientPortal.apiScripts.exports import get_form_questions_from_params
-        params = ['dob','stroke','onsetdate','heart_attack']
-        data = get_form_questions_from_params(params)
-
-        for datum in data:
-            for key in datum:
-                print(key, datum[key])
-            print('\n')
-
-        #data = script_to_get_question_info
-        #data.stringy
-        for inside context--> 'data': data"""
         return render(request,'patientPortal/recruitment.html',context={})
     else:
         return redirect('/portal/patient')

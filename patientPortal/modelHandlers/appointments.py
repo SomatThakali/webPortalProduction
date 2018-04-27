@@ -1,8 +1,5 @@
 def clean_appointment_list(appts):
-    from patientPortal.accessoryScripts.resourceManager import removeDictKey
     for i in range(len(appts)):
-        appts[i] = removeDictKey(appts[i],'created_at')
-        appts[i] = removeDictKey(appts[i],'updated_at')
         date = appts[i]['date']
         year = str(date.year)
         month = str(date.month)
