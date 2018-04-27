@@ -43,7 +43,7 @@ admin.site.register(notification, notificationAdmin)
 class TodoAdmin(admin.ModelAdmin):
     model = Todo
     verbose_name_plural = 'Todo'
-    list_display = ('title', 'patient_username', 'completed',  'due_date')
+    list_display = ('title', 'patient_username', 'due_date')
     search_fields = ('title', 'Unique_ID', 'therapist_username', 'patient_username')
 
 admin.site.register(Todo, TodoAdmin)
