@@ -16,8 +16,17 @@ function createData($item,type){
   data = appendCSRFToken(data)
   return data
 }
+function isEmpty($div){
+  return $div.find('div').length==0
+}
 
 $(document).ready(function(){
+  if (isEmpty($('#notification-accordion'))){
+    $('#notification-accordion').append("<h3>No notifications at this moment!</h3>");
+  }
+  if (isEmpty($('#todo-accordion'))){
+    $('#todo-accordion').append("<h3>No ToDos recorded.</h3>")
+  }
   $('.confirm-notification').click(function(){
     data = createData($(this),'notification')
     uniqueID = data['Unique_ID']
@@ -27,6 +36,9 @@ $(document).ready(function(){
       data: data,
       success: function(res){
         $('#'+uniqueID).remove()
+        if (isEmpty($('#notification-accordion'))){
+          $('#notification-accordion').append("<h3>No more notifications for now!</h3>");
+        }
       },
       error: function(res){
         alert("Sorry, you're request cannot be processed right now!")
@@ -42,10 +54,30 @@ $(document).ready(function(){
       data: data,
       success: function(res){
         $('#'+uniqueID).remove()
+        if (isEmpty($('#notification-accordion'))){
+          $('#notification-accordion').append("<h3>No more notifications for now!</h3>");
+        }
       },
       error: function(res){
-        console.log(res)
         alert("Sorry, you're request cannot be processed right now!")
+      }
+    })
+  })
+  $('.complete-todo').click(function(){
+    data = createData($(this),'todo');
+    uniqueID = data['Unique_ID']
+    $.ajax({
+      url: '',
+      type:'POST',
+      data: data,
+      success: function(res){
+        $('#'+uniqueID).remove()
+        if (isEmpty($('#todo-accordion'))){
+          $('#todo-accordion').append("<h3>No more tasks recorded for now!</h3>");
+        }
+      },
+      error: function(res){
+        alert("Sorry, you're request cannot be process right now!")
       }
     })
   })

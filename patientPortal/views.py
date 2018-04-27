@@ -189,10 +189,10 @@ def therapistDashboard(request):
                 return HttpResponse(status=200) # Good Request
 
             elif type == "todo":
-                if action == "delete":
+                if action == "complete":
                     from patientPortal.modelHandlers.todo import delete_todo
                     delete_todo(Unique_ID)
-                if action =="create":
+                elif action =="create":
                     from patientPortal.modelHandlers.todo import create_todo
                 else:
                     return HttpResponse(status=400) # Bad Request
@@ -211,7 +211,7 @@ def therapistDashboard(request):
         # recall notification has patient_username, therapist_username,
         # unique_ID, header, message, description
         todos = fetch_todos(request.user);
-        return render(request,'patientPortal/therapistDashboard.html',context={'notifications': notifications})
+        return render(request,'patientPortal/therapistDashboard.html',context={'notifications': notifications, 'todos': todos})
     else:
         return redirect('/portal/patient')
 
