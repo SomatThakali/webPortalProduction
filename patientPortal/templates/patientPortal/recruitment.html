@@ -116,7 +116,7 @@
                       </a>
                     </h5>
                   </div>
-                  <div id="{{study.link}}" class="panel-collapse collapse" aria-expanded="false">
+                  <div id="{{study.link}}" class="panel-collapse collapse in" aria-expanded="false">
                     <div class="panel-body">
                       <h6>Description:</h6>
                       <p>
@@ -247,7 +247,6 @@
   <!--CDN for jquery and angularjs-->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.5/angular.js"></script>
-
   <!--Bootstrap JS-->
   <script src="{% static 'vendor/bootstrap/js/bootstrap.min.js' %}"></script>
   <!--Modules-->
@@ -312,24 +311,29 @@
         });
         $('.lns').after(val3);
         $('.add-study-content').append(val2);
-        $('.study-footer').append('<button type="submit" onclick="createAccordGroup()" class="btn btn-default">Create</button>\
+        $('.study-footer').append('<button type="submit" class="btn btn-default">Create</button>\
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>');
       }
     }
 
     function genModalContent() {
       var headers, leftModalContainer, temp, footer, testContent, obj, questions, rightModalContainer;
+      var title, description, researcher_name, researcher_email;
       //headers titles for the left column of the modal
-      headers = ['Title of Study', 'Description', 'Name of Researcher', 'Contact Information'];
+      headers = {
+        "Title of Study": "title",
+        "Description": "description",
+        "Name of Researcher(s)": "researcher_name",
+        "Contact Information": "researcher_email"
+      };
       leftModalContainer = [];
-
       //generating the left container for the modal and compiling them to a list
-      for (var i = 0; i < headers.length; i++) {
-        temp = '<h5 style="padding-left:10px;">' + headers[i] + '</h5>';
-        if (headers[i] === "Description") {
+      for (ind in headers) {
+        temp = '<h5 style="padding-left:10px;">' + ind + '</h5>';
+        if (ind === "Description") {
           temp += '<textarea class="full-width" cols="40"  rows="5" style="resize:none; overflow:auto; margin:0 0 5px 10px;"></textarea>';
         } else {
-          temp += '<input class="full-width" type="text" name="new-study" style="margin: 0 0 5px 10px;" value="" required>';
+          temp += '<input class="full-width" type="text" name=' + headers[ind] + ' style="margin: 0 0 5px 10px;" required>';
         }
         leftModalContainer.push(temp);
       }
