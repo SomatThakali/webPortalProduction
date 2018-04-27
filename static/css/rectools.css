@@ -1,5 +1,26 @@
 body {
   font-family: 'Open Sans', sans-serif;
+  background-color: #F8F8F8;
+}
+
+.checkAll {
+  margin: 10px 0 0 10px;
+}
+
+.panel-heading {
+  opacity: .85;
+}
+
+.panel-heading .accordion-toggle:after {
+  /* symbol for "opening" panels */
+  font-family: 'Glyphicons Halflings';
+  /* essential for enabling glyphicon */
+  content: "\e114";
+  /* adjust as needed, taken from bootstrap.css */
+  float: right;
+  /* adjust as needed */
+  color: black;
+  /* adjust as needed */
 }
 
 div.encap {
@@ -115,4 +136,52 @@ div.tab-content {
 li a:focus {
   color: #fff;
   background-color: #fff;
+}
+
+.panel-heading.collapsed .accordion-toggle:after {
+  /* symbol for "collapsed" panels */
+  content: "\e080";
+  /* adjust as needed, taken from bootstrap.css */
+}
+
+a.accordion-toggle:hover {
+  text-decoration: none;
+}
+
+.panel .panel-heading:hover {
+  background-color: #6DA5D4;
+  cursor: pointer;
+  opacity: .75;
+}
+
+.accord-header {
+  height: 55px;
+  background-color: #6DA5D4;
+  border-radius: 3px;
+  border: 1px solid #ddd;
+}
+
+.panel-group {
+  padding-top: 2px !important;
+}
+
+.accordion-toggle {
+  color: #fff !important;
+}
+
+.btn-info {
+  float: right;
+  height: 36px;
+  padding-top: 5px;
+  margin: 8px 10px;
+}
+
+button.modBTN {
+  float: right;
+  margin: 5px 5px;
+  padding: 8px 16px 8px 16px;
+}
+
+button:focus {
+  outline: 0 !important;
 }

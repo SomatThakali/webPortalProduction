@@ -5,7 +5,7 @@
 <head>
   <title>Recruitment Tool</title>
   <meta charset="utf-8">
-  <meta name="question-data" content="{{data}}">
+  <meta name="question-data" content="{{testdatum}}">
   <!--<meta name="test" content="{{test}}">-->
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
@@ -16,23 +16,11 @@
   <link href="{% static 'css/formatting/div-paddings.css' %}" rel="stylesheet">
   <link href="{% static 'css/formatting/div-designs.css' %}" rel="stylesheet">
   <link href="{% static 'css/formatting/text-indenting.css' %}" rel="stylesheet">
+
   <!-- Font Calls -->
   <link href="{% static 'css/font/general-fonts.css' %}" rel="stylesheet">
   <link href="{% static 'javascript/jquery/studyPanel.js' %}">
   <style>
-    body {
-      background-color: #F8F8F8;
-    }
-
-    .checkAll {
-      margin: 10px 0 0 10px;
-    }
-
-
-    .panel-heading {
-      opacity: .85;
-    }
-
     .panel-heading .accordion-toggle:after {
       /* symbol for "opening" panels */
       font-family: 'Glyphicons Halflings';
@@ -95,21 +83,17 @@
     }
 
   </style>
-
 </head>
 
 <body data-ng-app="patientPortal">
-
   <ther-log-out></ther-log-out>
   <div class="row">
     <div class="col-sm-3" style="border-right: 0; padding: 5px 10px; padding-right: 0px; background-color: #F8F8F8;">
       <ther-Menu></ther-Menu>
     </div>
-
     <!--Table for study panels -->
     <div data-ng-controller="studiesController">
       <div class="container-fluid">
-
         <div class="col-sm-9" data-ng-controller="patientController">
           <!--HEADER-->
           <div class="accord-header">
@@ -117,40 +101,45 @@
             <button type="button" onclick="Check('studs')" name="checkAll" class="chAllRP btn" data-toggle="checkbox" style="margin: 10px 0 0 5px;">Select All</button>
             <button type="button" class="modBTN btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">Send To Patients</button>
           </div>
-
           <div id="StudyModal" class="no-margin openModal" style="overflow-y: auto; height:400px;">
-            <!--<div class="modal fade" id="pop-up-modal" role="dialog">
-              <div class="modal-dialog">
-                <div class="modal-content" style="height:400px; width:75%;">
-
-                  <h4>Title of Study:</h4>
-                  <input type="text">
-                  <h4>Description:</h4>
-                  <input type="text">
-                  <h4>Name of Researcher:</h4>
-                  <input type="text">
-                  <h4>Additional Info:</h4>
-                  <input type="text">
+            <div class="panel-group" id="accordion">
+              <div data-ng-repeat="study in studies">
+                <div class="panel panel-default">
+                  <!--panel header-->
+                  <div class="panel-heading collapsed" data-toggle="collapse" data-target="#{{study.link}}" style="background-color:#337ab7 !important;">
+                    <h5 class="panel-title">
+                      <div class="pancheck" style="display:inline;">
+                          <input class="pancheck" type="checkbox" name="studs">
+                      </div>
+                      <a class="accordion-toggle" data-parent="#accordion" href="#{{study.link}}">
+                        {{study.nameOfStudy}}
+                      </a>
+                    </h5>
+                  </div>
+                  <div id="{{study.link}}" class="panel-collapse collapse" aria-expanded="false">
+                    <div class="panel-body">
+                      <h6>Description:</h6>
+                      <p>
+                        {{study.content}}
+                      </p>
+                      <h6>Name of Researcher(s):</h6>
+                      <p>
+                        {{study.requirements}}
+                      </p>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>-->
-            <!--<div class="panel-group" id="accordion">
-              <div data-ng-repeat="study in studies">
-                <studies-listing info="study"></studies-listing>
-              </div>
-            </div>-->
+            </div>
           </div>
-
           <!--Modal Encapsulation-->
           <div>
             <div class="modal fade" id="myModal" role="dialog">
               <div class="modal-dialog">
                 <!-- Modal content-->
                 <div class="modal-content">
-
                   <!--HEADER-->
                   <div class="modal-header">
-
                     <style>
                       .dropdown.dropdown-lg .dropdown-menu {
                         margin-top: -1px;
@@ -214,60 +203,12 @@
                     <!--Advance Search bar-->
                     <div class="findbox">
                       <div class="input-group" id="adv-search">
-
-
-                        <input type="text" class="form-control search" placeholder="Search for patients">
-
-                        <div class="input-group-btn">
-                          <div class="btn-group" role="group">
-                            <div class="dropdown dropdown-lg">
-                              <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                                <span class="caret"></span>
-                              </button>
-                              <div class="dropdown-menu dropdown-menu-right" role="menu">
-
-                                <form class="form-horizontal">
-                                  <div class="form-group">
-                                    <label class="filterlabel" style="width:95px;">Health Conditions</label>
-                                    <select class="form-control">
-                                        <option value="0" selected>None</option>
-                                        <option value="1">Neurodegenerative Diseases</option>
-                                        <option value="2">Stoke</option>
-                                        <option value="3">Cerebral Palsy</option>
-                                        <option value="4">Traumatic Brian Injury</option>
-                                      </select>
-                                  </div>
-                                  <!-- The following code is to filter through patients based on their info stored in db
-                                  <div class="form-group">
-                                    <label class="filterlabel" style="width:85px;">Author</label>
-                                    <div data-role="rangeslider">
-                                      <input type="range" name="price-max" id="price-max" value="800" min="0" max="1000">
-                                    </div>
-                                  </div>
-
-                                  <div class="form-group">
-                                    <label class="filterlabel" style="margin-left:4px;">Contains the words</label>
-                                    <input class="form-control" type="text">
-                                  </div>-->
-                                  <button type="submit" style="width:100%;" class="btn btn-primary">
-                                    Apply Filter
-                                    <span class="glyphicon glyphicon-search" aria-hidden="true" style="">
-                                    </span>
-                                  </button>
-                                </form>
-
-                              </div>
-                            </div>
-
-                          </div>
-                        </div>
+                        <input type="text" class="form-control search" placeholder="Search for patients" style="width:200px;float:right;">
                       </div>
                     </div>
                     <!--End of Search Bar Section-->
-
                     <h4 class="modal-title">Recipients</h4>
                   </div>
-
                   <div class="full-modal-body" style="max-height: 300px; overflow-y:scroll;">
                     <table class="table table-hover" id="usrTable1">
                       <thead>
@@ -295,44 +236,30 @@
                     <button type="button" class="btn btn-default">Send</button>
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                   </div>
-                  <!--Close END-->
                 </div>
-                <!--333END333-->
               </div>
             </div>
           </div>
-          <!--222END222-->
-
         </div>
       </div>
-
     </div>
-
   </div>
-
-
-
-
   <!--CDN for jquery and angularjs-->
-
-
-
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.5/angular.js"></script>
 
   <!--Bootstrap JS-->
   <script src="{% static 'vendor/bootstrap/js/bootstrap.min.js' %}"></script>
-  <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
-
   <!--Modules-->
   <script src="{% static 'javascript/app.js' %}"></script>
   <!--controllers-->
   <script src="{% static 'javascript/controllers/studiesController.js' %}"></script>
   <script src="{% static 'javascript/controllers/patientController.js' %}"></script>
-  <!--Directives-->
+  <!--Directives and js files-->
   <script src="{% static 'javascript/directives/therLogOut.js' %}"></script>
   <script src="{% static 'javascript/directives/therMenu.js' %}"></script>
   <script src="{% static 'javascript/directives/studiesListing.js' %}"></script>
+  <script src="{% static 'javascript/stringy/createDivs.js' %}"></script>
 
   <script>
     //following code is to filter table list using the search bar in the modal body
@@ -363,80 +290,66 @@
         }
       }
     }
-    //following code is to collapse/expand all of the studies
-    /*$(document).ready(function() {
-      $(".ExCol").click(function() {
-        $(".collapse").collapse("show");
-        $(".in").collapse("hide");
-      });
-    });*/
 
     function genStudyModal() {
       var parentDivId, modalHtml;
       parentDivId = $('#StudyModal');
-      modalHtml = $('<div class="modal fade in" id="pop-up-modal" role="dialog">\
+      modalHtml = $(
+        '<div class="modal fade in" id="pop-up-modal" role="dialog">\
       <div class="modal-dialog">\
-      <div class="modal-content add-study-content">\
-      </div></div></div>');
+      <div class="modal-content add-study-content"><div class="container" style="width:inherit;">\
+      <div class="row"><div class="left-nstudy"><div class="col-sm-6 lns">\
+      </div></div></div></div></div></div></div>'
+      );
 
-      //jquery
       if (document.getElementById('pop-up-modal') == null) {
         var val1 = genModalContent()[0],
-          val2 = genModalContent()[1];
-
-        //Appending Html
+          val2 = genModalContent()[1],
+          val3 = genModalContent()[2];
         parentDivId.append(modalHtml);
-        for (var i = 0; i < val1.length; i++) {
-          $('.add-study-content').append(val1[i]);
-        }
-
+        val1.forEach(function(val) {
+          $('.lns').append(val);
+        });
+        $('.lns').after(val3);
         $('.add-study-content').append(val2);
-        $('.study-footer').append('<button type="submit" class="btn btn-default">Create</button>\
+        $('.study-footer').append('<button type="submit" onclick="createAccordGroup()" class="btn btn-default">Create</button>\
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>');
       }
     }
 
     function genModalContent() {
-      var headers, headersHTML, temp, footer;
-      /*var test_content = $('meta[name="question-data"]').attr('content');
-      // jsonify the test content
-      alert(test_content)*/
+      var headers, leftModalContainer, temp, footer, testContent, obj, questions, rightModalContainer;
+      //headers titles for the left column of the modal
       headers = ['Title of Study', 'Description', 'Name of Researcher', 'Contact Information'];
-      headersHTML = [];
-      //generating the headers for the textboxes and compiling them to a list
-      for (var i = 0; i < headers.length; i++) {
-        temp = '<h4 style="padding-left:10px; width:50%;">' + headers[i] + '</h4>';
-        if (headers[i] === "Description") {
-          temp += '<textarea cols="40"  rows="5" style="resize:none; overflow:auto; margin:0 0 5px 10px;"></textarea>';
-        } else {
-          temp += '<input type="text" name="new-study" style="margin: 0 0 5px 10px; width: 50%;" value="" required>';
-        }
-        headersHTML.push(temp);
-      }
-      //forEach item on the list write a function that looks at the item and assigns a input/textarea field
-      //generating the textboxes=name-of-study,name-of-researcher,contact and textarea=description
-      //<input type="text">
+      leftModalContainer = [];
 
+      //generating the left container for the modal and compiling them to a list
+      for (var i = 0; i < headers.length; i++) {
+        temp = '<h5 style="padding-left:10px;">' + headers[i] + '</h5>';
+        if (headers[i] === "Description") {
+          temp += '<textarea class="full-width" cols="40"  rows="5" style="resize:none; overflow:auto; margin:0 0 5px 10px;"></textarea>';
+        } else {
+          temp += '<input class="full-width" type="text" name="new-study" style="margin: 0 0 5px 10px;" value="" required>';
+        }
+        leftModalContainer.push(temp);
+      }
+
+      //generating the right container of filtering questions
+      testContent = $('meta[name="question-data"]').attr('content');
+      obj = JSON.parse(testContent);
+      questions = "";
+      for (ind in obj) {
+        questions += "<div style='position:relative; height: 75px'>" + genQuestion(obj[ind]) + "</div>";
+      }
+      rightModalContainer = "<h5 style='padding-top:10px;'>Filter By:</h5><div class='right-nstudy' style='position:relative'><div class='col-sm-6'>" + questions + "</div></div>";
+
+      //footer
       footer = '<div class="modal-footer study-footer"></div>';
-      return [headersHTML, footer];
+      return [leftModalContainer, footer, rightModalContainer];
     }
 
   </script>
-  <!--<div class="modal fade" id="pop-up-modal" role="dialog">
-    <div class="modal-dialog">
-      <div class="modal-content" style="height:400px; width:75%;">
 
-        <h4>Title of Study:</h4>
-        <input type="text">
-        <h4>Description:</h4>
-        <input type="text">
-        <h4>Name of Researcher:</h4>
-        <input type="text">
-        <h4>Additional Info:</h4>
-        <input type="text">
-      </div>
-    </div>
-  </div>-->
 </body>
 
 </html>
