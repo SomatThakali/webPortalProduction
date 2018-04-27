@@ -1,175 +1,198 @@
 {% block content %} {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-<div id="wrapper">
-  <div id="myScheduler"></div>
-</div>
+<link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'css/clndr.css' %}" type="text/css" />
+<meta name="csrf-token" content="{{ csrf_token }}">
+<!--  Color Calls -->
+<link href="{% static 'css/colors/background.css' %}" rel="stylesheet">
+<link href="{% static 'css/colors/text.css' %}" rel="stylesheet">
 
-<link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet"></link>
-<script src="{% static 'javascript/jquery/jquery-1.10.2.js' %}"></script>
-<script src="{% static 'javascript/physicianCalendar.js' %}"></script>
-<script src="{% static 'vendor/bootstrap/js/bootstrap.min.js' %}"></script>
-<style>
-#choosePatientButton{
-  width: 100%;
-}
-#schedulerEventRecorderForm .popover-title .scheduler-event-recorder-content{
-  display: none;
-}
-</style>
-<script>
-  //Get patients from service to create the patient dropdown
-  var patients = ['Jesus','Dr. Wang', 'Aimee','Revital','Teddy','Kevin'],
-  // NOTE: replace with p = User.objects.filter(groups__name='patient')
-      i = 0,
-      patientsLength = patients.length,
-      htmlPatientDropdownString = '<option>Choose Patient</option>';
+<!-- Formatting Calls -->
+<link href="{% static 'css/formatting/div-paddings.css' %}" rel="stylesheet">
+<link href="{% static 'css/formatting/div-designs.css' %}" rel="stylesheet">
+<link href="{% static 'css/formatting/text-indenting.css' %}" rel="stylesheet">
 
-  for(;i<patientsLength;i++){
-    htmlPatientDropdownString += "<option>"+ patients[i] +"</option>";
-  }
+<!-- Font Calls -->
+<link href="{% static 'css/font/general-fonts.css' %}" rel="stylesheet">
 
-  var patientDropdown = "<select class=\"custom-select\" id=\"choosePatientButton\">"+htmlPatientDropdownString+"</select>";
+<body ng-app="patientPortal">
+  <div style="min-height:100%; height:100%;">
+    <ther-log-out></ther-log-out>
+    <div class="row">
+      <div class="col-sm-3" style="border-right: 0; padding: 5px 10px; padding-right: 0px; background-color: #F8F8F8;">
+        <ther-Menu></ther-Menu>
+      </div>
+      <div class="col-sm-9" style="padding-left: 10px; padding-right: 0;">
+        <div id="wrapper">
+          <div id="myScheduler"></div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-  YUI().use(
-    'aui-scheduler',
-    function(Y) {
-      //Pull calendar events
-       // $(document).ready( function() {
-       //   $.getJSON('?action=pull',function(json){
-           // Call service to get calendar data and next appointment details
-           // content:
-           // endDate:
-           // startDate:
-           // color: "#8d8",
-           // meeting: true,
-           // reminder: true,
-
-      var events = [
-        {
-          // Sample event from AlloyUI bootstrap
-          // color: "#8d8",
-          // content: $(patientDropdown).children("option").filter(":selected").text(),
-          // disabled: true,
-          // endDate: new Date(2018, 4, 17, 13),
-          // meeting: true,
-          // reminder: true,
-          // startDate: new Date(2018, 4, 17, 12)
-        }
-      ];
-
-      var agendaView = new Y.SchedulerAgendaView();
-      var dayView = new Y.SchedulerDayView();
-      var weekView = new Y.SchedulerWeekView();
-      var monthView = new Y.SchedulerMonthView();
-      var eventRecorder = new Y.SchedulerEventRecorder({
-        on: {
-          save: function(event) {
-            //   var dataType = 'json',
-            //       data =
-            //       time =
-            //       date =
-            //
-            //   var requestObject = {
-            //     time: time,
-            //     date: date,
-            //     patient:
-            //   };
-            //
-            //   serviceCall(requestObject);
-            //
-            //   refresh();
-          },
-          delete: function(event) {
-            //var dataType = 'json',
-            //       data =
-            //       time =
-            //       date =
-            //
-            //   var requestObject = {
-            //     time: time,
-            //     date: date,
-            //     patient:
-            //   };
-            //
-            //   serviceCall(requestObject);
-            //
-            //   refresh();
-          },
-          edit: function(event){
-            debugger
-          },
-          change: function(event){
-            debugger
-          }
-        }
-      });
-
-      new Y.Scheduler(
-        {
-          activeView: weekView,
-          boundingBox: '#myScheduler',
-          date: new Date(),
-          eventRecorder: eventRecorder,
-          items: events,
-          render: true,
-          views: [dayView, weekView, monthView, agendaView],
-        }
-      );
-
-      Y.Do.after(function() {
-        var formFieldToDelete = Y.one('#schedulerEventRecorderForm .popover-title .scheduler-event-recorder-content'),
-            formFieldToAppend = Y.one('#schedulerEventRecorderForm .popover-title');
-        formFieldToAppend.appendChild(patientDropdown);
-
-        //Disable save button unless selected
-        var saveButton = $(".popover-footer button:first");
-        saveButton.attr("disabled", "disabled");
-
-        $('#choosePatientButton').change(function(data){
-          var chosenPatient = patients[data.target.selectedIndex-1];
-          if(chosenPatient === 'Choose Patient'){
-            saveButton.attr("disabled", "disabled");
-          } else {
-            formFieldToDelete._stateProxy.value =  chosenPatient;
-            saveButton.removeAttr("disabled");
-          }
-        });
-      }, eventRecorder, 'showPopover');
-
-      Y.Do.after(function() {
-        debugger }, eventRecorder, 'getUpdatedSchedulerEvent');
-
-
-      //TODO: Make a service call after user clicked save/delete.
-      //TODO: Make a service call after resizing
-      //TODO: Make a service call after dragging the time
+  <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet"></link>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.5/angular.js"></script>
+  <script src="{% static 'javascript/app.js' %}"></script>
+  <script src="{% static 'javascript/jquery/jquery-1.10.2.js' %}"></script>
+  <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
+  <script src="{% static 'javascript/physicianCalendar.js' %}"></script>
+  <script src="{% static 'javascript/directives/therLogOut.js' %}"></script>
+  <script src="{% static 'javascript/directives/therMenu.js' %}"></script>
+  <script src="{% static 'vendor/bootstrap/js/bootstrap.min.js' %}"></script>
+  <style>
+    #choosePatientButton {
+      width: 100%;
     }
-  );
 
-  // // Delete an appointment
-  // $(document).on('click', '#yui_patched_v3_18_1_1_1524323206273_6697', function(evt){
-  //
-  // });
-  //
-  // // Save an appointment
-  // $(document).on('click', '#yui_patched_v3_18_1_1_1524348279902_4898', function(evt){
+    #schedulerEventRecorderForm .popover-title .scheduler-event-recorder-content {
+      display: none;
+    }
+  </style>
+  <script>
+    $(document).ready(function() {
+      $.getJSON('?action=pull', function(json) {
+        //Get patients from service to create the patient dropdown
+        var future_appts = json.appts.future_appts
+        var past_appts = json.appts.past_appts
+        var appts = future_appts.concat(past_appts) // put all appointments in one list
+        patients = json.patient_names
+          i = 0,
+          patientsLength = patients.length,
+          htmlPatientDropdownString = '<option>Choose Patient</option>';
 
-  // });
-  //
-  //   $(document).ready( function() {
-  //     function serviceCall(requestObject){
-  //       // Make a service call after saving a new appointment
-  //       $.ajax({
-  //         url: '',
-  //         type: 'POST',
-  //         dataType: 'json',
-  //         data: requestObject
-  //       })
-  //     }
-  //
+        for (; i < patientsLength; i++) {
+          htmlPatientDropdownString += "<option>" + patients[i] + "</option>";
+        }
 
-</script>
+        var patientDropdown = "<select class=\"custom-select\" id=\"choosePatientButton\">" + htmlPatientDropdownString + "</select>";
+
+        YUI().use(
+          'aui-scheduler',
+          function(Y) {
+            //Pull calendar events
+            // $(document).ready( function() {
+            //   $.getJSON('?action=pull',function(json){
+            // Call service to get calendar data and next appointment details
+            // content:
+            // endDate:
+            // startDate:
+            // color: "#8d8",
+            // meeting: true,
+            // reminder: true,
+
+            var events = [{
+              // Sample event from AlloyUI bootstrap
+              // color: "#8d8",
+              // content: $(patientDropdown).children("option").filter(":selected").text(),
+              // disabled: true,
+              // endDate: new Date(2018, 4, 17, 13),
+              // meeting: true,
+              // reminder: true,
+              // startDate: new Date(2018, 4, 17, 12)
+            }];
+
+            var agendaView = new Y.SchedulerAgendaView();
+            var dayView = new Y.SchedulerDayView();
+            var weekView = new Y.SchedulerWeekView();
+            var monthView = new Y.SchedulerMonthView();
+            var eventRecorder = new Y.SchedulerEventRecorder({
+              on: {
+                save: function(event) {
+                  var csrf_token = $('meta[name="csrf-token"]').attr('content');
+                  var data = event.details[0].newSchedulerEvent.changed
+                  var datetime = data.startDate
+                  var patient = data.content
+                  data = {'datetime': datetime,'patient': patient,'csrfmiddlewaretoken': csrf_token}
+                  $.ajax({
+                    url : '',
+                    type : 'POST',
+                    data : data,
+                    success :function(res){
+                      alert('success')
+                    },
+                    error:function(res){
+                      alert('fucks')
+                    }
+                  })
+                  console.log(datetime)
+                  console.log(event.details[0].newSchedulerEvent.changed)
+                  alert("saving")
+
+                },
+                delete: function(event) {
+                  alert("Deleting")
+
+                },
+              }
+            });
+
+            new Y.Scheduler({
+              activeView: weekView,
+              boundingBox: '#myScheduler',
+              date: new Date(),
+              eventRecorder: eventRecorder,
+              items: events,
+              render: true,
+              views: [dayView, weekView, monthView, agendaView],
+            });
+
+            Y.Do.after(function() {
+              var formFieldToDelete = Y.one('#schedulerEventRecorderForm .popover-title .scheduler-event-recorder-content'),
+                formFieldToAppend = Y.one('#schedulerEventRecorderForm .popover-title');
+              formFieldToAppend.appendChild(patientDropdown);
+
+              //Disable save button unless selected
+              var saveButton = $(".popover-footer button:first");
+              //saveButton.attr("disabled", "disabled");
+
+              $('#choosePatientButton').change(function(data) {
+                var chosenPatient = patients[data.target.selectedIndex - 1];
+                if (chosenPatient === 'Choose Patient') {
+                  saveButton.attr("disabled", "disabled");
+                } else {
+                  formFieldToDelete._stateProxy.value = chosenPatient;
+                  saveButton.removeAttr("disabled");
+                }
+              });
+            }, eventRecorder, 'showPopover');
+
+            Y.Do.after(function() {
+              debugger
+            }, eventRecorder, 'getUpdatedSchedulerEvent');
+
+
+            //TODO: Make a service call after user clicked save/delete.
+            //TODO: Make a service call after resizing
+            //TODO: Make a service call after dragging the time
+          }
+        );
+
+        // // Delete an appointment
+        // $(document).on('click', '#yui_patched_v3_18_1_1_1524323206273_6697', function(evt){
+        //
+        // });
+        //
+        // // Save an appointment
+        // $(document).on('click', '#yui_patched_v3_18_1_1_1524348279902_4898', function(evt){
+
+        // });
+        //
+        //   $(document).ready( function() {
+        //     function serviceCall(requestObject){
+        //       // Make a service call after saving a new appointment
+        //       $.ajax({
+        //         url: '',
+        //         type: 'POST',
+        //         dataType: 'json',
+        //         data: requestObject
+        //       })
+        //     }
+        //
+      })
+    })
+  </script>
+</body>
 
 </html>
 {% endblock %}

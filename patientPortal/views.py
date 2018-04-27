@@ -15,7 +15,7 @@ from .DB_Extractor import get_personal_info ,get_patient_info
 from. forms import MyPersonalInformationForm
 from. forms import MyContactInformationForm
 import json
-from .models import notification, Todo
+from .models import notification, Todo, appointment
 from .accessoryScripts.resourceManager import fixDict, fixDict2, removeDictKey
 import datetime
 
@@ -220,8 +220,60 @@ def therapistCalendar(request):
     if not request.user.is_authenticated:
         return redirect('/portal/login')
     if is_therapist(request.user):
-        patient_info = get_patient_info(request) # NOTE: kevin, this return patient info needed to populate therapist calendar
-        return render_to_response('patientPortal/therapistCalendar.html')
+        if request.method == "GET":
+            request_query_dict = request.GET
+            request_dict = dict(request_query_dict)
+            request_dict = fixDict2(request_dict)
+            if not bool(request_dict):  # The request is empty
+                return render(request,'patientPortal/therapistCalendar.html',context={})
+            else:
+                from patientPortal.modelHandlers.appointments import get_appointments
+                appointments = get_appointments(request.user,'therapist')
+                patients = User.objects.filter(groups__name = 'patient')
+                patient_names = [x.last_name + ', ' + x.first_name for x in patients]
+                return HttpResponse(json.dumps({'appts':appointments, 'patient_names': patient_names}))
+
+        # Here only the post request
+        from patientPortal.modelHandlers.appointments import get_appointments
+        request_query_dict = request.POST
+        request_dict = dict(request_query_dict)
+        request_dict = fixDict2(request_dict)
+
+        patient_name = request_dict['patient'] # format is last_name , first_name
+        patientArr = patient_name.split(',')
+        patientFirstName = patientArr[1].strip()
+        patientLastName = patientArr[0].strip()
+
+        therapist = request.user
+        patient = User.objects.filter(groups__name = 'patient', first_name=patientFirstName, last_name = patientLastName)[0]
+        #this will hopefully be only 1 person, will cause errors if two patients with same name
+        import datetime as dt
+
+        datetime = request_dict['datetime']    # format is Mon Apr 23 2018 12:00:00 GMT-0400 (EDT)
+        datetimeArr = datetime.split()  #      ['Mon, Apr, 23, 2018, 12:00:00']
+        timeStr = datetimeArr[4]
+        datetimeTimeObj = dt.datetime.strptime(timeStr, '%H:%M:%S').time()
+        dateStr =  ' '.join(datetimeArr[1:4])
+        dateTimeDateObj = dt.datetime.strptime(dateStr, '%b %d %Y').date()
+
+        # check if patient has appointments
+        appointments = list(patient.patient_appointments.values())
+        if len(appointments) == 0 :
+            #No appointments
+            # This should be done a better way
+            forms_to_do = ['Fugl Meyer','Patient Demographics', 'Sf36 Questionnaire','Stroke Impact Scale','Box and Blocks','Gripstrength','Tally']
+            for form in forms_to_do:
+                title = "Complete " + form + " for " + patient.first_name + " " + patient.last_name
+                message = "It is " + patient.first_name + " " + patient.last_name + " first session. The " + form + " should be filled out for RedCap. Complete on the Forms page."
+                due_date = dateTimeDateObj
+                t = Todo(patient_username = patient.username, therapist_username = therapist, title = title, due_date = dateTimeDateObj, message= message)
+                t.save()
+
+        a = appointment(patient =patient, therapist = therapist, description = "appointment", date = dateTimeDateObj, time = datetimeTimeObj)
+        a.save()
+
+        return HttpResponse(status=200)
+
     else:
         return redirect('/portal/patient')
 

@@ -10,7 +10,6 @@ def fetch_notifications(therapist_user):
 def delete_notification(Unique_ID):
     n = fetch_notification(Unique_ID);
     n.delete()
-    return
 
 def fetch_notification(Unique_ID):
     n = notification.objects.get(Unique_ID=Unique_ID);
@@ -87,6 +86,7 @@ def handle_appointment_notification(notification_object):
     if action == 'cancel':
         a.delete()
     else:
+        print("Creating TODO")
         # Create Todo
     notification_object.delete()
 

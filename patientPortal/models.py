@@ -75,7 +75,7 @@ class appointment(models.Model):
     date = models.DateField(blank=False, null=True)
     time = models.TimeField(blank=False, null=True)
     Unique_ID = models.CharField(max_length=100, blank=True, unique=True, default=uuid.uuid4)
-    attended = models.BooleanField(blank=True)
+    attended = models.BooleanField(blank=True, default=False)
 
     def __str__(self):
         return self.Unique_ID[0:5]
