@@ -99,29 +99,14 @@ class notification(models.Model):
 class Todo(models.Model):
     import uuid
     patient_username = models.CharField(max_length=15, blank=True)
-    therapist_username = models.ForeignKey(User, on_delete=models.CASCADE)
+    therapist_username = models.ForeignKey("auth.User", limit_choices_to={'groups__name': 'therapist'}, on_delete=models.CASCADE)
     Unique_ID = models.CharField(max_length=100, blank=True, unique=True, default=uuid.uuid4)
     title = models.CharField(max_length=140)
-    created_date = models.DateField(default=timezone.now, blank=True, null=True)
     due_date = models.DateField(blank=True, null=True, )
-    completed = models.BooleanField(default=False)
-    completed_date = models.DateField(blank=True, null=True)
     message = models.TextField(blank=True, null=True)
-
-    def overdue_status(self):
-        "Returns whether the Tasks's due date has passed or not."
-        if self.due_date and datetime.date.today() > self.due_date:
-            return True
 
     def __str__(self):
         return self.title
-
-    # Auto-set the Task creation / completed date
-    def save(self, **kwargs):
-        # If Task is being marked complete, set the completed_date
-        if self.completed:
-            self.completed_date = datetime.now()
-        super(Todo, self).save()
 
 # Classto store study information
 
