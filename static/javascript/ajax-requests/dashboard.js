@@ -24,13 +24,12 @@ $(document).ready(function(){
     $.ajax({
       url: '',
       type: 'POST',
-      dataType: 'json',
       data: data,
       success: function(res){
         $('#'+uniqueID).remove()
       },
       error: function(res){
-        alert("It fucked")
+        alert("Sorry, you're request cannot be processed right now!")
       }
     })
   })
@@ -40,13 +39,13 @@ $(document).ready(function(){
     $.ajax({
       url: '',
       type: 'POST',
-      dataType: 'json',
       data: data,
       success: function(res){
         $('#'+uniqueID).remove()
       },
       error: function(res){
-        alert("DCAP fucked up the backend")
+        console.log(res)
+        alert("Sorry, you're request cannot be processed right now!")
       }
     })
   })

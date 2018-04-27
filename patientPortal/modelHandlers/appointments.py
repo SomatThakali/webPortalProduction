@@ -1,24 +1,37 @@
-def clean_appointment_list(appts):
-    for i in range(len(appts)):
-        date = appts[i]['date']
-        year = str(date.year)
-        month = str(date.month)
-        if len(month) < 2:
-            month = '0' + month
-        day = str(date.day)
-        if len(day) < 2:
-            day = '0' + day
-        date = [year,month,day] # list of ints
-        appts[i]['date'] = '-'.join(date)
+from patientPortal.models import appointment
+def appointment_happened(date, time):
+    import datetime
+    current_date = datetime.datetime.now().date()
+    current_time = datetime.datetime.now().time()
+    if current_date > date:
+        return True
+    if current_date == date:
+        if current_time > time:
+            return True
+    return False
 
-        time = appts[i]['time']
-        hour = str(time.hour)
-        minute = time.minute;
-        minute = str(minute)
-        if len(minute) == 1:
-            minute = '0' + minute
-        time = [hour,minute]
-        appts[i]['time'] = ':'.join(time)
+def clean_appointment_list(appts):
+    from django.contrib.auth.models import User
+    future_appts = []
+    past_appts = []
+    for i in range(len(appts)):
+        appt = appts[i]
+
+        date = appt['date']
+        appt['date'] = date.strftime("%Y-%m-%d")
+
+        time = appt['time']
+        appt['time'] = time.strftime("%H:%M")
+
+        happened = appointment_happened(date,time)
+        appt['patient_name'] = User.objects.get(id=appts[i]['patient_id']).first_name
+        appt['therapist_name'] = User.objects.get(id=appts[i]['therapist_id']).first_name
+        
+        if happened:
+            past_appts.append(appt)
+        else:
+            future_appts.append(appt)
+    appts = {'past_appts': past_appts, 'future_appts': future_appts}
     return appts
 
 def get_appointments(user,group):
@@ -29,3 +42,7 @@ def get_appointments(user,group):
     appointments = list(appointments)
     appointments = clean_appointment_list(appointments)
     return appointments
+
+def fetch_appointment(Unique_ID):
+    n = appointment.objects.get(Unique_ID=Unique_ID);
+    return n;

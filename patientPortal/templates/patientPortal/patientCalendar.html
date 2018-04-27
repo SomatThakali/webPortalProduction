@@ -214,17 +214,18 @@
     $(document).ready( function() {
       $.getJSON('?action=pull',function(json){
         //Call service to get calendar data and next appointment details
-        var futureApptDates = json.appts;
-        var nextApptDate = convertToReadableFormat(futureApptDates[0]); // 'Feb 20th, 2018 @ 2:00pm',
-        var nextApptDoctor = json.therapist;
+        var futureApptDates = json.appts.future_appts;
+        var pastApptDates = json.appts.past_appts
+        var nextAppt = futureApptDates[0]
+        var nextApptDate = convertToReadableFormat(nextAppt); // 'Feb 20th, 2018 @ 2:00pm',
+        var nextApptDoctor = nextAppt.therapist_name;
         //Set next appointment info
         nextAppointmentDate.textContent += nextApptDate;
-        nextAppointmentDoctor.textContent += nextApptDoctor;
+        nextAppointmentDoctor.textContent += ("With " + nextApptDoctor);
         futureApptTimesObj = {};
         futureApptDates.forEach(function(appt){
           time = resolveTime(appt.time)
-          futureApptTimesObj[appt.date] = time;
-          console.log(futureApptTimesObj)
+          futureApptTimesObj[appt.date] = {'time':time,'Unique_ID':appt.Unique_ID};
         });
         calendar = $('.cal1').clndr({
           events: futureApptDates,
@@ -232,14 +233,16 @@
             click: function(target) {
               if($(target.element).hasClass('event')) {
                 var day = $(target.element)[0].className.split(' ')[3];
-                var time = futureApptTimesObj[day];
+                var time = futureApptTimesObj[day].time;
+                var Unique_ID = futureApptTimesObj[day].Unique_ID
                 $('#appointmentModal').modal('show');
                 //Future appt info
                 futureApptDate.textContent = 'Date: ' + day;
                 futureApptTime.textContent = 'Time: ' + time;
                 currentSelection = {
                   date: day,
-                  time: time
+                  time: time,
+                  Unique_ID : Unique_ID
                 };
               }
             }
@@ -252,41 +255,32 @@
           adjacentDaysChangeMonth: false
         });
       })
-      // bind both clndrs to the left and right arrow keys
-      $(document).keydown( function(e) {
-        if(e.keyCode == 37) {
-          // left arrow
-          calendar.clndr1.back();
-        }
-        if(e.keyCode == 39) {
-          // right arrow
-          calendar.clndr1.forward();
-        }
-      });
+
       //Cancellation of appt
       $(document).on('click', '#cancelbtn', function(evt){
         var dataType = 'json',
             data = currentSelection,
-            time = currentSelection.time,
-            date = currentSelection.date;
+            time = data.time,
+            date = data.date,
+            Unique_ID = data.Unique_ID;
         var requestObject = {
-          time: time,
-          date: date,
-          therapist: nextAppointmentDoctor.textContent
+          Unique_ID: Unique_ID,
+          action: 'cancel'
         };
         makeServiceCall(requestObject);
-        alert('You have cancelled your appointment at ' + time + ' on ' + date);
-        refresh();
+        alert('You have requested cancelling your appointment at ' + time + ' on ' + date);
       });
       //Rescheduling of appt
       $(document).on('click', '#reschedulebtn', function(evt){
+        alert("Lets do this")
+
         var dataType = 'json',
-            data = currentSelection;
-        makeServiceCall(requestObject);
-        alert('You have rescheduled your previous appointment for '
+        data = currentSelection;
+        data['action'] = 'reschedule'
+        makeServiceCall(data)
+        alert('You have requested to reschedule your appointment for '
               + currentSelection.time + ' on ' +currentSelection.date +
-              '. Your physician will contact you with more information.');
-        refresh();
+              '. Your therapist will contact you!');
       });
       function makeServiceCall(requestObject){
         $.ajax({
@@ -295,10 +289,6 @@
           dataType: 'json',
           data: requestObject
         })
-      }
-      function refresh(){
-        $('#appointmentModal').modal('hide');
-        location.reload();
       }
     });
     </script>

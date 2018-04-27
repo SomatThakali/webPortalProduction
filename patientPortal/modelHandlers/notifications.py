@@ -5,23 +5,12 @@ from django.contrib.auth.models import User
 def fetch_notifications(therapist_user):
     notification_list = therapist_user.notification_set.all();
     notifications = notification_list.values();
-    print(notifications)
     return notifications
     # delete request handler
 def delete_notification(Unique_ID):
     n = fetch_notification(Unique_ID);
     n.delete()
-    #notification.delete();
     return
-
-def update_status(Unique_ID):
-    n = fetch_notification(Unique_ID);
-
-    return
-
-def update_statuses(Unique_IDs):
-    for Unique_ID in Unique_IDs:
-        update_status(Unique_ID);
 
 def fetch_notification(Unique_ID):
     n = notification.objects.get(Unique_ID=Unique_ID);
@@ -30,10 +19,25 @@ def fetch_notification(Unique_ID):
 # contents will be a dictionary containing the contents for the notification
 # will contain patient_username, therapist_username
 # Unique_ID for Appointment
-def create_appointment_notification(contents):
-    patient_username = contents['patient_username'];
-    therapist_username = contents['therapist_username'];
 
+# Change can be a date object or will be 'cancel'
+def create_appointment_notification(appointment_ID,change):
+    from patientPortal.modelHandlers.appointments import fetch_appointment
+    from json import dumps
+    appt = fetch_appointment(appointment_ID)
+    therapist = appt.therapist
+    patient = appt.patient
+    patient_full_name = patient.first_name + " " + patient.last_name
+    header = patient_full_name + ": Request to Cancel Appointment"
+
+    time = appt.time
+    time_str = str(time.hour) + ":" + str(time.minute)
+    message = message = patient_full_name + " would like to " + change + " their appointment for " + appt.date.strftime("%Y-%m-%d") + " at " + appt.time.strftime("%I:%M %p") + "."
+    description = {'Unique_ID': appointment_ID,'action':change}
+
+    description = dumps(description)
+    n = notification(therapist_username = therapist, patient_username = patient.username, header=header, description=description, message=message)
+    n.save()
     return
 
 # contents will be a dictionary containting the contents for the notification
@@ -63,15 +67,34 @@ def create_info_notification(therapist, patient, data_changes):
     n.save()
     return
 
-def handle_appointment_notification(action):
-    return
+def dispatch_notification(Unique_ID):
+    from json import loads
+    n = fetch_notification(Unique_ID);
+    description = n.description;
+    if 'Unique_ID' in loads(description):
+        handle_appointment_notification(n)
+    else:
+        handle_info_notification(n)
 
-def handle_info_notification(Unique_ID):
+def handle_appointment_notification(notification_object):
+    from json import loads
+    from patientPortal.modelHandlers.appointments import fetch_appointment
+    description = notification_object.description;
+    action = loads(description)
+    appointment_ID = action['Unique_ID']
+    a = fetch_appointment(appointment_ID)
+    action = action['action']
+    if action == 'cancel':
+        a.delete()
+    else:
+        # Create Todo
+    notification_object.delete()
+
+def handle_info_notification(notification_object):
     from json import loads
     from patientPortal.apiScripts.helper import create_redcap_event_name
     from patientPortal.apiScripts.imports import edit_patient_data_by_id
-    n = notification.objects.get(Unique_ID=Unique_ID);
-    description = n.description
+    description = notification_object.description
     action = loads(description);
     patient_id = action['patient_id']
     cohort_num = action['cohort_num']

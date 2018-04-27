@@ -16,7 +16,7 @@ from. forms import MyPersonalInformationForm
 from. forms import MyContactInformationForm
 import json
 from .models import notification, Todo
-from .accessoryScripts.resourceManager import fixDict, removeDictKey
+from .accessoryScripts.resourceManager import fixDict, fixDict2, removeDictKey
 import datetime
 
 
@@ -65,13 +65,12 @@ def MyPersonalInformation(request):
             from .modelHandlers.notifications import create_info_notification
             request_query_dict = request.POST;
             request_dict = dict(request_query_dict);
-            request_dict = fixDict(request_dict);
+            request_dict = fixDict2(request_dict);
             request_dict = removeDictKey(request_dict, 'csrfmiddlewaretoken')
             request_dict = removeDictKey(request_dict, 'form_type')  #TODO remove this from the front end request
 
             changes = compare_info(patient_data, request_dict) # we dont need fields_of_interest as a param here
             create_info_notification(therapist, request.user, changes)
-            print(request.user.first_name)
             return HttpResponse(json.dumps({'patient_name':request.user.first_name}))
 
         # This is on the get request
@@ -109,9 +108,6 @@ def myprogress(request):
                 total_appts += 1;
             appts_left = total_appts - appts_attended
             return HttpResponse(json.dumps({'months':months,'appts_left':appts_left,'appts_attended':appts_attended}))
-
-
-
     else:
         return redirect('/portal/therapist')
 
@@ -141,9 +137,14 @@ def patientCalendar(request):
                 return HttpResponse(json.dumps({'appts':appointments}))
 
         #Only post requests will make it here
+        from patientPortal.modelHandlers.notifications import create_appointment_notification
         request_query_dict = request.POST;
-        request_delete = dict(request_query_dict);
+        request_query = dict(request_query_dict);
+        request_query = fixDict2(request_query)
+        create_appointment_notification(request_query['Unique_ID'],request_query['action'])
 
+
+        return HttpResponse(status=200)
         if bool(request_delete):
             date = request_delete.get('requestObject[date]')
             date = ''.join(date)
@@ -163,14 +164,12 @@ def therapistDashboard(request):
         return redirect('/portal/login')
     if is_therapist(request.user):
         # the post request will contain Unique_ID, type (form/todo), action
-        # status action: update status (read -- > unread)
         # delete action: delete the notification
         # confirm action: push the contents of the notification then delete// mark todo as complete and delete
         if request.method == "POST":
-            from patientPortal.accessoryScripts.resourceManager import fixDict
             request_query_dict = request.POST;
             request_dict = dict(request_query_dict);
-            request_dict = fixDict(request_dict)
+            request_dict = fixDict2(request_dict)
             type = request_dict['type']
             action = request_dict['action']
             Unique_ID = request_dict['Unique_ID']
@@ -180,16 +179,14 @@ def therapistDashboard(request):
                     delete_notification(Unique_ID)
 
                 elif action == "confirm":
-                    from patientPortal.modelHandlers.notifications import handle_info_notification
-                    handle_info_notification(Unique_ID)
-
-                elif action == "status":
-                    from patientPortal.modelHandlers.notifications import update_status
-                    Unique_IDs = request_dict['Unique_ID']
-                    update_statuses(Unique_IDs)
+                    from patientPortal.modelHandlers.notifications import dispatch_notification
+                    dispatch_notification(Unique_ID)
+                    #from patientPortal.modelHandlers.notifications import handle_info_notification
+                    #handle_info_notification(Unique_ID)
 
                 else:
                     return HttpResponse(status=400) #Bad request
+                return HttpResponse(status=200) # Good Request
 
             elif type == "todo":
                 if action == "delete":
@@ -198,7 +195,8 @@ def therapistDashboard(request):
                 if action =="create":
                     from patientPortal.modelHandlers.todo import create_todo
                 else:
-                    return HttpResponse(status=400)
+                    return HttpResponse(status=400) # Bad Request
+                return HttpResponse(status=200) #Good Request
 
             else:
                 return HttpResponse(status=400) #Bad request
