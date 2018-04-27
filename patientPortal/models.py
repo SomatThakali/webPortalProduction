@@ -2,8 +2,6 @@ from __future__ import unicode_literals
 from django.db import models
 from datetime import date, datetime
 from django.contrib.auth.models import User
-# from django.conf import settings
-# from django.contrib.auth.models import Group
 from django.utils import timezone
 
 # Class to store a users cohort and redcap identifying information (cohort number and record_id)
@@ -50,7 +48,6 @@ class appointManager(models.Manager):
 
     def edit_appointment(self, postData, app_id):
         errors = []
-        print(errors)
         # if postData['edit_date']:
         if not postData["edit_date"] >= unicode(date.today()):
             errors.append("Appointment date can't be in the past!")
@@ -74,16 +71,14 @@ class appointment(models.Model):
     import uuid
     patient = models.ForeignKey("auth.User", limit_choices_to={'groups__name': 'patient'}, on_delete=models.CASCADE,related_name='patient_appointments')
     therapist = models.ForeignKey("auth.User", limit_choices_to={'groups__name': 'therapist'}, on_delete=models.CASCADE,related_name='therapist_appointments')
-    affected_limb = models.CharField(max_length=255)
-    date = models.DateField(blank=True, null=True)
-    time = models.TimeField(blank=True, null=True)
+    description = models.CharField(max_length=300)
+    date = models.DateField(blank=False, null=True)
+    time = models.TimeField(blank=False, null=True)
     Unique_ID = models.CharField(max_length=100, blank=True, unique=True, default=uuid.uuid4)
-    created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
-    updated_at = models.DateTimeField(auto_now=True, blank=True, null=True)
-    objects = appointManager()
+    attended = models.BooleanField(blank=True)
 
     def __str__(self):
-        return self.patient.username
+        return self.Unique_ID[0:5]
 
 # Class to store notifications for therapists
 
@@ -132,12 +127,13 @@ class Todo(models.Model):
 
 
 class Study (models.Model):
+    import uuid
     therapist_username = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=15, blank=True)
     description = models.TextField(blank=True, null=True)
     researcher_name = models.CharField(max_length=15, blank=True)
-    researcher_phone_number = models.CharField(max_length=15, blank=True)
     researcher_email = models.EmailField(max_length=50, blank=True)
+    Unique_ID = models.CharField(max_length=100, blank=True, unique=True, default=uuid.uuid4)
 
     def __str__(self):
         return self.title
