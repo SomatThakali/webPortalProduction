@@ -71,7 +71,8 @@ def MyPersonalInformation(request):
 
             changes = compare_info(patient_data, request_dict) # we dont need fields_of_interest as a param here
             create_info_notification(therapist, request.user, changes)
-            return HttpResponse({'success':"Successful submission"})
+            print(request.user.first_name)
+            return HttpResponse(json.dumps({'patient_name':request.user.first_name}))
 
         # This is on the get request
         return render(request, 'patientPortal/information.html', context = patient_data)

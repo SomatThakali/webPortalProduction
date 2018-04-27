@@ -150,10 +150,10 @@
       dataType: 'json',
       data: data,
       success: function(res) {
-        //alert("success")
+          alert("Hi, " + res.patient_name + ". Your information has been submitted for approval. Have a nice day :)")
       },
       error: function(res) {
-        console.log("oops");
+        alert("Sorry, " + res.patient_name + ". It seems that our platform can't handle your request right now. Try again later.");
         //alert("oops")
 
       }
@@ -172,10 +172,10 @@
       dataType: 'json',
       data: data,
       success: function(res) {
-
+        alert("Hi, " + res.patient_name + ". Your information has been submitted for approval. Have a nice day :)")
       },
       error: function(res) {
-        console.log("oops");
+        alert("Sorry, " + res.patient_name + ". It seems that our platform can't handle your request right now. Try again later.");
 
       }
     })
