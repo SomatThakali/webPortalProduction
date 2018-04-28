@@ -1,8 +1,5 @@
-# TODO what if u have multiple appointments (somat should fix mod first),
-# what about pm am thing,
-# how to delete.
-
 from django.contrib.auth.models import User
+from patientPortal.modelHandlers.appointments import get_appointments
 
 def get_personal_info(request):
         p = User.objects.filter(username=request)[0] # this gets everything you want about the patient
@@ -17,9 +14,23 @@ def get_personal_info(request):
         emergency_first =  p.mypersonalinformation.Emergency_Contact_Name
         emergency_phone =  p.mypersonalinformation.Emergency_Contact_Phone
 
-        return  {'phone': phone,'email' :email, 'adline':address1,'adline2':address2,
+        return  {'phone': phone,'email' :email, 'adline1':address1,'adline2':address2,
         'DOB':DOB, 'emergency_first':emergency_first , 'emergency_phone':emergency_phone,
         'first_name':first_name,'last_name':last_name}
+
+def get_apoint_info(request):
+    p = User.objects.filter(username=request)[0]
+    apointment=p.appointment
+    day   = apointment.date.day
+    month = apointment.date.month
+    year  = apointment.date.year
+    date = str(year)+'-'+ str(month)+'-'+str(day)
+
+    hour = p.appointment.time.hour
+    minute = p.appointment.time.minute
+    time = str(hour)+':'+str(minute)
+
+    return  {'date': date,'time':time,'apoint': apointment}
 
 def get_study_info (request):
     from patientPortal.models import Study
@@ -36,10 +47,10 @@ def get_patient_info(request):
     for patient in range( len(result)):
         info = result[patient].user # get info of the patient
         username=info.username
-        appointment = get_apoint_info(username)
+    #    appointment = (request.user,'patient')
         first_name = info.first_name
         last_name = info.last_name
         patient_info [patient] = {'first_name':first_name,'last_name':last_name,
-        'date':appointment['date'],'time':appointment['time']}
+        }
 
     return patient_info
