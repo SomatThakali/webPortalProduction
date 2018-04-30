@@ -88,7 +88,7 @@ def handle_appointment_notification(notification_object):
     else:
         print("Creating TODO")
         # Create Todo
-    notification_object.delete()
+        notification_object.delete()
 
 def handle_info_notification(notification_object):
     from json import loads
