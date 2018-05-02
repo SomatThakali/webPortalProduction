@@ -169,17 +169,27 @@ a.accordion-toggle:hover {
   color: #fff !important;
 }
 
-.btn-info {
-  float: right;
-  height: 36px;
-  padding-top: 5px;
-  margin: 8px 10px;
-}
-
 button.modBTN {
   float: right;
   margin: 5px 5px;
   padding: 8px 16px 8px 16px;
+}
+
+button:focus {
+  outline: 0 !important;
+}
+
+@media screen and (min-width: 768px) {
+  #adv-search {
+    width: 300px;
+    margin: 0 auto;
+  }
+  .dropdown.dropdown-lg {
+    position: static !important;
+  }
+  .dropdown.dropdown-lg .dropdown-menu {
+    min-width: 300px;
+  }
 }
 
 button:focus {

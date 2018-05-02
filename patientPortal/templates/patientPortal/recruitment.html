@@ -6,18 +6,13 @@
   <title>Recruitment Tool</title>
   <meta charset="utf-8">
   <meta name="question-data" content="{{testdatum}}">
-  <!--<meta name="test" content="{{test}}">-->
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
   <link href="{% static 'css/colors/text.css" rel="stylesheet' %}">
   <link href="{% static 'vendor/dist/css/sb-admin-2.css' %}" rel="stylesheet">
-
-  <!-- Formatting Calls -->
   <link href="{% static 'css/formatting/div-paddings.css' %}" rel="stylesheet">
   <link href="{% static 'css/formatting/div-designs.css' %}" rel="stylesheet">
   <link href="{% static 'css/formatting/text-indenting.css' %}" rel="stylesheet">
-
-  <!-- Font Calls -->
   <link href="{% static 'css/font/general-fonts.css' %}" rel="stylesheet">
   <link href="{% static 'javascript/jquery/studyPanel.js' %}">
   <style>
@@ -26,60 +21,23 @@
       font-family: 'Glyphicons Halflings';
       /* essential for enabling glyphicon */
       content: "\e114";
-      /* adjust as needed, taken from bootstrap.css */
       float: right;
-      /* adjust as needed */
       color: black;
-      /* adjust as needed */
     }
 
     .panel-heading.collapsed .accordion-toggle:after {
       /* symbol for "collapsed" panels */
       content: "\e080";
-      /* adjust as needed, taken from bootstrap.css */
-    }
-
-    a.accordion-toggle:hover {
-      text-decoration: none;
     }
 
     .panel .panel-heading:hover {
       background-color: #6DA5D4;
       cursor: pointer;
       opacity: .75;
-
     }
 
-    .accord-header {
-      height: 55px;
-      background-color: #6DA5D4;
-      border-radius: 3px;
-      border: 1px solid #ddd;
-    }
-
-    .panel-group {
-      padding-top: 2px !important;
-    }
-
-    .accordion-toggle {
-      color: #fff !important;
-    }
-
-    .btn-info {
-      float: right;
-      height: 36px;
-      padding-top: 5px;
-      margin: 8px 10px;
-    }
-
-    button.modBTN {
-      float: right;
-      margin: 5px 5px;
-      padding: 8px 16px 8px 16px;
-    }
-
-    button:focus {
-      outline: 0 !important;
+    a.accordion-toggle:hover {
+      text-decoration: none !important;
     }
 
   </style>
@@ -92,150 +50,57 @@
       <ther-Menu></ther-Menu>
     </div>
     <!--Table for study panels -->
-    <div data-ng-controller="studiesController">
-      <div class="container-fluid">
-        <div class="col-sm-9" data-ng-controller="patientController">
-          <!--HEADER-->
-          <div class="accord-header">
-            <button type="button" onclick="genStudyModal()" data-toggle="modal" data-target="#pop-up-modal" name="addgroup" class="btn" style="margin: 10px 0 0 10px;">Add Study</button>
-            <button type="button" onclick="Check('studs')" name="checkAll" class="chAllRP btn" data-toggle="checkbox" style="margin: 10px 0 0 5px;">Select All</button>
-            <button type="button" class="modBTN btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">Send To Patients</button>
-          </div>
-          <div id="StudyModal" class="no-margin openModal" style="overflow-y: auto; height:400px;">
-            <div class="panel-group" id="accordion">
-              <div data-ng-repeat="study in studies">
-                <div class="panel panel-default">
-                  <!--panel header-->
-                  <div class="panel-heading collapsed" data-toggle="collapse" data-target="#{{study.link}}" style="background-color:#337ab7 !important;">
-                    <h5 class="panel-title">
-                      <div class="pancheck" style="display:inline;">
-                          <input class="pancheck" type="checkbox" name="studs">
-                      </div>
-                      <a class="accordion-toggle" data-parent="#accordion" href="#{{study.link}}">
-                        {{study.nameOfStudy}}
-                      </a>
-                    </h5>
-                  </div>
-                  <div id="{{study.link}}" class="panel-collapse collapse in" aria-expanded="false">
-                    <div class="panel-body">
-                      <h6>Description:</h6>
-                      <p>
-                        {{study.content}}
-                      </p>
-                      <h6>Name of Researcher(s):</h6>
-                      <p>
-                        {{study.requirements}}
-                      </p>
+    <div class="container-fluid">
+      <div class="col-sm-9" data-ng-controller="patientController">
+        <!--HEADER-->
+        <div class="accord-header" style="height: 55px;background-color: #6DA5D4;border-radius: 3px;border: 1px solid #ddd;">
+          <button type="button" onclick="genStudyModal()" data-toggle="modal" data-target="#pop-up-modal" name="addgroup" class="btn" style="margin: 10px 0 0 10px;">Add Study</button>
+          <button type="button" onclick="Check('studs')" name="checkAll" class="chAllRP btn" data-toggle="checkbox" style="margin: 10px 0 0 5px;">Select All</button>
+          <button type="button" class="modBTN btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal" style="float: right;margin: 5px 5px;padding: 8px 16px 8px 16px;">Send To Patients</button>
+        </div>
+        <div id="StudyModal" class="no-margin openModal" style="overflow-y: auto; height:400px;">
+          <div class="panel-group" id="accordion" style="padding-top: 2px !important;"></div>
+        </div>
+
+        <!--Modal Encapsulation-->
+        <div>
+          <div class="modal fade" id="myModal" role="dialog">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <div class="findbox" style="float: right;display: inline;">
+                    <div class="input-group" id="adv-search">
+                      <input type="text" class="form-control search" placeholder="Search for patients" style="width:200px;float:right;">
                     </div>
                   </div>
+                  <h4 class="modal-title">Recipients</h4>
                 </div>
-              </div>
-            </div>
-          </div>
-          <!--Modal Encapsulation-->
-          <div>
-            <div class="modal fade" id="myModal" role="dialog">
-              <div class="modal-dialog">
-                <!-- Modal content-->
-                <div class="modal-content">
-                  <!--HEADER-->
-                  <div class="modal-header">
-                    <style>
-                      .dropdown.dropdown-lg .dropdown-menu {
-                        margin-top: -1px;
-                        padding: 6px 20px;
-                      }
-
-                      .filterlabel {
-                        padding: 2px 35px 2px 0px;
-                        margin-right: 0;
-                        margin-bottom: 3px;
-                      }
-
-                      .findbox {
-                        float: right;
-                        display: inline;
-                      }
-
-                      .input-group-btn .btn-group {
-                        display: flex !important;
-                      }
-
-                      .btn-group .btn {
-                        border-radius: 0;
-                        margin-left: -1px;
-                      }
-
-                      .btn-group .btn:last-child {
-                        border-top-right-radius: 4px;
-                        border-bottom-right-radius: 4px;
-                      }
-
-                      .btn-group .form-horizontal .btn[type="submit"] {
-                        border-top-left-radius: 4px;
-                        border-bottom-left-radius: 4px;
-                      }
-
-                      .form-horizontal .form-group {
-                        margin-left: 0;
-                        margin-right: 0;
-                      }
-
-                      .form-group .form-control:last-child {
-                        border-top-left-radius: 4px;
-                        border-bottom-left-radius: 4px;
-                      }
-
-                      @media screen and (min-width: 768px) {
-                        #adv-search {
-                          width: 300px;
-                          margin: 0 auto;
-                        }
-                        .dropdown.dropdown-lg {
-                          position: static !important;
-                        }
-                        .dropdown.dropdown-lg .dropdown-menu {
-                          min-width: 300px;
-                        }
-                      }
-
-                    </style>
-                    <!--Advance Search bar-->
-                    <div class="findbox">
-                      <div class="input-group" id="adv-search">
-                        <input type="text" class="form-control search" placeholder="Search for patients" style="width:200px;float:right;">
-                      </div>
-                    </div>
-                    <!--End of Search Bar Section-->
-                    <h4 class="modal-title">Recipients</h4>
-                  </div>
-                  <div class="full-modal-body" style="max-height: 300px; overflow-y:scroll;">
-                    <table class="table table-hover" id="usrTable1">
-                      <thead>
-                        <tr>
-                          <th scope="col">Select</th>
-                          <th scope="col">ID#</th>
-                          <th scope="col">First</th>
-                          <th scope="col">Last</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr data-ng-repeat="patient in patients">
-                          <th scope="row" style="width:110px;">
-                            <input type="checkbox" name="patts" style="margin-left:10px;">
-                          </th>
-                          <td>{{patient.id}}</td>
-                          <td>{{patient.firstName}}</td>
-                          <td>{{patient.lastName}}</td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                  <div class="modal-footer">
-                    <button type="button" onclick="Check('patts')" class="btn btn-default" style="float: left;">Select All</button>
-                    <button type="button" class="btn btn-default">Send</button>
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                  </div>
+                <div class="full-modal-body" style="max-height: 300px; overflow-y:scroll;">
+                  <table class="table table-hover" id="usrTable1">
+                    <thead>
+                      <tr>
+                        <th scope="col">Select</th>
+                        <th scope="col">ID#</th>
+                        <th scope="col">First</th>
+                        <th scope="col">Last</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr data-ng-repeat="patient in patients">
+                        <th scope="row" style="width:110px;">
+                          <input type="checkbox" name="patts" style="margin-left:10px;">
+                        </th>
+                        <td>{{patient.id}}</td>
+                        <td>{{patient.firstName}}</td>
+                        <td>{{patient.lastName}}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" onclick="Check('patts')" class="btn btn-default" style="float: left;">Select All</button>
+                  <button type="button" class="btn btn-default">Send</button>
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                 </div>
               </div>
             </div>
@@ -252,107 +117,12 @@
   <!--Modules-->
   <script src="{% static 'javascript/app.js' %}"></script>
   <!--controllers-->
-  <script src="{% static 'javascript/controllers/studiesController.js' %}"></script>
   <script src="{% static 'javascript/controllers/patientController.js' %}"></script>
   <!--Directives and js files-->
   <script src="{% static 'javascript/directives/therLogOut.js' %}"></script>
   <script src="{% static 'javascript/directives/therMenu.js' %}"></script>
-  <script src="{% static 'javascript/directives/studiesListing.js' %}"></script>
   <script src="{% static 'javascript/stringy/createDivs.js' %}"></script>
-
-  <script>
-    //following code is to filter table list using the search bar in the modal body
-    $(document).ready(function() {
-
-      $('.search').on('keyup', function() {
-        var searchTerm = $(this).val().toLowerCase();
-        $('#usrTable1 tbody tr').each(function() {
-          var lineStr = $(this).text().toLowerCase();
-          if (lineStr.indexOf(searchTerm) === -1) {
-            $(this).hide();
-          } else {
-            $(this).show();
-          }
-        });
-      });
-    });
-    //following code is to select/unselect all studies to send to patients in the recruitment page
-    function Check(name) {
-      var items = document.getElementsByName(name);
-      for (var i = 0; i < items.length; i++) {
-        if (items[i].type == 'checkbox') {
-          if (items[i].checked == false) {
-            items[i].checked = true;
-          } else {
-            items[i].checked = false;
-          }
-        }
-      }
-    }
-
-    function genStudyModal() {
-      var parentDivId, modalHtml;
-      parentDivId = $('#StudyModal');
-      modalHtml = $(
-        '<div class="modal fade in" id="pop-up-modal" role="dialog">\
-      <div class="modal-dialog">\
-      <div class="modal-content add-study-content"><div class="container" style="width:inherit;">\
-      <div class="row"><div class="left-nstudy"><div class="col-sm-6 lns">\
-      </div></div></div></div></div></div></div>'
-      );
-
-      if (document.getElementById('pop-up-modal') == null) {
-        var val1 = genModalContent()[0],
-          val2 = genModalContent()[1],
-          val3 = genModalContent()[2];
-        parentDivId.append(modalHtml);
-        val1.forEach(function(val) {
-          $('.lns').append(val);
-        });
-        $('.lns').after(val3);
-        $('.add-study-content').append(val2);
-        $('.study-footer').append('<button type="submit" class="btn btn-default">Create</button>\
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>');
-      }
-    }
-
-    function genModalContent() {
-      var headers, leftModalContainer, temp, footer, testContent, obj, questions, rightModalContainer;
-      var title, description, researcher_name, researcher_email;
-      //headers titles for the left column of the modal
-      headers = {
-        "Title of Study": "title",
-        "Description": "description",
-        "Name of Researcher(s)": "researcher_name",
-        "Contact Information": "researcher_email"
-      };
-      leftModalContainer = [];
-      //generating the left container for the modal and compiling them to a list
-      for (ind in headers) {
-        temp = '<h5 style="padding-left:10px;">' + ind + '</h5>';
-        if (ind === "Description") {
-          temp += '<textarea class="full-width" cols="40"  rows="5" style="resize:none; overflow:auto; margin:0 0 5px 10px;"></textarea>';
-        } else {
-          temp += '<input class="full-width" type="text" name=' + headers[ind] + ' style="margin: 0 0 5px 10px;" required>';
-        }
-        leftModalContainer.push(temp);
-      }
-
-      //generating the right container of filtering questions
-      testContent = $('meta[name="question-data"]').attr('content');
-      obj = JSON.parse(testContent);
-      questions = "";
-      for (ind in obj) {
-        questions += "<div style='position:relative; height: 75px'>" + genQuestion(obj[ind]) + "</div>";
-      }
-      rightModalContainer = "<h5 style='padding-top:10px;'>Filter By:</h5><div class='right-nstudy' style='position:relative'><div class='col-sm-6'>" + questions + "</div></div>";
-
-      //footer
-      footer = '<div class="modal-footer study-footer"></div>';
-      return [leftModalContainer, footer, rightModalContainer];
-    }
-
-  </script>
+  <script src="{% static 'javascript/recruitment.js' %}"></script>
 
 </body>
 
