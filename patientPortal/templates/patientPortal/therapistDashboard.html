@@ -3,7 +3,6 @@
 <html lang="en">
 
 <head>
-
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="csrf-token" content="{{ csrf_token }}">
@@ -75,24 +74,34 @@
             </div>
           </div>
         </div>
-        <div id="toDo-form" style="padding-right: 0" class="responsive-vertical-cushion display show">
+        <div id="toDo-form" style="padding-right: 0" class="responsive-vertical-cushion display">
           <h2>To-do List</h2>
-          <div ng-controller="toDoListController" style="margin-right: 0; height:380px; width: 90%; overflow-y: auto">
-            <div>
-              <div ng-repeat="task in tasks">
-                <task info="task"></task>
+          <div style="margin-right: 0; height:380px; width: 70vw; overflow-y: auto">
+            <div id="todo-accordion">
+              {% for todo in todos %}
+              <div id="{{todo.Unique_ID}}" class="panel panel-default">
+                <div style="padding: 15px 50px"  class="panel-heading">
+                  <div class="row">
+                    <a data-toggle="collapse" data-parent="#todo-accordian" href="#collapse_{{todo.Unique_ID}}">
+                    <h2 class="panel-title">{{todo.title}}</h4>
+                    </a>
+                  </div>
+                </div>
+                <div id="collapse_{{todo.Unique_ID}}" class="panel-collapse collapse">
+                  <div class="panel-body">
+                    <p>{{todo.message}}</p>
+                    <button id="complete_{{todo.Unique_ID}}" class="complete-todo btn btn-primary pull-right" type="button">Mark Complete</button>
+                  </div>
+                </div>
               </div>
+              {% endfor %}
             </div>
           </div>
         </div>
-        <form id="notification-form" class="responsive-vertical-cushion hide">
+        <div id="notification-form" class="responsive-vertical-cushion hide">
           <h2>Notifications</h2>
-          <div style="padding-bottom: 50px">
-            <button class="pull-right btn btn-warning" id="notifications-status-change" type="submit">Mark as read</button>
-            <button class="pull-left btn btn-primary" id="show-read" type="button">Show read</button>
-          </div>
           <div style="margin-right: 0; height:380px; width: 70vw; overflow-y: auto">
-            <div id="accordion">
+            <div id="notification-accordion">
               {% for notification in notifications %}
               <div id="{{notification.Unique_ID}}" class="panel panel-default">
                 <div class="panel-heading">
@@ -100,8 +109,8 @@
                     <div class="col-sm-1">
                       <input type="checkbox"></input>
                     </div>
-                    <a data-toggle="collapse" data-parent="#accordian" href="#collapse_{{notification.Unique_ID}}">
-                    <h2 class="panel-title">{{notification.header}}</h4>
+                    <a data-toggle="collapse" data-parent="#notification-accordian" href="#collapse_{{notification.Unique_ID}}">
+                    <h2 class="panel-title">{{notification.header}}</h2>
                     </a>
                   </div>
                 </div>
@@ -116,9 +125,8 @@
               {% endfor %}
             </div>
           </div>
-        </form>
+        </div>
       </div>
-
     </div>
     <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
     <script src="{% static 'vendor/bootstrap/js/bootstrap.min.js' %}"></script>
@@ -129,10 +137,6 @@
     <script src="{% static 'javascript/directives/therLogOut.js' %}"></script>
     <script src="{% static 'javascript/directives/therMenu.js' %}"></script>
     <script src="{% static 'javascript/tabs.js' %}"></script>
-    <script src="{% static 'javascript/controllers/toDoListController.js' %}"></script>
-    <script src="{% static 'javascript/directives/task.js' %}"></script>
-    <script src="{% static 'javascript/controllers/notificationsController.js' %}"></script>
-    <script src="{% static 'javascript/directives/notice.js' %}"></script>
 
 </body>
 

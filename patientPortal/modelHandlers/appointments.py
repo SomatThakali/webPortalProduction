@@ -26,7 +26,7 @@ def clean_appointment_list(appts):
         happened = appointment_happened(date,time)
         appt['patient_name'] = User.objects.get(id=appts[i]['patient_id']).first_name
         appt['therapist_name'] = User.objects.get(id=appts[i]['therapist_id']).first_name
-        
+
         if happened:
             past_appts.append(appt)
         else:
