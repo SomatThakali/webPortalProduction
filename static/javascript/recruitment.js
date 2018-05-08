@@ -13,23 +13,25 @@ $(document).ready(function() {
 });
 
 /*This section of code should be moved because every time the page is refreshed,
-this is what will appear in the accordion by default*/
+this is what will appear in the accordion by default
+*/
+
 var nameOfStudy, description, researcher, contact;
 var content = [{
-  title: "Study 1",
-  description: "Participants must be X",
+  title: "Study for patients with recent brain injuries",
+  description: "This is information about a study meant for patients who have experienced a brain injury in the last 6 months...",
   researcher_name: "Dr. John Smith",
-  researcher_email: "johnsmith1st@gmail.com"
+  researcher_email: "jsmith@med.cornell.edu"
 }, {
-  title: "Study 2",
-  description: "Participants must be Y",
+  title: "Therapy program Concussion Management",
+  description: "At Burke, we have dedicated physical therapists with advanced training and experience in concussion management...",
   researcher_name: "Dr. Jane Doe",
-  researcher_email: "jjaned@gmail.com"
+  researcher_email: "jjane@med.cornell.edu"
 }, {
-  title: "Study 3",
-  description: "Participants must be Z",
-  researcher_name: "Dr. Teddy Colon",
-  researcher_email: "ted.colon@burke.com"
+  title: "Clinical trials for people with Alzheimers",
+  description: "There's a new drug being tested on patients like you...",
+  researcher_name: "Dr. Dylan Edwards",
+  researcher_email: "dje2002@med.cornell.edu"
 }];
 //the following variables and list of objects is used as testing cases.
 
@@ -37,6 +39,10 @@ var content = [{
 function called "genAccordionContent" which generates HTML for accordion based
 on Study information provided in the object (keys and values). The HTML for
 the accordion is then appended to the parent div "#accordion"*/
+
+//Note: need to adjust input text for the title text box to allow users to input different types of characters because
+//...currently the title can't take in colon and apostrophes. I think this is due to the unID generation in genAccordContent(obt)...
+// or some other manaipulation on the title text?
 content.forEach(function(elem) {
   $('#accordion').append(genAccordContent(elem));
 });
@@ -60,10 +66,10 @@ function genModalContent() {
   var title, description, researcher_name, researcher_email;
   //headers titles for the left column of the modal
   headers = {
-    "Title of Study": "title",
+    "Title": "title",
     "Description": "description",
-    "Name of Researcher": "researcher_name",
-    "Contact Information": "researcher_email"
+    "Name of researcher": "researcher_name",
+    "Contact email": "researcher_email"
   };
   leftModalContainer = [];
 
@@ -71,17 +77,17 @@ function genModalContent() {
   for (ind in headers) {
     if (headers[ind] == "description") {
       temp = '<h5 style="padding-left:2px;">' + ind + ":" + '</h5>';
-      temp += '<textarea id=' + headers[ind] + ' class="full-width" cols="40"  rows="5" name=' + headers[ind] + ' style="resize:none; overflow:auto; margin:0 0 5px;" maxlength="500" placeholder="Max length: 500 characters"></textarea>';
+      temp += '<textarea id=' + headers[ind] + ' class="full-width" cols="40"  rows="5" name=' + headers[ind] + ' style="resize:none; overflow:auto; margin:0 0 5px;" maxlength="500" placeholder="Summary description"></textarea>';
     } else {
       if (headers[ind] == "title") {
         temp = '<h5 style="padding-left:2px;">' + ind + ":" + '</h5>';
-        temp += '<input id=' + headers[ind] + ' class="full-width" type="text" name=' + headers[ind] + ' style=": margin: 0 0 5px 10px;" required="required" maxlength="50">';
+        temp += '<input id=' + headers[ind] + ' class="full-width" type="text" name=' + headers[ind] + ' style=": margin: 0 0 5px 10px;" required="required" maxlength="50" placeholder="Header information">';
       } else if (headers[ind] == "researcher_name") {
         temp = '<h5 style="padding-left:2px;margin-top:0px;">' + ind + ":" + '</h5>';
-        temp += '<input id=' + headers[ind] + ' type="text" name=' + headers[ind] + ' style="margin: 0 0 5px;width:75%;" required="required" autocomplete="name" maxlength="25" placeholder="Full Name">';
+        temp += '<input id=' + headers[ind] + ' type="text" name=' + headers[ind] + ' style="margin: 0 0 5px;width:75%;" required="required" autocomplete="name" maxlength="25" placeholder="Full name">';
       } else if (headers[ind] == "researcher_email") {
         temp = '<h5 style="padding-left:2px;">' + ind + ":" + '</h5>';
-        temp += '<input id=' + headers[ind] + ' type="text" name=' + headers[ind] + ' style="margin: 0 0 10px;width:75%;" required="required" type="email" autocomplete="email" maxlength="30" placeholder="Email of Researcher">';
+        temp += '<input id=' + headers[ind] + ' type="text" name=' + headers[ind] + ' style="margin: 0 0 10px;width:75%;" required="required" type="email" autocomplete="email" maxlength="30" placeholder="Email of researcher">';
       }
     }
     leftModalContainer.push(temp);
