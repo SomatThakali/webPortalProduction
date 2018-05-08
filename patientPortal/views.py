@@ -11,9 +11,6 @@ from django.contrib.auth.models import User
 from django.forms.formsets import formset_factory
 from django.db import models
 from .accessoryScripts.checkGroup import is_patient, is_therapist
-from .DB_Extractor import get_personal_info ,get_patient_info
-from. forms import MyPersonalInformationForm
-from. forms import MyContactInformationForm
 import json
 from .models import notification, Todo, appointment
 from .accessoryScripts.resourceManager import fixDict, fixDict2, removeDictKey
@@ -94,19 +91,18 @@ def myprogress(request):
             import calendar
             appts = get_appointments(request.user,'patient')
             months = {}
-            appts_attended = 0;
-            total_appts = 0;
-            for appt in appts:
+            past_appts = appts['past_appts']
+            future_appts = appts['future_appts']
+            for appt in past_appts:
+                print(appt['date'])
                 month = int(appt['date'].split('-')[1])
                 month = calendar.month_name[month]
-                if appt['attended']:
-                    appts_attended += 1;
-                    if month not in months:
-                        months[month] = 1
-                    else:
-                        months[month] += 1
-                total_appts += 1;
-            appts_left = total_appts - appts_attended
+                if month not in months:
+                    months[month] = 1
+                else:
+                    months[month] += 1
+            appts_left = len(future_appts)
+            appts_attended = len(past_appts)
             return HttpResponse(json.dumps({'months':months,'appts_left':appts_left,'appts_attended':appts_attended}))
     else:
         return redirect('/portal/therapist')
@@ -231,6 +227,8 @@ def therapistCalendar(request):
                 appointments = get_appointments(request.user,'therapist')
                 patients = User.objects.filter(groups__name = 'patient')
                 patient_names = [x.last_name + ', ' + x.first_name for x in patients]
+                #Patients are all patients in the database, not just for that therapist
+
                 return HttpResponse(json.dumps({'appts':appointments, 'patient_names': patient_names}))
 
         # Here only the post request
@@ -282,10 +280,15 @@ def database(request):
     if not request.user.is_authenticated:
         return redirect('/portal/login')
     if is_therapist(request.user):
-        patient_info = get_patient_info(request) # NOTE: kevin, this returns a dict that contain all the info
-        # needed to populate the database, just need to pass it to front end.
-
-        return render_to_response('patientPortal/database.html')
+        patients = User.objects.filter(groups__name = 'patient')
+        patient_data = []
+        for patient in patients:
+            from patientPortal.modelHandlers.users import get_newest_cohort_data
+            cohortData = get_newest_cohort_data(patient)
+            patient_datum = {'first_name': patient.first_name, 'last_name': patient.last_name, 'email': patient.email, 'cohort_num' : cohortData['cohort_num'] ,'record_id':cohortData['record_id']}
+            patient_data.append(patient_datum)
+        print(patient_data)
+        return render(request, 'patientPortal/database.html', context= {'patients':patient_data})
     else:
         return redirect('/portal/patient')
 
@@ -315,6 +318,7 @@ def forms(request):
     if not request.user.is_authenticated:
         return redirect('/portal/login')
     if is_therapist(request.user):
+        from .modelHandlers.users import get_newest_cohort_data
         from patientPortal.apiScripts.exports import get_available_forms
         method = request.method
         if (method == "GET"):
@@ -333,7 +337,17 @@ def forms(request):
             form = request_dict['form'][0];
             event = request_dict['event'][0];
             question_groups = get_form_groups(form,event);
-            response_body = {'question_groups': question_groups, 'event': event};
+
+            patients = User.objects.filter(groups__name = 'patient')
+            patient_data = []
+            for patient in patients:
+                patient_name = patient.first_name + " " + patient.last_name
+                cohort_data = get_newest_cohort_data(patient)
+                record_id = cohort_data['record_id']
+                patient_data.append({'record_id': record_id, 'name': patient_name})
+
+
+            response_body = {'question_groups': question_groups, 'event': event, 'patients' : patient_data};
             return HttpResponse(json.dumps(response_body));
 
         if (method == "POST"):
@@ -342,17 +356,23 @@ def forms(request):
             request_query_dict = request.POST;
             request_dict = dict(request_query_dict);
             request_dict = fixDict(request_dict);
-
-            record_id = request_dict['record_id'];
-            cohort_num = request_dict['cohort_num'];
+            print(request_dict)
+            full_name = request_dict['patient_name'].split()
+            first_name = full_name[0]
+            last_name = full_name[len(full_name)-1]
+            patient = User.objects.filter(groups__name = 'patient', first_name=first_name, last_name = last_name)[0]
+            cohort_data = get_newest_cohort_data(patient)
+            record_id = cohort_data['record_id'];
+            cohort_num = cohort_data['cohort_num'];
             event_arm = request_dict['event_arm'];
 
-            for key in ['record_id','cohort_num','event_arm','csrfmiddlewaretoken']:
+            # These keys wouldnt be in the redcap event so art to be removed
+            for key in ['patient_name','event_arm','csrfmiddlewaretoken']:
                 request_dict = removeDictKey(request_dict,key); # must remove the keys before passing to redcap api
 
             red_cap_event = create_redcap_event_name(event_arm,cohort_num);
             edit_patient_data_by_id(red_cap_event,record_id,request_dict);
-
+            print("This is getting here")
             return HttpResponse(status=200);
     else:
         return redirect('/portal/patient')
