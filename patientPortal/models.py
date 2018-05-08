@@ -111,12 +111,12 @@ class Todo(models.Model):
 # Classto store study information
 
 
-class Study (models.Model):
+class Study(models.Model):
     import uuid
     therapist_username = models.ForeignKey(User, on_delete=models.CASCADE)
-    title = models.CharField(max_length=15, blank=True)
+    title = models.CharField(max_length=20, blank=True)
     description = models.TextField(blank=True, null=True)
-    researcher_name = models.CharField(max_length=15, blank=True)
+    researcher_name = models.CharField(max_length=20, blank=True)
     researcher_email = models.EmailField(max_length=50, blank=True)
     Unique_ID = models.CharField(max_length=100, blank=True, unique=True, default=uuid.uuid4)
 
