@@ -299,17 +299,41 @@ def recruitment(request):
     if is_therapist(request.user):
         from django.core.mail import send_mass_mail
         from patientPortal.apiScripts.exports import get_form_questions_from_params as data
-
+        from .models import Study
+        #Parameters for the filter
         params = ['stroke','parkinson_s_disease','congestive_heart_failure','heart_attack']
         testdatum = data(params)
         testdatum = json.dumps(testdatum)
-        #for i in testdatum:
-        #    print(i)
-        #print(testdatum);
-        #data = script_to_get_question_info
-        #data.stringy
-        #for inside context--> 'data': data
+        method = request.method
+        if (method == "POST"):
+
+            # title = method.POST.get('title')
+            # description = method.POST.get('description')
+            # researcher_name = method.POST.get('researcher_name')
+            # researcher_email = method.POST.get('researcher_email')
+            request_query_dict = request.POST;
+            request_dict = dict(request_query_dict);
+            post_object = list(request_dict.keys())[0]
+            post_object = json.loads(post_object)
+            title = post_object.get('title')
+            description = post_object.get('description')
+            researcher_name = post_object.get('researcher_name')
+            researcher_email = post_object.get('researcher_email')
+            #data to send back to the front end
+            response_data = {"title":title,"description":description,"researcher_name":researcher_name,"researcher_email":researcher_email}
+
+            #create new user object with title,desc,researcher name and email
+            # Study.objects.create(
+            #     title = title,
+            #     description = description,
+            #     researcher_name = researcher_name,
+            #     researcher_email = researcher_email
+            # )
+
+            return HttpResponse(json.dumps(response_data))
+
         return render(request,'patientPortal/recruitment.html',context={'testdatum': testdatum})
+
     else:
         return redirect('/portal/patient')
 
