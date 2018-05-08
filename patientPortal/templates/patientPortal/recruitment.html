@@ -6,6 +6,7 @@
   <title>Recruitment Tool</title>
   <meta charset="utf-8">
   <meta name="question-data" content="{{testdatum}}">
+  <meta name="csrf-token" content="{{ csrf_token }}">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
   <link href="{% static 'css/colors/text.css" rel="stylesheet' %}">
@@ -16,6 +17,10 @@
   <link href="{% static 'css/font/general-fonts.css' %}" rel="stylesheet">
   <link href="{% static 'javascript/jquery/studyPanel.js' %}">
   <style>
+    .glyphicon-remove:before {
+      color: #FF0000 !important;
+    }
+
     .panel-heading .accordion-toggle:after {
       /* symbol for "opening" panels */
       font-family: 'Glyphicons Halflings';
@@ -54,7 +59,7 @@
       <div class="col-sm-9" data-ng-controller="patientController">
         <!--HEADER-->
         <div class="accord-header" style="height: 55px;background-color: #6DA5D4;border-radius: 3px;border: 1px solid #ddd;">
-          <button type="button" onclick="genStudyModal()" data-toggle="modal" data-target="#pop-up-modal" name="addgroup" class="btn" style="margin: 10px 0 0 10px;">Add Study</button>
+          <button type="button" onclick="genStudyModal()" data-toggle="modal" data-target="#pop-up-modal" name="addgroup" id="as-btn" class="btn" style="margin: 10px 0 0 10px;">Add Study</button>
           <button type="button" onclick="Check('studs')" name="checkAll" class="chAllRP btn" data-toggle="checkbox" style="margin: 10px 0 0 5px;">Select All</button>
           <button type="button" class="modBTN btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal" style="float: right;margin: 5px 5px;padding: 8px 16px 8px 16px;">Send To Patients</button>
         </div>
@@ -62,7 +67,7 @@
           <div class="panel-group" id="accordion" style="padding-top: 2px !important;"></div>
         </div>
 
-        <!--Modal Encapsulation-->
+        <!--Modal Encapsulation: building a function that creates table...-->
         <div>
           <div class="modal fade" id="myModal" role="dialog">
             <div class="modal-dialog">
@@ -123,6 +128,7 @@
   <script src="{% static 'javascript/directives/therMenu.js' %}"></script>
   <script src="{% static 'javascript/stringy/createDivs.js' %}"></script>
   <script src="{% static 'javascript/recruitment.js' %}"></script>
+
 
 </body>
 
