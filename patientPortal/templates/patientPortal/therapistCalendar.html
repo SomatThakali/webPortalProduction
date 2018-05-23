@@ -80,17 +80,24 @@
             // color: "#8d8",
             // meeting: true,
             // reminder: true,
+            var events = []
+            for (i in appts){
+              var appt = appts[i]
+              var event = {}
+              var content = appt['description'] + ' with ' + appt['patient_name']
+              var date = appt['date']
+              var time = appt['time']
+              var Unique_ID = appt['Unique_ID']
+              date = date.split('-')
+              year = parseInt(date[0])
+              month = parseInt(date[1])
+              day = parseInt(date[2])
+              time = parseInt(time)
+              event = {content: content, startDate: new Date(year, month-1, day, time), endDate: new Date(year,month-1,day, time+2), Unique_ID:Unique_ID}
+              events.push(event)
+            }
 
-            var events = [{
-              // Sample event from AlloyUI bootstrap
-              // color: "#8d8",
-              // content: $(patientDropdown).children("option").filter(":selected").text(),
-              // disabled: true,
-              // endDate: new Date(2018, 4, 17, 13),
-              // meeting: true,
-              // reminder: true,
-              // startDate: new Date(2018, 4, 17, 12)
-            }];
+
 
             var agendaView = new Y.SchedulerAgendaView();
             var dayView = new Y.SchedulerDayView();
@@ -109,18 +116,16 @@
                     type : 'POST',
                     data : data,
                     success :function(res){
-                      alert('success')
+                      alert('The appointment has been saved!')
                     },
                     error:function(res){
-                      alert('fucks')
+                      alert('Sorry something went wrong!')
                     }
                   })
-                  console.log(datetime)
-                  console.log(event.details[0].newSchedulerEvent.changed)
-                  alert("saving")
-
                 },
                 delete: function(event) {
+                  var csrf_token = $('meta[name="csrf-token"]').attr('content');
+                  console.log(event)
                   alert("Deleting")
 
                 },

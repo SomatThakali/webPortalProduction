@@ -61,60 +61,27 @@
             <tr>
               <th>First Name</th>
               <th>Lastname</th>
-              <th>Stage</th>
-              <th>Next Appointment</th>
-              <th>Updates</th>
+              <th>Email</th>
+              <th>Cohort Number</th>
+              <th>Record ID</th>
               <th>Action</th>
             </tr>
           </thead>
           <!---Patient information by row--->
           <tbody id="Patients">
+            {% for patient in patients %}
             <tr class="item">
-              <td>John</td>
-              <td>Doe</td>
-              <td>Stage 1</td>
-              <td>Tues, March 15, 2018</td>
-              <td class="update">1</td>
+              <td>{{patient.first_name}}</td>
+              <td>{{patient.last_name}}</td>
+              <td>{{patient.email}}</td>
+              <td>{{patient.cohort_num}}</td>
+              <td>{{patient.record_id}}</td>
               <td>
-                <a href="..\physician\profile.html" <button type="button" class="btn btn-info btn-sm">View Profile</button>
+                <a href="# <button type="button" class="btn btn-info btn-sm">View Profile</button>
         </a>
               </td>
-
             </tr>
-            <tr class="item">
-              <td>Mary</td>
-              <td>Moe</td>
-              <td>Stage 2</td>
-              <td>Fri, April 4,2018</td>
-              <td class="update">0</td>
-              <td>
-                <button type="button" class="btn btn-info btn-sm">View Profile</button>
-              </td>
-
-
-            </tr>
-            <tr>
-              <td>J</td>
-              <td>Dooley</td>
-              <td>Stage 1</td>
-              <td>Fri, April 4th,2018</td>
-              <td class="update">2</td>
-              <td>
-                <button type="button" class="btn btn-info btn-sm">View Profile</button>
-              </td>
-
-            </tr>
-            <tr>
-              <td>Anja</td>
-              <td>Ravendale</td>
-              <td>Stage 3</td>
-              <td>Thurs, April 3rd, 2018</td>
-              <td class="update">0</td>
-              <td>
-                <button type="button" class="btn btn-info btn-sm">View Profile</button>
-              </td>
-
-            </tr>
+            {% endfor %}
           </tbody>
         </table>
       </div>

@@ -76,11 +76,11 @@ function genHeader(form_name, action, patients){
      + "<h4> " + form_name + "</h4>";
   if (action == "create"){
      opening_html += "<label>Patient</label>"
-     + "<select name='record_id'>"
+     + "<select name='patient_name'>"
      + "<option value ='' disabled selected>Patient- Record-ID</option>";
      for (index in patients){
        patient = patients[index];
-       opening_html += "<option value = '" + patient.record_id + "' > " + patient.name + " - " + patient.record_id +"</option>";
+       opening_html += "<option value = '" + patient.name + "' > " + patient.name + " - " + patient.record_id +"</option>";
      }
       opening_html += "</select>"
      + "<select name='event_arm' class='pull-right'>"
@@ -112,7 +112,6 @@ function genQuestion(question){
 
   var opening_html = "<div class='question'>"
   opening_html += "<label>"+question_label+"</label><br>";
-  console.log(question_data_type);
   if (question_data_type == 'radio' || question_data_type == 'dropdown' || question_data_type == 'checkbox'){
     if (question_data_type == "checkbox"){
       var type = 'checkbox'
@@ -204,6 +203,7 @@ function genProgressPanel(pages,form_name){
 
 function displayForm(res){
   var question_groups = res.question_groups;
+  var patients = res.patients;
   var form_name = question_groups[0][0].form_name;
   var form_verbose_name = getVerboseName(form_name);
 
@@ -212,7 +212,6 @@ function displayForm(res){
     + "<form class='redcap-form' id='"+form_name+"'>"
       + "<div class='question-view'>"
   //
-  patients = [{'name': 'Testdcap2', 'record_id': 'testdcap2'}, {'name': 'Test Dcap3', 'record_id':'testdcap3'}]
   leading_html += genHeader(form_verbose_name, res.event,patients)
   // TODOonly doing 1 question group to test atfirst.
 
@@ -245,7 +244,7 @@ $(document).ready(function(){
         displayForm(res);
       },
       error: function(res){
-        console.log("oops");
+        alert("Sorry, your request cannot be processed at the moment!");
       }
     })
   })
@@ -291,21 +290,18 @@ $(document).on('click','.submit-form',function(e){
 
   var csrf_token=$('meta[name="csrf-token"]').attr('content')
   // FIXME cohort_num must come from somewhereelse
-  data += ('&cohort_num=' +'1');
   data += ('&csrfmiddlewaretoken='+csrf_token);
   $.ajax({
     url: '',
     type: 'post',
-    dataType: 'json',
     data: data,
     success: function(res){
+      alert("The data has been successfully submitted to redcap!")
       $('.pop-up').remove();
       //displayForm(res);
     },
     error: function(res){
-      console.log("oops");
+      alert("Sorry, your request cannot be processed at the moment!");
     }
   })
-    //var data = $('#'+form_name).serialize();
-  //console.log(data);
 })

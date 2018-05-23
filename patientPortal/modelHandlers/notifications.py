@@ -99,10 +99,9 @@ def handle_info_notification(notification_object):
     patient_id = action['patient_id']
     cohort_num = action['cohort_num']
     changes = action['changes']
-
     # OK to hard code as the initial patient form data
     event_prefix = 'admin'
     redcap_event_name = create_redcap_event_name(event_prefix,cohort_num)
     edit_patient_data_by_id(redcap_event_name,patient_id,changes)
-    delete_notification(Unique_ID)
+    notification_object.delete();
     return

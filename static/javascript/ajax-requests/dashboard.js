@@ -35,6 +35,7 @@ $(document).ready(function(){
       type: 'POST',
       data: data,
       success: function(res){
+        alert("The notification has been acted upon.")
         $('#'+uniqueID).remove()
         if (isEmpty($('#notification-accordion'))){
           $('#notification-accordion').append("<h3>No more notifications for now!</h3>");
@@ -53,6 +54,7 @@ $(document).ready(function(){
       type: 'POST',
       data: data,
       success: function(res){
+        alert("The notification has successfully been deleted.")
         $('#'+uniqueID).remove()
         if (isEmpty($('#notification-accordion'))){
           $('#notification-accordion').append("<h3>No more notifications for now!</h3>");
@@ -71,6 +73,7 @@ $(document).ready(function(){
       type:'POST',
       data: data,
       success: function(res){
+        alert("Your todo item has successfully been removed.")
         $('#'+uniqueID).remove()
         if (isEmpty($('#todo-accordion'))){
           $('#todo-accordion').append("<h3>No more tasks recorded for now!</h3>");
